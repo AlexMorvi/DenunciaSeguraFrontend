@@ -1,0 +1,8 @@
+{
+  "$schema": "node_modules/ng-openapi-gen/ng-openapi-gen-schema.json",
+  "ignoreUnusedModels": false,
+  "serviceSuffix": "Service",
+  "configuration": {
+    "rootUrl": "" 
+  }
+}

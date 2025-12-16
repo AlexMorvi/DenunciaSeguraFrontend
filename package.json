@@ -6,7 +6,13 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "api:gen:auditoria": "ng-openapi-gen -c ng-openapi-gen.json -i D:\\GitHub Repositories\\DenunciaSeguraBackend\\docs\\api-contracts\\auditoria-api.yaml -o src/app/core/api/auditoria",
+    "api:gen:auth": "ng-openapi-gen -c ng-openapi-gen.json -i D:\\GitHub Repositories\\DenunciaSeguraBackend\\docs\\api-contracts\\auth-api.yaml -o src/app/core/api/auth",
+    "api:gen:denuncias": "ng-openapi-gen -c ng-openapi-gen.json -i D:\\GitHub Repositories\\DenunciaSeguraBackend\\docs\\api-contracts\\denuncias-api.yaml -o src/app/core/api/denuncias",
+    "api:gen:evidencias": "ng-openapi-gen -c ng-openapi-gen.json -i D:\\GitHub Repositories\\DenunciaSeguraBackend\\docs\\api-contracts\\evidencias-api.yaml -o src/app/core/api/evidencias",
+    "api:gen:notificaciones": "ng-openapi-gen -c ng-openapi-gen.json -i D:\\GitHub Repositories\\DenunciaSeguraBackend\\docs\\api-contracts\\notificaciones-api.yaml -o src/app/core/api/notificaciones",
+    "api:gen:all": "npm run api:gen:auditoria && npm run api:gen:auth && npm run api:gen:denuncias && npm run api:gen:evidencias && npm run api:gen:notificaciones"
   },
   "prettier": {
     "printWidth": 100,
@@ -45,6 +51,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-openapi-gen": "^1.0.5",
     "typescript": "~5.9.2"
   }
 }
