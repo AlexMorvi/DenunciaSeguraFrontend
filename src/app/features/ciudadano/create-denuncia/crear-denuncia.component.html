@@ -1,0 +1,110 @@
+<div class="flex h-screen bg-gray-100 overflow-hidden">
+    <app-sidebar></app-sidebar>
+
+    <div class="flex-1 flex flex-col min-w-0">
+        <app-header [area]="'Ciudadano'" [page]="'Crear denuncia'"></app-header>
+
+        <main class="flex-1 p-6 overflow-hidden">
+            <div class="bg-white w-full h-full rounded-xl shadow-sm border border-gray-200 flex flex-col">
+                <!-- <div
+                    class="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0 bg-white rounded-t-xl"> -->
+                <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
+
+                    <h2 class="text-xl font-bold text-slate-800 tracking-tight">
+                        Crear nueva denuncia
+                    </h2>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-6">
+
+                    <form [formGroup]="denunciaForm" (ngSubmit)="onSubmit()" class="max-w-3xl mx-auto space-y-6">
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                Título</label>
+                            <input formControlName="titulo" type="text"
+                                class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition-colors"
+                                [class.border-red-300]="denunciaForm.get('titulo')?.invalid && denunciaForm.get('titulo')?.touched"
+                                [class.focus:ring-red-200]="denunciaForm.get('titulo')?.invalid && denunciaForm.get('titulo')?.touched"
+                                placeholder="Ej: Semáforo dañado en la Av. Amazonas" />
+
+                            @if (denunciaForm.get('titulo')?.invalid && denunciaForm.get('titulo')?.touched) {
+                            <p class="mt-1 text-xs text-red-500">El título es requerido.</p>
+                            }
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Descripción</label>
+                            <textarea formControlName="descripcion" rows="4"
+                                class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 resize-none transition-colors"
+                                placeholder="Describe detalladamente lo que está ocurriendo..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Categoría</label>
+                            <select formControlName="categoria"
+                                class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition-colors">
+                                <option value="" disabled selected>Seleccione una categoría</option>
+                                @for (cat of categorias(); track cat) {
+                                <option [value]="cat">{{ cat.replace('_', ' ') }}</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="flex items-center text-sm font-semibold text-slate-700 mb-2 gap-2">
+                                <i class="fas fa-map-marker-alt text-blue-600"></i>
+                                Ubicación del incidente
+                            </label>
+
+                            <div class="map-container relative w-full h-[350px] rounded-lg overflow-hidden border border-gray-200 shadow-inner"
+                                #mapContainer></div>
+
+                            <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                                <i class="fas fa-info-circle"></i> Haz clic en el mapa para fijar el marcador.
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Evidencia fotográfica
+                                (Opcional)</label>
+                            <div
+                                class="flex items-center space-x-4 p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+
+                                <div
+                                    class="w-24 h-24 bg-white border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden shrink-0">
+                                    @if (imagePreview()) {
+                                    <img [src]="imagePreview()" alt="Preview" class="w-full h-full object-cover" />
+                                    } @else {
+                                    <i class="fas fa-image text-gray-300 text-3xl"></i>
+                                    }
+                                </div>
+
+                                <div>
+                                    <input #fileInput type="file" accept="image/*" class="hidden"
+                                        (change)="onFileSelected($event)" />
+                                    <button type="button" (click)="fileInput.click()"
+                                        class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <i class="fas fa-camera mr-2 text-gray-500"></i>
+                                        Seleccionar imagen
+                                    </button>
+                                    <p class="mt-1 text-xs text-gray-500">PNG, JPG hasta 5MB</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                            <app-submit-button [variant]="'medium'" [appearance]="'secondary'" [btnType]="'button'"
+                                label="Cancelar">
+                            </app-submit-button>
+                            <app-submit-button [variant]="'medium'" [isLoading]="isSubmitting()"
+                                [isDisabled]="denunciaForm.invalid" label="Enviar denuncia" icon="fa-paper-plane">
+                            </app-submit-button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

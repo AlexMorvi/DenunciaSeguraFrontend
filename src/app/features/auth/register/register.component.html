@@ -1,0 +1,54 @@
+<div class="max-w-md w-full px-6">
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <div class="flex items-center justify-center mb-6">
+            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xl">
+                <i class="fas fa-user-plus"></i>
+            </div>
+        </div>
+
+        <h2 class="text-center text-2xl font-bold text-gray-800 mb-2">Crear una cuenta</h2>
+        <p class="text-center text-sm text-gray-500 mb-6">Registra una nueva cuenta de usuario</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+            <app-input id="reg-name" formControlName="nombre" type="text" autocomplete="name"
+                placeholder="Nombre completo" icon="fa-user" [control]="nombreControl"
+                [errors]="{ required: 'El nombre es obligatorio.', minlength: 'Mínimo 2 caracteres.' }" />
+
+            <app-input id="reg-email" formControlName="email" type="email" autocomplete="email" inputmode="email"
+                placeholder="Correo electrónico" icon="fa-envelope" [control]="emailControl"
+                [errors]="{ required: 'El correo es obligatorio.', email: 'Formato de correo inválido.' }" />
+
+            <app-input id="reg-password" formControlName="password" type="password" autocomplete="new-password"
+                placeholder="Contraseña" icon="fa-lock" [control]="passwordControl"
+                [errors]="{ required: 'La contraseña es obligatoria.', minlength: 'Mínimo 8 caracteres.' }" />
+
+            @if (message(); as msg) {
+            <div class="p-4 rounded-lg border text-sm flex items-center"
+                [class.bg-green-50]="messageClass() === 'success'"
+                [class.border-green-200]="messageClass() === 'success'"
+                [class.text-green-800]="messageClass() === 'success'" [class.bg-red-50]="messageClass() === 'error'"
+                [class.border-red-200]="messageClass() === 'error'" [class.text-red-800]="messageClass() === 'error'">
+
+                <i class="fas mr-3" [class.fa-check-circle]="messageClass() === 'success'"
+                    [class.fa-exclamation-circle]="messageClass() === 'error'"
+                    [class.fa-info-circle]="messageClass() === 'info'"></i>
+                {{ msg }}
+            </div>
+            }
+
+            <app-submit-button [variant]="'full'" [isLoading]="submitting()" [isDisabled]="!isFormValid"
+                label="Crear cuenta" loadingLabel="Creando cuenta..." icon="fa-user-plus">
+            </app-submit-button>
+
+            <div class="text-center text-sm text-gray-600 pt-2">
+                ¿Ya tienes cuenta?
+                <a routerLink="/"
+                    class="text-blue-600 font-medium hover:text-blue-800 hover:underline cursor-pointer transition-colors">
+                    Iniciar sesión
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <p class="text-center text-xs text-gray-400 mt-6">Team List Dashboard — Administración</p>
+</div>

@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  --auth-bg: linear-gradient(to bottom right, #eff6ff, #dcebfe);
+  background: var(--auth-bg);
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'] {
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+}

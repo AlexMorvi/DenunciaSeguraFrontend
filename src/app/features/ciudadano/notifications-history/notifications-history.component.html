@@ -1,0 +1,9 @@
+<div class="flex h-screen bg-gray-100">
+    <app-sidebar></app-sidebar>
+    <div class="flex-1 flex flex-col">
+        <app-header [area]="'Ciudadano'" [page]="'Notificaciones'"></app-header>
+        <main class="flex-1 overflow-auto">
+            <app-notifications-list></app-notifications-list>
+        </main>
+    </div>
+</div>

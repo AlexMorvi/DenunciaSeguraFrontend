@@ -1,0 +1,192 @@
+<div class="flex flex-col h-[calc(100%-3rem)] bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden m-6">
+    <div class="bg-white px-6 py-5 border-b border-gray-100 flex items-center justify-between shrink-0 gap-4">
+        <div class="relative group w-full max-w-sm">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i
+                    class="fas fa-search text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200"></i>
+            </div>
+            <input type="text" [ngModel]="searchText()" (ngModelChange)="searchText.set($event)"
+                placeholder="Buscar por título o categoría..."
+                class="block w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-transparent text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:bg-white focus:border-blue-500 transition-all duration-200 placeholder-gray-400 outline-none">
+        </div>
+
+        @if (showCreateButton()) {
+        <app-submit-button [variant]="'medium'" (click)="onCreate.emit()" label="Nueva Denuncia" icon="fa-plus">
+        </app-submit-button>
+        }
+    </div>
+
+    <div class="flex-1 overflow-y-auto bg-white scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
+        <table class="min-w-full divide-y divide-gray-100">
+            <thead class="bg-gray-50/80 sticky top-0 backdrop-blur-sm z-10">
+                <tr>
+                    <th scope="col"
+                        class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Título
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Categoría
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Estado
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Fecha
+                    </th>
+                    <th scope="col" class="relative px-6 py-4">
+                        <span class="sr-only">Acciones</span>
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody class="bg-white divide-y divide-gray-100">
+                @for (denuncia of filteredDenuncias(); track denuncia.id) {
+                <tr (click)="toggleDetail(denuncia.id)"
+                    class="group hover:bg-gray-50/80 cursor-pointer transition-colors duration-200 border-l-4 border-transparent hover:border-blue-500"
+                    [class.bg-blue-50]="expandedId() === denuncia.id"
+                    [class.border-l-blue-500]="expandedId() === denuncia.id">
+
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors">
+                            {{ denuncia.titulo }}
+                        </div>
+                    </td>
+
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+                            {{ denuncia.categoria }}
+                        </div>
+                    </td>
+
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span [class]="getStatusClasses(denuncia.estado)" class="shadow-sm border border-black/5">
+                            {{ denuncia.estado }}
+                        </span>
+                    </td>
+
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ denuncia.fechaCreacion | date:'dd MMM yyyy, HH:mm' }}
+                    </td>
+
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button
+                            class="text-gray-400 hover:text-blue-600 transition-colors duration-200 p-2 rounded-full hover:bg-blue-50 focus:outline-none">
+                            <i class="fas fa-chevron-down transition-transform duration-300"
+                                [class.rotate-180]="expandedId() === denuncia.id"></i>
+                        </button>
+                    </td>
+                </tr>
+
+                @if (expandedId() === denuncia.id) {
+                <tr class="bg-gray-50/50">
+                    <td colspan="5" class="px-6 py-0 border-t-0">
+                        <div class="overflow-hidden transition-all duration-300 ease-in-out py-6 animate-fadeIn">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                                <div class="lg:col-span-7 space-y-4">
+                                    <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <div class="p-1.5 bg-blue-50 rounded-md text-blue-600">
+                                                <i class="fas fa-align-left text-xs"></i>
+                                            </div>
+                                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                                Descripción del reporte</h4>
+                                        </div>
+                                        <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{
+                                            denuncia.descripcion }}</p>
+                                    </div>
+
+                                    @if (denuncia.comentarioResolucion) {
+                                    <div class="bg-green-50/50 p-5 rounded-xl border border-green-200/60 shadow-sm">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <div class="p-1.5 bg-green-100 rounded-md text-green-700">
+                                                <i class="fas fa-check-circle text-xs"></i>
+                                            </div>
+                                            <h4 class="text-xs font-bold text-green-800 uppercase tracking-wide">
+                                                Resolución Oficial</h4>
+                                        </div>
+                                        <p class="text-sm text-green-800 leading-relaxed">{{
+                                            denuncia.comentarioResolucion }}</p>
+                                    </div>
+                                    }
+                                </div>
+
+                                <div class="lg:col-span-5 space-y-4">
+                                    <div
+                                        class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm h-full flex flex-col">
+
+                                        <div class="mb-4">
+                                            <h4
+                                                class="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">
+                                                <i class="fas fa-map-marker-alt text-red-500"></i> Ubicación
+                                            </h4>
+                                            <div
+                                                class="rounded-lg overflow-hidden border border-gray-200 shadow-inner bg-gray-100 relative">
+                                                @if (denuncia.latitud && denuncia.longitud) {
+                                                <app-map-viewer [lat]="denuncia.latitud"
+                                                    [lng]="denuncia.longitud"></app-map-viewer>
+                                                } @else {
+                                                <div
+                                                    class="h-40 flex flex-col items-center justify-center text-gray-400">
+                                                    <i class="fas fa-map-marked-alt text-3xl mb-2 opacity-50"></i>
+                                                    <span class="text-xs">Sin ubicación georreferenciada</span>
+                                                </div>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        @if (denuncia.fotoUrl) {
+                                        <div class="mt-auto">
+                                            <h4
+                                                class="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">
+                                                <i class="fas fa-image text-gray-400"></i> Evidencia fotográfica
+                                            </h4>
+                                            <div
+                                                class="group relative rounded-lg overflow-hidden border border-gray-200 shadow-sm cursor-zoom-in">
+                                                <img [src]="denuncia.fotoUrl"
+                                                    class="w-full h-40 object-cover transform transition-transform duration-500 group-hover:scale-105"
+                                                    alt="Evidencia">
+                                                <div
+                                                    class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                }
+
+                } @empty {
+                <tr>
+                    <td colspan="5" class="px-6 py-24 text-center">
+                        <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
+                            <div
+                                class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-sm border border-gray-100">
+                                <i class="fas fa-search text-gray-300 text-3xl"></i>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-1">No encontramos resultados</h3>
+                            <p class="text-gray-500 text-sm text-center leading-relaxed">
+                                No hay denuncias que coincidan con tu búsqueda. Intenta usar otros términos o verifica
+                                los filtros.
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex items-center justify-between text-xs text-gray-500">
+        <span>Mostrando {{ filteredDenuncias().length }} registro(s)</span>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+<button [attr.type]="btnType" [disabled]="isDisabled || isLoading" [ngClass]="buttonClasses"
+    [class.opacity-50]="isDisabled || isLoading" [class.cursor-not-allowed]="isDisabled || isLoading"
+    [class.hover:bg-blue-700]="!isDisabled && !isLoading">
+    @if (isLoading) {
+    <i [class]="spinnerClass"></i>
+    <span>{{ loadingLabel }}</span>
+    } @else {
+    @if (variant !== 'small') {
+    <i [class]="iconClass"></i>
+    }
+    <span>{{ label }}</span>
+    }
+</button>

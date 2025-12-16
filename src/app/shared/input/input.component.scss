@@ -1,0 +1,11 @@
+:host {
+    display: block;
+}
+
+input {
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background-color: #f3f4f6;
+    }
+}
