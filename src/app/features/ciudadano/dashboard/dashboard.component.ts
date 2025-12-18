@@ -1,9 +1,10 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Para DatePipe y UpperCasePipe
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '@/app/shared/header/header.component';
 import { SidebarComponent } from '@/app/shared/sidebar/sidebar.component';
-import { DenunciaService } from '@/app/features/ciudadano/dashboard/denuncia.service';
+import { DenunciaService } from '@/app/data/services/denuncia.service';
 import { DenunciasTableComponent } from '@/app/shared/denuncias-table/denuncias-table.component';
 
 @Component({
@@ -12,17 +13,14 @@ import { DenunciasTableComponent } from '@/app/shared/denuncias-table/denuncias-
     imports: [CommonModule, FormsModule, HeaderComponent, DenunciasTableComponent, SidebarComponent],
     templateUrl: './dashboard.component.html',
 })
-// export class DenunciasListComponent implements OnInit {
-export class CiudadanoDashboardComponent implements OnInit {
+
+export class CiudadanoDashboardComponent {
     public denunciaService = inject(DenunciaService);
+    private router = inject(Router);
 
     goToCreate(): void {
-        // Placeholder for navigation to the 'create denuncia' page
+        this.router.navigate(['/ciudadano', 'create']);
     }
-    ngOnInit(): void {
-        // Aquí se dispara la petición HTTP
-        // this.denunciaService.getAll().subscribe({
-        //     error: (err) => console.error('Error cargando denuncias', err)
-        // });
-    }
+
+    protected denuncias = this.denunciaService.denuncias;
 }
