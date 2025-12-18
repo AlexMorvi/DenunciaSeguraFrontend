@@ -10,7 +10,7 @@
                 class="block w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-transparent text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:bg-white focus:border-blue-500 transition-all duration-200 placeholder-gray-400 outline-none">
         </div>
 
-        @if (showCreateButton()) {
+        @if (shouldShowCreateButton()) {
         <app-submit-button [variant]="'medium'" (click)="onCreate.emit()" label="Nueva Denuncia" icon="fa-plus">
         </app-submit-button>
         }
@@ -32,10 +32,10 @@
                         class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         Estado
                     </th>
-                    <th scope="col"
+                    <!-- <th scope="col"
                         class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         Fecha
-                    </th>
+                    </th> -->
                     <th scope="col" class="relative px-6 py-4">
                         <span class="sr-only">Acciones</span>
                     </th>
@@ -58,7 +58,7 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500 flex items-center gap-2">
                             <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
-                            {{ denuncia.categoria }}
+                            {{ denuncia.asignadoA }}
                         </div>
                     </td>
 
@@ -68,9 +68,9 @@
                         </span>
                     </td>
 
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ denuncia.fechaCreacion | date:'dd MMM yyyy, HH:mm' }}
-                    </td>
+                    <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ denuncia. | date:'dd MMM yyyy, HH:mm' }}
+                    </td> -->
 
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
@@ -119,7 +119,7 @@
                                     <div
                                         class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm h-full flex flex-col">
 
-                                        <div class="mb-4">
+                                        <!-- <div class="mb-4">
                                             <h4
                                                 class="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">
                                                 <i class="fas fa-map-marker-alt text-red-500"></i> Ubicación
@@ -155,7 +155,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        }
+                                        } -->
                                     </div>
                                 </div>
 
