@@ -17,18 +17,18 @@
 
                 <div class="flex-1 overflow-y-auto p-6">
 
-                    <form [formGroup]="denunciaForm" (ngSubmit)="onSubmit()" class="max-w-3xl mx-auto space-y-6">
+                    <form [formGroup]="form" (ngSubmit)="enviarDenuncia()" class="max-w-3xl mx-auto space-y-6">
 
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">
                                 Título</label>
                             <input formControlName="titulo" type="text"
                                 class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition-colors"
-                                [class.border-red-300]="denunciaForm.get('titulo')?.invalid && denunciaForm.get('titulo')?.touched"
-                                [class.focus:ring-red-200]="denunciaForm.get('titulo')?.invalid && denunciaForm.get('titulo')?.touched"
+                                [class.border-red-300]="form.get('titulo')?.invalid && form.get('titulo')?.touched"
+                                [class.focus:ring-red-200]="form.get('titulo')?.invalid && form.get('titulo')?.touched"
                                 placeholder="Ej: Semáforo dañado en la Av. Amazonas" />
 
-                            @if (denunciaForm.get('titulo')?.invalid && denunciaForm.get('titulo')?.touched) {
+                            @if (form.get('titulo')?.invalid && form.get('titulo')?.touched) {
                             <p class="mt-1 text-xs text-red-500">El título es requerido.</p>
                             }
                         </div>
@@ -44,9 +44,9 @@
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Categoría</label>
                             <select formControlName="categoria"
                                 class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition-colors">
-                                <option value="" disabled selected>Seleccione una categoría</option>
-                                @for (cat of categorias(); track cat) {
-                                <option [value]="cat">{{ cat.replace('_', ' ') }}</option>
+                                <option [ngValue]="null" disabled>Seleccione una categoría</option>
+                                @for (cat of listadoCategorias; track cat) {
+                                <option [ngValue]="cat">{{ cat.replace('_', ' ') }}</option>
                                 }
                             </select>
                         </div>
@@ -97,8 +97,8 @@
                             <app-submit-button [variant]="'medium'" [appearance]="'secondary'" [btnType]="'button'"
                                 label="Cancelar">
                             </app-submit-button>
-                            <app-submit-button [variant]="'medium'" [isLoading]="isSubmitting()"
-                                [isDisabled]="denunciaForm.invalid" label="Enviar denuncia" icon="fa-paper-plane">
+                            <app-submit-button [variant]="'medium'" [isLoading]="isLoading()" [btnType]="'submit'"
+                                [isDisabled]="form.invalid" label="Enviar denuncia" icon="fa-paper-plane">
                             </app-submit-button>
                         </div>
 

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common'; // Para DatePipe y UpperCasePipe
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '@/app/shared/header/header.component';
 import { SidebarComponent } from '@/app/shared/sidebar/sidebar.component';
-import { DenunciaService } from '@/app/data/services/denuncia.service';
+import { DenunciaFacade } from '@/app/data/services/denuncia.facade';
 import { DenunciasTableComponent } from '@/app/shared/denuncias-table/denuncias-table.component';
 
 @Component({
@@ -15,7 +15,7 @@ import { DenunciasTableComponent } from '@/app/shared/denuncias-table/denuncias-
 })
 
 export class CiudadanoDashboardComponent {
-    public denunciaService = inject(DenunciaService);
+    public denunciaService = inject(DenunciaFacade);
     private router = inject(Router);
 
     goToCreate(): void {
