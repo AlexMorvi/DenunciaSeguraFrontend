@@ -49,3 +49,15 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Local npm config
+/.npmrc
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local dev / mocks
+/mocks/
+/mock/
