@@ -8,15 +8,15 @@ import { ApiModule as DenunciasApi } from './core/api/denuncias/api.module';
 import { ApiModule as EvidenciasApi } from './core/api/evidencias/api.module';
 import { ApiModule as NotificacionesApi } from './core/api/notificaciones/api.module';
 import { environment } from '@/environments/environment';
-import { authInterceptor } from '@/app/core/interceptor/auth.interceptor';
-
+import { authInterceptor } from '@/app/core/http/auth.interceptor';
+import { mockStorageInterceptor } from '@/app/core/http/mock-storage.interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(routes),
         provideHttpClient(
             withFetch(),
-            withInterceptors([authInterceptor])
+            withInterceptors([mockStorageInterceptor, authInterceptor])
         ),
         importProvidersFrom(
             AuditoriaApi.forRoot({ rootUrl: environment.apiAuditoriaUrl! }),
