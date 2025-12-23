@@ -2,10 +2,10 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Para DatePipe y UpperCasePipe
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from '@/app/shared/ui/header/header.component';
-import { SidebarComponent } from '@/app/shared/ui/sidebar/sidebar.component';
-import { DenunciaFacade } from '@/app/data/services/denuncia.facade';
-import { DenunciasTableComponent } from '@/app/shared/components/denuncias-table/denuncias-table.component';
+import { HeaderComponent } from '@/shared/ui/header/header.component';
+import { SidebarComponent } from '@/shared/ui/sidebar/sidebar.component';
+import { DenunciaFacade } from '@/data/services/denuncia.facade';
+import { DenunciasTableComponent } from '@/shared/components/denuncias-table/denuncias-table.component';
 
 @Component({
     selector: 'app-ciudadano-dashboard',

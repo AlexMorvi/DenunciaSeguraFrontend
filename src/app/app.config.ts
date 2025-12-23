@@ -8,8 +8,8 @@ import { ApiModule as DenunciasApi } from './core/api/denuncias/api.module';
 import { ApiModule as EvidenciasApi } from './core/api/evidencias/api.module';
 import { ApiModule as NotificacionesApi } from './core/api/notificaciones/api.module';
 import { environment } from '@/environments/environment';
-import { authInterceptor } from '@/app/core/http/auth.interceptor';
-import { mockStorageInterceptor } from '@/app/core/http/mock-storage.interceptor';
+import { authInterceptor } from '@/core/http/auth.interceptor';
+import { mockStorageInterceptor } from '@/core/http/mock-storage.interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [

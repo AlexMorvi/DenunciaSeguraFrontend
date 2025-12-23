@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { BuzonService } from '@/app/core/api/notificaciones/services/buzon.service';
-import { NotificacionResponse } from '@/app/core/api/notificaciones/models/notificacion-response';
+import { BuzonService } from '@/core/api/notificaciones/services/buzon.service';
+import { NotificacionResponse } from '@/core/api/notificaciones/models/notificacion-response';
 
 @Injectable({
     providedIn: 'root'

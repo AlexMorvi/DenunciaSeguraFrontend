@@ -1,10 +1,10 @@
 
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Para DatePipe y UpperCasePipe
-import { HeaderComponent } from '@/app/shared/ui/header/header.component';
-import { SidebarComponent } from '@/app/shared/ui/sidebar/sidebar.component';
-import { NotificationsListComponent } from '@/app/features/ciudadano/notifications-list/notifications-list.component';
-import { NotificacionFacade } from '@/app/data/services/notificacion.facade';
+import { HeaderComponent } from '@/shared/ui/header/header.component';
+import { SidebarComponent } from '@/shared/ui/sidebar/sidebar.component';
+import { NotificationsListComponent } from '@/features/ciudadano/notifications-list/notifications-list.component';
+import { NotificacionFacade } from '@/data/services/notificacion.facade';
 
 @Component({
     selector: 'app-notifications-history',

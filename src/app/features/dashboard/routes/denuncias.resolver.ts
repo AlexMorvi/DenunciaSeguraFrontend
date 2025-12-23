@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { DenunciaFacade } from '@/app/data/services/denuncia.facade';
+import { DenunciaFacade } from '@/data/services/denuncia.facade';
 
 @Injectable({ providedIn: 'root' })
 export class DenunciasResolver implements Resolve<boolean> {

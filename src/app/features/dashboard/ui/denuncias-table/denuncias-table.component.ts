@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SubmitButtonComponent } from '@/app/shared/submit-button/submit-button.component';
-import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/app/core/api/denuncias/models';
+import { SubmitButtonComponent } from '@/shared/submit-button/submit-button.component';
+import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 
 @Component({
     selector: 'app-denuncias-table',

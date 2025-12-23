@@ -6,8 +6,8 @@ import {
     Validators
 } from '@angular/forms';
 
-import { InputComponent } from '@/app/shared/input/input.component';
-import { SubmitButtonComponent } from '@/app/shared/submit-button/submit-button.component';
+import { InputComponent } from '@/shared/input/input.component';
+import { SubmitButtonComponent } from '@/shared/submit-button/submit-button.component';
 
 @Component({
     selector: 'app-register',

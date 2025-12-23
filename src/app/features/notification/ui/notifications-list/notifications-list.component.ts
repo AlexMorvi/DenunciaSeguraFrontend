@@ -1,7 +1,7 @@
 import { Component, input, computed, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NotificacionResponse } from '@/app/core/api/notificaciones/models/notificacion-response';
-import { NotificationItemComponent } from '@/app/shared/ui/notification-item/notifiaction-item.component';
+import { NotificacionResponse } from '@/core/api/notificaciones/models/notificacion-response';
+import { NotificationItemComponent } from '@/shared/ui/notification-item/notifiaction-item.component';
 
 @Component({
     selector: 'app-notifications-list',

@@ -1,6 +1,6 @@
 import { Component, Input, signal, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { SubmitButtonComponent } from '@/app/shared/submit-button/submit-button.component';
+import { SubmitButtonComponent } from '@/shared/submit-button/submit-button.component';
 
 @Component({
     selector: 'app-change-password-error',

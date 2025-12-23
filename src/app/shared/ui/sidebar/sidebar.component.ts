@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NotificacionFacade } from '@/app/data/services/notificacion.facade';
+import { NotificacionFacade } from '@/data/services/notificacion.facade';
 
 @Component({
     selector: 'app-sidebar',

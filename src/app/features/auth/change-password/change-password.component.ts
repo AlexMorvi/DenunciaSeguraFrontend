@@ -2,8 +2,8 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { InputComponent } from '@/app/shared/input/input.component';
-import { SubmitButtonComponent } from '@/app/shared/submit-button/submit-button.component';
+import { InputComponent } from '@/shared/input/input.component';
+import { SubmitButtonComponent } from '@/shared/submit-button/submit-button.component';
 
 @Component({
     selector: 'app-change-password',
