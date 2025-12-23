@@ -28,14 +28,38 @@ export class DenunciaFacade {
     readonly loading = this._loading.asReadonly();
     readonly error = this._error.asReadonly();
 
-    public denuncias = toSignal(
-        from(this.api.denunciasMeGet()).pipe(
-            catchError(error => {
-                return of([]);
-            })
-        ),
-        { initialValue: [] as DenunciaCitizenViewResponse[] }
-    );
+    // Señal interna para la lista de denuncias y acceso público de solo-lectura
+    private _denuncias = signal<DenunciaCitizenViewResponse[]>([]);
+    public denuncias = this._denuncias.asReadonly();
+
+    // Refrescar la lista de denuncias desde la API
+    async refresh(): Promise<void> {
+        this._loading.set(true);
+        console.debug('[DenunciaFacade] refresh() start');
+        try {
+            const data = await firstValueFrom(
+                from(this.api.denunciasMeGet()).pipe(
+                    catchError(() => of([] as DenunciaCitizenViewResponse[]))
+                )
+            );
+            console.debug('[DenunciaFacade] refresh() api returned, items:', Array.isArray(data) ? data.length : 'unknown');
+            this._denuncias.set(data || []);
+            console.debug('[DenunciaFacade] refresh() set signal, current length:', this._denuncias().length);
+        } catch (err) {
+            // Log para depuración en caso de errores en la carga inicial
+            console.error('[DenunciaFacade] Error cargando denuncias:', err);
+            this._denuncias.set([]);
+        } finally {
+            this._loading.set(false);
+            console.debug('[DenunciaFacade] refresh() end');
+        }
+    }
+
+    constructor() {
+        // Constructor sin carga automática: la carga se realizará desde un Resolver
+        // o desde el componente que necesite los datos. Evitamos auto-refresh aquí
+        // para prevenir llamadas duplicadas al entrar a rutas.
+    }
 
     async crearDenuncia(datos: CrearDenunciaRequest, archivo?: File | null) {
         this._loading.set(true);
