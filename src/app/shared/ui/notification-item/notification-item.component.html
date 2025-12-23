@@ -1,0 +1,119 @@
+<!-- <div class="group relative w-full p-4 mb-3 rounded-xl border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-md"
+    [class.bg-white]="notification().leida" [class.border-gray-200]="notification().leida"
+    [class.bg-blue-50/60]="!notification().leida" [class.border-blue-200]="!notification().leida"
+    (click)="clicked.emit(notification())" (keydown.enter)="clicked.emit(notification())" tabindex="0" role="button"
+    [attr.aria-label]="notification().leida ? 'Leída: ' + notification().mensaje : 'No leída: ' + notification().mensaje">
+
+    @if (!notification().leida) {
+    <div class="absolute left-0 top-3 bottom-3 w-1 bg-blue-500 rounded-r-full shadow-sm"></div>
+    }
+
+    <div class="flex items-start gap-4">
+
+        <div class="flex-shrink-0 mt-1">
+            <div class="h-10 w-10 rounded-xl flex items-center justify-center transition-colors duration-300"
+                [class.bg-blue-100]="!notification().leida" [class.text-blue-600]="!notification().leida"
+                [class.bg-gray-100]="notification().leida" [class.text-gray-400]="notification().leida">
+                <i class="fa-solid fa-bell text-lg"></i>
+            </div>
+        </div>
+
+        <div class="flex-1 min-w-0 grid gap-1">
+            <div class="flex justify-between items-start">
+
+                <div class="pr-4">
+                    <p class="text-sm font-medium leading-relaxed transition-colors duration-200"
+                        [class.text-gray-900]="!notification().leida" [class.text-gray-500]="notification().leida">
+                        {{ notification().mensaje }}
+                    </p>
+                </div>
+
+                <span class="text-xs font-medium text-gray-400 whitespace-nowrap bg-white/50 px-2 py-0.5 rounded-md">
+                    {{ notification().fechaCreacion | date:'short' }}
+                </span>
+            </div>
+
+            <div class="flex items-center gap-3 mt-1">
+                @if (!notification().leida) {
+                <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider shadow-sm">
+                    Nueva
+                </span>
+                <span class="text-xs text-blue-600 font-medium animate-pulse">
+                    • Pendiente de revisión
+                </span>
+                }
+            </div>
+        </div>
+
+        <div
+            class="self-center opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-gray-400">
+            <i class="fa-solid fa-chevron-right"></i>
+        </div>
+
+    </div>
+</div> -->
+
+<div class="group relative w-full mb-3 outline-none" role="button" tabindex="0" (click)="clicked.emit(notification())"
+    (keydown.enter)="clicked.emit(notification())"
+    [attr.aria-label]="notification().leida ? 'Leída: ' + notification().mensaje : 'No leída: ' + notification().mensaje">
+
+    <div class="relative w-full p-4 rounded-2xl border transition-all duration-300 ease-out
+                hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.99] active:shadow-sm"
+        [class.bg-white]="notification().leida" [class.border-gray-100]="notification().leida"
+        [class.shadow-sm]="notification().leida" [class.bg-blue-50/40]="!notification().leida"
+        [class.border-blue-200]="!notification().leida" [class.shadow-md]="!notification().leida"
+        [class.shadow-blue-100]="!notification().leida">
+
+        @if (!notification().leida) {
+        <div class="absolute left-0 top-4 bottom-4 w-1.5 bg-blue-500 rounded-r-full shadow-sm"></div>
+        }
+
+        <div class="flex items-start gap-3 sm:gap-4">
+
+            <div class="flex-shrink-0 mt-0.5">
+                <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl flex items-center justify-center transition-colors duration-300 ring-4"
+                    [class.bg-blue-100]="!notification().leida" [class.text-blue-600]="!notification().leida"
+                    [class.ring-blue-50]="!notification().leida" [class.bg-gray-50]="notification().leida"
+                    [class.text-gray-400]="notification().leida" [class.ring-transparent]="notification().leida">
+                    <i class="fa-solid fa-bell text-lg sm:text-xl"></i>
+                </div>
+            </div>
+
+            <div class="flex-1 min-w-0 flex flex-col gap-1.5">
+
+                <div class="flex justify-between items-start gap-2">
+                    <p class="text-sm sm:text-base font-medium leading-snug transition-colors duration-200 line-clamp-2"
+                        [class.text-gray-900]="!notification().leida" [class.text-gray-500]="notification().leida">
+                        {{ notification().mensaje }}
+                    </p>
+
+                    <span
+                        class="flex-shrink-0 text-[10px] sm:text-xs font-medium text-gray-400 bg-white/60 px-2 py-1 rounded-lg border border-transparent"
+                        [class.border-gray-100]="!notification().leida">
+                        {{ notification().fechaCreacion | date:'shortTime' }}
+                    </span>
+                </div>
+
+                <div class="flex items-center flex-wrap gap-x-3 gap-y-1">
+
+                    <span class="text-xs text-gray-400 hidden sm:inline-block">
+                        {{ notification().fechaCreacion | date:'mediumDate' }}
+                    </span>
+
+                    @if (!notification().leida) {
+                    <div class="flex items-center gap-2">
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-600 text-white uppercase tracking-wider shadow-sm shadow-blue-200">
+                            Nueva
+                        </span>
+                        <span class="hidden xs:inline-block text-xs text-blue-600 font-medium animate-pulse">
+                            • Pendiente
+                        </span>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

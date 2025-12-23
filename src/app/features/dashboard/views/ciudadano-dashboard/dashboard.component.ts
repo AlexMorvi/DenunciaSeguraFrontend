@@ -1,11 +1,11 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Para DatePipe y UpperCasePipe
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from '@/app/shared/header/header.component';
-import { SidebarComponent } from '@/app/shared/sidebar/sidebar.component';
+import { HeaderComponent } from '@/app/shared/ui/header/header.component';
+import { SidebarComponent } from '@/app/shared/ui/sidebar/sidebar.component';
 import { DenunciaFacade } from '@/app/data/services/denuncia.facade';
-import { DenunciasTableComponent } from '@/app/shared/denuncias-table/denuncias-table.component';
+import { DenunciasTableComponent } from '@/app/shared/components/denuncias-table/denuncias-table.component';
 
 @Component({
     selector: 'app-ciudadano-dashboard',
@@ -23,4 +23,6 @@ export class CiudadanoDashboardComponent {
     }
 
     protected denuncias = this.denunciaService.denuncias;
+
+    // Data is loaded by the route resolver (`DenunciasResolver`) before activation.
 }

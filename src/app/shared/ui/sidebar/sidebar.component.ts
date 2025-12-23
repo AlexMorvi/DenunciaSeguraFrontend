@@ -1,15 +1,17 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NotificacionFacade } from '@/app/data/services/notificacion.facade';
 
 @Component({
     selector: 'app-sidebar',
     standalone: true,
-    // Importamos las directivas del Router
     imports: [CommonModule, RouterLink, RouterLinkActive],
     templateUrl: './sidebar.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
-    // Ya no necesitas lógica aquí. El Router se encarga del estado.
+    private notifFacade = inject(NotificacionFacade);
+
+    public noLeidasCount = this.notifFacade.noLeidasCount;
 }

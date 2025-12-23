@@ -1,8 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { environment } from '@/environments/environment';
+// breadcrumb imports removed: nav was eliminated from template
 
 @Component({
     selector: 'app-header',
@@ -11,9 +10,6 @@ import { environment } from '@/environments/environment';
     templateUrl: './header.component.html',
 })
 export class HeaderComponent {
-    @Input() area = 'Ciudadano';
-    @Input() page = 'Mis denuncias';
-    // private http = inject(HttpClient);
     private router = inject(Router);
 
     onLogout() {

@@ -3,9 +3,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { DenunciaFacade } from '@/app/data/services/denuncia.facade';
-import { HeaderComponent } from '@/app/shared/header/header.component';
-import { SidebarComponent } from '@/app/shared/sidebar/sidebar.component';
-import { SubmitButtonComponent } from '@/app/shared/submit-button/submit-button.component';
+import { HeaderComponent } from '@/app/shared/ui/header/header.component';
+import { SidebarComponent } from '@/app/shared/ui/sidebar/sidebar.component';
+import { SubmitButtonComponent } from '@/app/shared/ui/submit-button/submit-button.component';
 
 // Modelos y Constantes
 import { CrearDenunciaRequest } from '@/app/core/api/denuncias/models/crear-denuncia-request';

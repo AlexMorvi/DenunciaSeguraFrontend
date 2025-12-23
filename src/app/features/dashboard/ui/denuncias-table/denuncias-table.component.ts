@@ -12,7 +12,16 @@ import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/a
     templateUrl: './denuncias-table.component.html',
 })
 export class DenunciasTableComponent {
-    @Input() denuncias: Denuncia[] = [];
+    private _denuncias: Denuncia[] = [];
+    @Input() set denuncias(v: Denuncia[]) {
+        this._denuncias = v || [];
+        try {
+            console.debug('[DenunciasTable] Input denuncias set, length=', this._denuncias.length, this._denuncias.slice(0, 3));
+        } catch (err) {
+            console.debug('[DenunciasTable] Error logging denuncias input', err);
+        }
+    }
+    get denuncias(): Denuncia[] { return this._denuncias; }
     @Input() showCreateButton = true;
     @Output() onCreate = new EventEmitter<void>();
 
@@ -54,5 +63,28 @@ export class DenunciasTableComponent {
 
     shouldShowCreateButton(): boolean {
         return !!this.showCreateButton;
+    }
+
+    // Helpers to access possibly-undeclared properties returned by the API
+    getLat(denuncia: any): string {
+        const v = denuncia?.latitud ?? denuncia?.latitude ?? null;
+        return v != null ? String(v) : '-';
+    }
+
+    getLng(denuncia: any): string {
+        const v = denuncia?.longitud ?? denuncia?.longitude ?? null;
+        return v != null ? String(v) : '-';
+    }
+
+    getFechaFormatted(denuncia: any): string {
+        const val = denuncia?.fechaCreacion ?? denuncia?.createdAt ?? denuncia?.created_at ?? null;
+        if (!val) return '-';
+        try {
+            const d = new Date(val);
+            const fmt = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            return fmt.format(d);
+        } catch (err) {
+            return String(val);
+        }
     }
 }
