@@ -9,8 +9,8 @@ import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.c
     selector: 'app-change-password',
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule, InputComponent, SubmitButtonComponent],
-    templateUrl: './change-password.component.html',
-    styleUrl: './change-password.component.scss'
+    templateUrl: './change-password.page.html',
+    styleUrls: ['./change-password.page.scss']
 })
 export class ChangePasswordComponent implements OnInit {
     private fb = inject(FormBuilder);

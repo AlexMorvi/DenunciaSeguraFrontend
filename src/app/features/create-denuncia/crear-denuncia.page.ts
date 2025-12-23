@@ -47,8 +47,8 @@ const ICON_RED_CONFIG = L.icon({
     selector: 'app-crear-denuncia',
     standalone: true,
     imports: [ReactiveFormsModule, CommonModule, HeaderComponent, SidebarComponent, SubmitButtonComponent],
-    templateUrl: './crear-denuncia.component.html',
-    styleUrls: ['./crear-denuncia.component.scss']
+    templateUrl: './crear-denuncia.page.html',
+    styleUrls: ['./crear-denuncia.page.scss']
 })
 export class CrearDenunciaComponent implements OnDestroy {
     // Inyecciones

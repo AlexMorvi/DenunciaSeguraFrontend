@@ -8,8 +8,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
     selector: 'app-forgot-password',
     standalone: true,
     imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent],
-    templateUrl: './forgot-password.component.html',
-    styleUrls: ['./forgot-password.component.scss'],
+    templateUrl: './forgot-password.page.html',
+    styleUrls: ['./forgot-password.page.scss'],
 })
 export class ForgotPasswordComponent {
     private readonly fb = inject(FormBuilder);

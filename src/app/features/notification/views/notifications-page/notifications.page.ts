@@ -10,7 +10,7 @@ import { NotificacionFacade } from '@/data/services/notificacion.facade';
     selector: 'app-notifications-history',
     standalone: true,
     imports: [CommonModule, HeaderComponent, SidebarComponent, NotificationsListComponent],
-    templateUrl: 'notifications-history.component.html',
+    templateUrl: 'notifications.page.html',
 })
 
 export class NotificationsPage {

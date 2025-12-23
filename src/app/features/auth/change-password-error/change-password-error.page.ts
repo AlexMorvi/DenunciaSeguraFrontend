@@ -6,7 +6,7 @@ import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.c
     selector: 'app-change-password-error',
     standalone: true,
     imports: [SubmitButtonComponent],
-    templateUrl: './change-password-error.component.html',
+    templateUrl: './change-password-error.page.html',
 })
 export class ChangePasswordErrorComponent {
     errorMessage = signal('El enlace de recuperación es inválido o ha expirado. Por favor, solicita uno nuevo.');

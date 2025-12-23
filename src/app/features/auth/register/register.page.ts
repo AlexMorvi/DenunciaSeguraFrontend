@@ -13,8 +13,8 @@ import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.c
     selector: 'app-register',
     standalone: true,
     imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent],
-    templateUrl: './register.component.html',
-    styleUrls: ['./register.component.scss']
+    templateUrl: './register.page.html',
+    styleUrls: ['./register.page.scss']
 })
 export class RegisterComponent {
     private readonly fb = inject(FormBuilder);
