@@ -14,7 +14,7 @@ import { DenunciasTableComponent } from '@/features/dashboard/ui/denuncias-table
     templateUrl: './dashboard.page.html',
 })
 
-export class CiudadanoDashboardComponent {
+export class CiudadanoDashboardPage {
     public denunciaService = inject(DenunciaFacade);
     private router = inject(Router);
 
