@@ -13,7 +13,7 @@ import { NotificacionFacade } from '@/data/services/notificacion.facade';
     templateUrl: 'notifications-history.component.html',
 })
 
-export class CiudadanoNotificationsHistoryComponent {
+export class NotificationsPage {
     protected notificacionFacade = inject(NotificacionFacade);
     protected notificaciones = this.notificacionFacade.notificaciones;
     protected loading = this.notificacionFacade.loading;

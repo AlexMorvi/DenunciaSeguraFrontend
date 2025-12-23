@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from '../../auth/login/login.component';
-import { RegisterComponent } from '../../auth/register/register.component';
-import { ForgotPasswordComponent } from '../../auth/forgot-password/forgot-password.component';
-import { ChangePasswordComponent } from '../../auth/change-password/change-password.component';
-import { ChangePasswordErrorComponent } from '../../auth/change-password-error/change-password-error.component';
+import { LoginComponent } from '../../auth/login/login.page';
+import { RegisterComponent } from '../../auth/register/register.page';
+import { ForgotPasswordComponent } from '../../auth/forgot-password/forgot-password.page';
+import { ChangePasswordComponent } from '../../auth/change-password/change-password.page';
+import { ChangePasswordErrorComponent } from '../../auth/change-password-error/change-password-error.page';
 
 // Exportamos con el nombre 'AUTH_ROUTES' para ser explícitos
 export const AUTH_ROUTES: Routes = [
