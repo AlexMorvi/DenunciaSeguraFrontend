@@ -1,9 +1,9 @@
 
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Para DatePipe y UpperCasePipe
+import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '@/shared/ui/header/header.component';
 import { SidebarComponent } from '@/shared/ui/sidebar/sidebar.component';
-import { NotificationsListComponent } from '@/features/ciudadano/notifications-list/notifications-list.component';
+import { NotificationsListComponent } from '@/features/notification/ui/notifications-list/notifications-list.component';
 import { NotificacionFacade } from '@/data/services/notificacion.facade';
 
 @Component({

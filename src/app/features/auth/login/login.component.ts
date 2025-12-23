@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, signal, input } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { InputComponent } from '@/shared/input/input.component';
-import { SubmitButtonComponent } from '@/shared/submit-button/submit-button.component';
+import { InputComponent } from '@/shared/ui/input/input.component';
+import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 
 @Component({
     selector: 'app-login',

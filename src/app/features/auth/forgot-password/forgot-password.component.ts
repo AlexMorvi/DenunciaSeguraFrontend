@@ -1,6 +1,6 @@
 import { Component, signal, computed, inject } from '@angular/core';
-import { InputComponent } from '@/shared/input/input.component';
-import { SubmitButtonComponent } from '@/shared/submit-button/submit-button.component';
+import { InputComponent } from '@/shared/ui/input/input.component';
+import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 

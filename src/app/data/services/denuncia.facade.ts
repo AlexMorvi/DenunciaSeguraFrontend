@@ -8,7 +8,6 @@ import { SKIP_AUTH } from '@/core/http/http-context';
 import { EvidenceUploadError } from '@/core/errors/create-denuncia.errors';
 import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { catchError, firstValueFrom, from, of } from 'rxjs';
 
