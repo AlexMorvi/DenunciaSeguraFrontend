@@ -1,12 +1,30 @@
 import { Routes } from '@angular/router';
-import { CiudadanoDashboardPage } from '@/features/dashboard/views/ciudadano-dashboard/dashboard.page';
 import { DenunciasResolver } from './denuncias.resolver';
-import { CrearDenunciaComponent } from '@/features/create-denuncia/crear-denuncia.page';
-import { NotificationsPage } from '@/features/notification/views/notifications-page/notifications.page';
+import { MainLayoutComponent } from '@/core/layout/main-layout.component';
 
 export const CITIZEN_ROUTES: Routes = [
-    { path: 'dashboard', component: CiudadanoDashboardPage, resolve: { denunciasLoaded: DenunciasResolver } },
-    { path: 'create', component: CrearDenunciaComponent },
-    { path: 'notifications', component: NotificationsPage },
-    { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    {
+        path: '',
+        component: MainLayoutComponent,
+        children: [
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
+            {
+                path: 'dashboard',
+                loadComponent: () => import('@/features/dashboard/views/ciudadano-dashboard/dashboard.page')
+                    .then(m => m.CiudadanoDashboardPage),
+                resolve: { denunciasLoaded: DenunciasResolver }
+            },
+            {
+                path: 'create',
+                loadComponent: () => import('@/features/create-denuncia/crear-denuncia.page')
+                    .then(m => m.CrearDenunciaComponent)
+            },
+            {
+                path: 'notifications',
+                loadComponent: () => import('@/features/notification/views/notifications-page/notifications.page')
+                    .then(m => m.NotificationsPage)
+            },
+        ]
+    }
 ];
