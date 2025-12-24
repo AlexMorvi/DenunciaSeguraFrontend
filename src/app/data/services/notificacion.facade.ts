@@ -8,22 +8,15 @@ import { NotificacionResponse } from '@/core/api/notificaciones/models/notificac
 export class NotificacionFacade {
     private api = inject(BuzonService);
 
-    // 1. ESTADO INTERNO
-    // Solo guardamos la lista de items. El contador se derivará de aquí.
     private _items = signal<NotificacionResponse[]>([]);
-
     private _loading = signal(false);
     private _error = signal<string | null>(null);
 
-    // 2. SELECTORES PÚBLICOS (Lectura)
     readonly loading = this._loading.asReadonly();
     readonly error = this._error.asReadonly();
 
-    // Exponemos la lista tal cual
     public notificaciones = this._items.asReadonly();
 
-    // ✨ COMPUTED: Aquí está la magia.
-    // Angular recalcula esto automáticamente solo cuando _items cambia.
     public noLeidasCount = computed(() =>
         this._items().filter(n => !n.leida).length
     );
@@ -36,7 +29,6 @@ export class NotificacionFacade {
         this._loading.set(true);
         try {
             const response = await this.api.meGet();
-            // Solo actualizamos los items. El computed se encargará del contador.
             this._items.set(response.items || []);
             this._error.set(null);
         } catch (err: any) {
@@ -47,18 +39,14 @@ export class NotificacionFacade {
     }
 
     async marcarComoLeida(id: number) {
-        // 1. Actualización Optimista: 
-        // Solo buscamos el item y le cambiamos el flag. No tocamos contadores.
         this._items.update(items =>
             items.map(n => n.id === id ? { ...n, leida: true } : n)
         );
 
-        // 2. Llamada al API
         try {
             await this.api.marcarLeida({ id });
         } catch (error) {
             console.error('Error al marcar como leída', error);
-            // Rollback: Recargamos la verdad desde el servidor
             this.loadNotificaciones();
         }
     }
