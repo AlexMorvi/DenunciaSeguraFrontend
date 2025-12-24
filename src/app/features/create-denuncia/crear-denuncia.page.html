@@ -1,174 +1,160 @@
-<div class="flex h-screen bg-gray-100 overflow-hidden">
-    <app-sidebar></app-sidebar>
+<div class="flex flex-col h-[calc(100%-3rem)] bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden m-6">
+    <div class="px-8 py-6 border-b rounded-xl border-gray-100 flex items-center justify-between bg-white shrink-0">
 
-    <div class="flex-1 flex flex-col min-w-0">
-        <app-header></app-header>
+        <h2 class="text-xl font-bold text-slate-800 tracking-tight">
+            Crear nueva denuncia
+        </h2>
+    </div>
 
-        <main class="flex-1 p-6 overflow-hidden">
-            <div class="bg-white w-full h-full rounded-xl shadow-sm border border-gray-200 flex flex-col">
-                <div
-                    class="px-8 py-6 border-b rounded-xl border-gray-100 flex items-center justify-between bg-white shrink-0">
+    <div class="flex-1 overflow-y-auto p-6" #scrollArea>
 
-                    <h2 class="text-xl font-bold text-slate-800 tracking-tight">
-                        Crear nueva denuncia
-                    </h2>
+        @if (localError()) {
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <strong class="font-bold">¡Atención! </strong>
+            <span class="block sm:inline">{{ localError() }}</span>
+        </div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="enviarDenuncia()" class="max-w-3xl mx-auto space-y-6">
+
+            <div>
+                <label for="titulo" class="block text-sm font-semibold text-slate-700 mb-2">
+                    Título</label>
+                <input id="titulo" formControlName="titulo" type="text" aria-describedby="titulo-help titulo-error"
+                    maxlength="100"
+                    class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition-colors"
+                    [class.border-red-300]="form.get('titulo')?.invalid && form.get('titulo')?.touched"
+                    [class.focus:ring-red-200]="form.get('titulo')?.invalid && form.get('titulo')?.touched"
+                    placeholder="Ej: Semáforo dañado en la Av. Amazonas" />
+
+                <div class="mt-1 text-xs text-gray-500 flex items-center justify-between">
+                    <div id="titulo-help">Requerido. 5–100 caracteres.</div>
+                    <div class="text-gray-400">{{ (form.get('titulo')?.value?.length || 0) }}/100</div>
                 </div>
 
-                <div class="flex-1 overflow-y-auto p-6" #scrollArea>
-
-                    @if (localError()) {
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        <strong class="font-bold">¡Atención! </strong>
-                        <span class="block sm:inline">{{ localError() }}</span>
-                    </div>
+                @if (form.get('titulo')?.invalid && form.get('titulo')?.touched) {
+                <div id="titulo-error" class="mt-1 text-xs text-red-500">
+                    @if (form.get('titulo')?.errors?.['required']) {
+                    <div>El título es requerido.</div>
                     }
+                    @if (form.get('titulo')?.errors?.['minlength']) {
+                    <div>El título debe tener al menos 5 caracteres.</div>
+                    }
+                    @if (form.get('titulo')?.errors?.['maxlength']) {
+                    <div>El título excede el máximo de 100 caracteres.</div>
+                    }
+                </div>
+                }
+            </div>
 
-                    <form [formGroup]="form" (ngSubmit)="enviarDenuncia()" class="max-w-3xl mx-auto space-y-6">
+            <div>
+                <label for="descripcion" class="block text-sm font-semibold text-slate-700 mb-2">Descripción</label>
+                <textarea id="descripcion" formControlName="descripcion" rows="6"
+                    aria-describedby="descripcion-help descripcion-error" maxlength="1000"
+                    class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 resize-none transition-colors"
+                    placeholder="Describe detalladamente lo que está ocurriendo..."></textarea>
 
-                        <div>
-                            <label for="titulo" class="block text-sm font-semibold text-slate-700 mb-2">
-                                Título</label>
-                            <input id="titulo" formControlName="titulo" type="text"
-                                aria-describedby="titulo-help titulo-error" maxlength="100"
-                                class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition-colors"
-                                [class.border-red-300]="form.get('titulo')?.invalid && form.get('titulo')?.touched"
-                                [class.focus:ring-red-200]="form.get('titulo')?.invalid && form.get('titulo')?.touched"
-                                placeholder="Ej: Semáforo dañado en la Av. Amazonas" />
+                <div class="mt-1 text-xs text-gray-500 flex items-center justify-between">
+                    <div id="descripcion-help">Requerido. 10–1000 caracteres.</div>
+                    <div class="text-gray-400">{{ (form.get('descripcion')?.value?.length || 0) }}/1000
+                    </div>
+                </div>
 
-                            <div class="mt-1 text-xs text-gray-500 flex items-center justify-between">
-                                <div id="titulo-help">Requerido. 5–100 caracteres.</div>
-                                <div class="text-gray-400">{{ (form.get('titulo')?.value?.length || 0) }}/100</div>
-                            </div>
+                @if (form.get('descripcion')?.invalid && form.get('descripcion')?.touched) {
+                <div id="descripcion-error" class="mt-1 text-xs text-red-500">
+                    @if (form.get('descripcion')?.errors?.['required']) {
+                    <div>La descripción es requerida.</div>
+                    }
+                    @if (form.get('descripcion')?.errors?.['minlength']) {
+                    <div>La descripción debe tener al menos 10 caracteres.</div>
+                    }
+                    @if (form.get('descripcion')?.errors?.['maxlength']) {
+                    <div>La descripción excede el máximo de 1000 caracteres.</div>
+                    }
+                </div>
+                }
+            </div>
 
-                            @if (form.get('titulo')?.invalid && form.get('titulo')?.touched) {
-                            <div id="titulo-error" class="mt-1 text-xs text-red-500">
-                                @if (form.get('titulo')?.errors?.['required']) {
-                                <div>El título es requerido.</div>
-                                }
-                                @if (form.get('titulo')?.errors?.['minlength']) {
-                                <div>El título debe tener al menos 5 caracteres.</div>
-                                }
-                                @if (form.get('titulo')?.errors?.['maxlength']) {
-                                <div>El título excede el máximo de 100 caracteres.</div>
-                                }
+            <div>
+                <label for="categoria" class="block text-sm font-semibold text-slate-700 mb-2">Categoría</label>
+                <select id="categoria" formControlName="categoria" aria-describedby="categoria-error"
+                    class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition-colors">
+                    <option [ngValue]="null" disabled>Seleccione una categoría</option>
+                    @for (cat of listadoCategorias; track cat) {
+                    <option [ngValue]="cat">{{ cat.replace('_', ' ') }}</option>
+                    }
+                </select>
+
+                @if (form.get('categoria')?.invalid && form.get('categoria')?.touched) {
+                <p id="categoria-error" class="mt-1 text-xs text-red-500">Seleccione una categoría válida.
+                </p>
+                }
+            </div>
+
+            <div>
+                <label class="flex items-center text-sm font-semibold text-slate-700 mb-2 gap-2">
+                    <i class="fas fa-map-marker-alt text-blue-600"></i>
+                    Ubicación del incidente
+                </label>
+
+                <div class="map-container relative w-full h-[350px] rounded-lg overflow-hidden border border-gray-200 shadow-inner"
+                    #mapContainer></div>
+
+                <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                    <i class="fas fa-info-circle"></i> Haz clic en el mapa para fijar el marcador.
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Evidencia fotográfica
+                    (Opcional)</label>
+                <div class="flex items-center space-x-4 p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+
+                    <div
+                        class="w-24 h-24 bg-white border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden shrink-0">
+                        @if (imagePreview()) {
+                        <img [src]="imagePreview()" alt="Preview" class="w-full h-full object-cover" />
+                        } @else {
+                        <i class="fas fa-image text-gray-300 text-3xl"></i>
+                        }
+                    </div>
+
+                    <div class="flex-1">
+                        <input #fileInput type="file" accept="image/*" class="hidden"
+                            (change)="onFileSelected($event)" />
+                        <div class="flex items-center gap-3">
+                            <app-submit-button (click)="fileInput.click()" [variant]="'medium'"
+                                [appearance]="'secondary'" [btnType]="'button'" label="Seleccionar imagen"
+                                icon="fa-camera"></app-submit-button>
+
+                            @if (selectedFile()) {
+                            <div class="ml-2 flex items-center gap-3">
+                                <div class="text-sm text-gray-700 truncate max-w-[260px]">{{
+                                    selectedFile()?.name }}</div>
+                                <div class="text-xs text-gray-400">{{ (selectedFile()?.size || 0) / 1024 |
+                                    number:'1.0-0' }} KB</div>
+                                <app-submit-button (click)="removeSelectedImage()" [variant]="'small'"
+                                    [appearance]="'secondary'" [btnType]="'button'" label="Eliminar"
+                                    icon="fa-trash"></app-submit-button>
                             </div>
                             }
+
                         </div>
 
-                        <div>
-                            <label for="descripcion"
-                                class="block text-sm font-semibold text-slate-700 mb-2">Descripción</label>
-                            <textarea id="descripcion" formControlName="descripcion" rows="6"
-                                aria-describedby="descripcion-help descripcion-error" maxlength="1000"
-                                class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 resize-none transition-colors"
-                                placeholder="Describe detalladamente lo que está ocurriendo..."></textarea>
-
-                            <div class="mt-1 text-xs text-gray-500 flex items-center justify-between">
-                                <div id="descripcion-help">Requerido. 10–1000 caracteres.</div>
-                                <div class="text-gray-400">{{ (form.get('descripcion')?.value?.length || 0) }}/1000
-                                </div>
-                            </div>
-
-                            @if (form.get('descripcion')?.invalid && form.get('descripcion')?.touched) {
-                            <div id="descripcion-error" class="mt-1 text-xs text-red-500">
-                                @if (form.get('descripcion')?.errors?.['required']) {
-                                <div>La descripción es requerida.</div>
-                                }
-                                @if (form.get('descripcion')?.errors?.['minlength']) {
-                                <div>La descripción debe tener al menos 10 caracteres.</div>
-                                }
-                                @if (form.get('descripcion')?.errors?.['maxlength']) {
-                                <div>La descripción excede el máximo de 1000 caracteres.</div>
-                                }
-                            </div>
-                            }
-                        </div>
-
-                        <div>
-                            <label for="categoria"
-                                class="block text-sm font-semibold text-slate-700 mb-2">Categoría</label>
-                            <select id="categoria" formControlName="categoria" aria-describedby="categoria-error"
-                                class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 py-3 px-4 transition-colors">
-                                <option [ngValue]="null" disabled>Seleccione una categoría</option>
-                                @for (cat of listadoCategorias; track cat) {
-                                <option [ngValue]="cat">{{ cat.replace('_', ' ') }}</option>
-                                }
-                            </select>
-
-                            @if (form.get('categoria')?.invalid && form.get('categoria')?.touched) {
-                            <p id="categoria-error" class="mt-1 text-xs text-red-500">Seleccione una categoría válida.
-                            </p>
-                            }
-                        </div>
-
-                        <div>
-                            <label class="flex items-center text-sm font-semibold text-slate-700 mb-2 gap-2">
-                                <i class="fas fa-map-marker-alt text-blue-600"></i>
-                                Ubicación del incidente
-                            </label>
-
-                            <div class="map-container relative w-full h-[350px] rounded-lg overflow-hidden border border-gray-200 shadow-inner"
-                                #mapContainer></div>
-
-                            <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
-                                <i class="fas fa-info-circle"></i> Haz clic en el mapa para fijar el marcador.
-                            </p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Evidencia fotográfica
-                                (Opcional)</label>
-                            <div
-                                class="flex items-center space-x-4 p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50">
-
-                                <div
-                                    class="w-24 h-24 bg-white border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden shrink-0">
-                                    @if (imagePreview()) {
-                                    <img [src]="imagePreview()" alt="Preview" class="w-full h-full object-cover" />
-                                    } @else {
-                                    <i class="fas fa-image text-gray-300 text-3xl"></i>
-                                    }
-                                </div>
-
-                                <div class="flex-1">
-                                    <input #fileInput type="file" accept="image/*" class="hidden"
-                                        (change)="onFileSelected($event)" />
-                                    <div class="flex items-center gap-3">
-                                        <app-submit-button (click)="fileInput.click()" [variant]="'medium'"
-                                            [appearance]="'secondary'" [btnType]="'button'" label="Seleccionar imagen"
-                                            icon="fa-camera"></app-submit-button>
-
-                                        @if (selectedFile()) {
-                                        <div class="ml-2 flex items-center gap-3">
-                                            <div class="text-sm text-gray-700 truncate max-w-[260px]">{{
-                                                selectedFile()?.name }}</div>
-                                            <div class="text-xs text-gray-400">{{ (selectedFile()?.size || 0) / 1024 |
-                                                number:'1.0-0' }} KB</div>
-                                            <app-submit-button (click)="removeSelectedImage()" [variant]="'small'"
-                                                [appearance]="'secondary'" [btnType]="'button'" label="Eliminar"
-                                                icon="fa-trash"></app-submit-button>
-                                        </div>
-                                        }
-
-                                    </div>
-
-                                    <p class="mt-1 text-xs text-gray-500">PNG, JPG hasta {{ maxFileSizeMB }}MB</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
-                            <app-submit-button [variant]="'medium'" [appearance]="'secondary'" [btnType]="'button'"
-                                label="Cancelar">
-                            </app-submit-button>
-                            <app-submit-button [variant]="'medium'" [isLoading]="isLoading()" [btnType]="'submit'"
-                                [isDisabled]="form.invalid" label="Enviar denuncia" icon="fa-paper-plane">
-                            </app-submit-button>
-                        </div>
-
-                    </form>
+                        <p class="mt-1 text-xs text-gray-500">PNG, JPG hasta {{ maxFileSizeMB }}MB</p>
+                    </div>
                 </div>
             </div>
-        </main>
+
+            <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                <app-submit-button [variant]="'medium'" [appearance]="'secondary'" [btnType]="'button'"
+                    label="Cancelar">
+                </app-submit-button>
+                <app-submit-button [variant]="'medium'" [isLoading]="isLoading()" [btnType]="'submit'"
+                    [isDisabled]="form.invalid" label="Enviar denuncia" icon="fa-paper-plane">
+                </app-submit-button>
+            </div>
+
+        </form>
     </div>
 </div>

@@ -1,5 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, output, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
@@ -8,29 +7,27 @@ import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/c
     selector: 'app-denuncias-table',
     standalone: true,
     // imports: [CommonModule, FormsModule, MapViewerComponent, SubmitButtonComponent],
-    imports: [CommonModule, FormsModule, SubmitButtonComponent],
+    imports: [FormsModule, SubmitButtonComponent],
     templateUrl: './denuncias-table.component.html',
 })
 export class DenunciasTableComponent {
-    private _denuncias: Denuncia[] = [];
-    @Input() set denuncias(v: Denuncia[]) {
-        this._denuncias = v || [];
-        try {
-            console.debug('[DenunciasTable] Input denuncias set, length=', this._denuncias.length, this._denuncias.slice(0, 3));
-        } catch (err) {
-            console.debug('[DenunciasTable] Error logging denuncias input', err);
-        }
-    }
-    get denuncias(): Denuncia[] { return this._denuncias; }
-    @Input() showCreateButton = true;
-    @Output() onCreate = new EventEmitter<void>();
+    denuncias = input.required<Denuncia[]>();
 
+    // Input con valor por defecto
+    showCreateButton = input(true);
+
+    // 2. OUTPUTS MODERNOS
+    onCreate = output<void>();
+
+    // 3. ESTADO INTERNO
     searchText = signal('');
     expandedId = signal<number | null>(null);
 
+    // 4. LÓGICA COMPUTADA (Ahora sí funciona)
+    // Se recalcula automágicamente si cambia 'searchText' O SI CAMBIA 'denuncias'
     filteredDenuncias = computed(() => {
         const term = this.searchText().toLowerCase();
-        const list = this.denuncias || [];
+        const list = this.denuncias(); // Accedemos al valor de la signal
 
         if (!term) return list;
 
@@ -40,8 +37,9 @@ export class DenunciasTableComponent {
         );
     });
 
+    // 5. MÉTODOS DE UI
     toggleDetail(id?: number) {
-        if (id == null) return; // evita undefined/null
+        if (id == null) return;
         this.expandedId.update(curr => curr === id ? null : id);
     }
 
@@ -59,10 +57,6 @@ export class DenunciasTableComponent {
         if (!estado) return `${base} bg-gray-100 text-gray-800`;
 
         return `${base} ${colors[estado] || 'bg-gray-100 text-gray-800'}`;
-    }
-
-    shouldShowCreateButton(): boolean {
-        return !!this.showCreateButton;
     }
 
     // Helpers to access possibly-undeclared properties returned by the API

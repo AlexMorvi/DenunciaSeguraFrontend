@@ -3,8 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
-import { HeaderComponent } from '@/shared/ui/header/header.component';
-import { SidebarComponent } from '@/shared/ui/sidebar/sidebar.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 
 // Modelos y Constantes
@@ -46,7 +44,7 @@ const ICON_RED_CONFIG = L.icon({
 @Component({
     selector: 'app-crear-denuncia',
     standalone: true,
-    imports: [ReactiveFormsModule, CommonModule, HeaderComponent, SidebarComponent, SubmitButtonComponent],
+    imports: [ReactiveFormsModule, CommonModule, SubmitButtonComponent],
     templateUrl: './crear-denuncia.page.html',
     styleUrls: ['./crear-denuncia.page.scss']
 })

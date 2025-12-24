@@ -1,15 +1,12 @@
-
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '@/shared/ui/header/header.component';
-import { SidebarComponent } from '@/shared/ui/sidebar/sidebar.component';
 import { NotificationsListComponent } from '@/features/notification/ui/notifications-list/notifications-list.component';
 import { NotificacionFacade } from '@/data/services/notificacion.facade';
 
 @Component({
     selector: 'app-notifications-history',
     standalone: true,
-    imports: [CommonModule, HeaderComponent, SidebarComponent, NotificationsListComponent],
+    imports: [CommonModule, NotificationsListComponent],
     templateUrl: 'notifications.page.html',
 })
 

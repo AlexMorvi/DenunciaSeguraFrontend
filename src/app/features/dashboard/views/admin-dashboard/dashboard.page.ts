@@ -6,21 +6,19 @@ import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { DenunciasTableComponent } from '@/features/dashboard/ui/denuncias-table/denuncias-table.component';
 
 @Component({
-    selector: 'app-ciudadano-dashboard',
+    selector: 'app-admin-dashboard',
     standalone: true,
     imports: [CommonModule, FormsModule, DenunciasTableComponent],
-    templateUrl: './dashboard.page.html'
+    templateUrl: './dashboard.page.html',
 })
 
-export class CiudadanoDashboardPage {
+export class AdminDashboardPage {
     public denunciaService = inject(DenunciaFacade);
     private router = inject(Router);
 
     goToCreate(): void {
-        this.router.navigate(['/ciudadano', 'create']);
+        this.router.navigate(['/admin', 'create']);
     }
 
     protected denuncias = this.denunciaService.denuncias;
-
-    // Data is loaded by the route resolver (`DenunciasResolver`) before activation.
 }
