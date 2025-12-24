@@ -8,7 +8,9 @@
 
     <nav class="flex flex-col gap-4 items-center w-full">
 
-        <a routerLink="/ciudadano/notifications"
+        <!-- <a [routerLink]="notificationsLink()" -->
+        <!-- TODO: utilizar notificationsLink() cuando la autenticación esté lista -->
+        <a [routerLink]="['/ciudadano', 'notifications']"
             routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-200 ring-2 ring-blue-50 scale-105"
             #rlaNotif="routerLinkActive" [class.bg-gray-50]="!rlaNotif.isActive"
             [class.text-gray-400]="!rlaNotif.isActive" [class.hover:bg-blue-50]="!rlaNotif.isActive"
@@ -27,7 +29,7 @@
             }
         </a>
 
-        <a routerLink="/ciudadano/dashboard"
+        <a [routerLink]="dashboardLink()"
             routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-200 ring-2 ring-blue-50 scale-105"
             #rlaMain="routerLinkActive" [class.bg-gray-50]="!rlaMain.isActive" [class.text-gray-400]="!rlaMain.isActive"
             [class.hover:bg-blue-50]="!rlaMain.isActive" [class.hover:text-blue-600]="!rlaMain.isActive"

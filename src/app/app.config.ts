@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, provideAppInitializer, inject, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
@@ -10,6 +10,7 @@ import { ApiModule as NotificacionesApi } from './core/api/notificaciones/api.mo
 import { environment } from '@/../environments/environment';
 import { authInterceptor } from '@/core/http/auth.interceptor';
 import { mockStorageInterceptor } from '@/core/http/mock-storage.interceptor';
+import { AuthFacade } from '@/data/services/auth.facade';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -24,6 +25,11 @@ export const appConfig: ApplicationConfig = {
             DenunciasApi.forRoot({ rootUrl: environment.apiDenunciasUrl! }),
             EvidenciasApi.forRoot({ rootUrl: environment.apiEvidenciasUrl! }),
             NotificacionesApi.forRoot({ rootUrl: environment.apiNotificacionesUrl! })
-        )
+
+        ),
+        provideAppInitializer(() => {
+            const authFacade = inject(AuthFacade);
+            return authFacade.loadUser();
+        })
     ],
 };
