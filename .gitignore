@@ -61,3 +61,5 @@ desktop.ini
 # Local dev / mocks
 /mocks/
 /mock/
+
+/.github
