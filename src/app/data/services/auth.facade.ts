@@ -21,7 +21,6 @@ export class AuthFacade {
             case 'CIUDADANO':
                 return '/ciudadano';
             default:
-                console.warn(`Rol no manejado explícitamente: ${user.rol}`);
                 return '/auth';
         }
     });
@@ -36,7 +35,6 @@ export class AuthFacade {
             const user = await this.accountService.getMe();
             this.currentUser.set(user || null);
         } catch (err) {
-            console.error('Error cargando usuario', err);
             this.currentUser.set(null);
         } finally {
             this.loading.set(false);

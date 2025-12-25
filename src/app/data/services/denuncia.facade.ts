@@ -34,23 +34,17 @@ export class DenunciaFacade {
     // Refrescar la lista de denuncias desde la API
     async refresh(): Promise<void> {
         this._loading.set(true);
-        console.debug('[DenunciaFacade] refresh() start');
         try {
             const data = await firstValueFrom(
                 from(this.api.denunciasMeGet()).pipe(
                     catchError(() => of([] as DenunciaCitizenViewResponse[]))
                 )
             );
-            console.debug('[DenunciaFacade] refresh() api returned, items:', Array.isArray(data) ? data.length : 'unknown');
             this._denuncias.set(data || []);
-            console.debug('[DenunciaFacade] refresh() set signal, current length:', this._denuncias().length);
         } catch (err) {
-            // Log para depuración en caso de errores en la carga inicial
-            console.error('[DenunciaFacade] Error cargando denuncias:', err);
             this._denuncias.set([]);
         } finally {
             this._loading.set(false);
-            console.debug('[DenunciaFacade] refresh() end');
         }
     }
 

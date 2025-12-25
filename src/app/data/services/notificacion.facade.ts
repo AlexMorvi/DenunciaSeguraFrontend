@@ -46,7 +46,6 @@ export class NotificacionFacade {
         try {
             await this.api.marcarLeida({ id });
         } catch (error) {
-            console.error('Error al marcar como leída', error);
             this.loadNotificaciones();
         }
     }
