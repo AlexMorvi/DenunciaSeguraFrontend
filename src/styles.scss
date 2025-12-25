@@ -1,4 +1,8 @@
 @import 'leaflet/dist/leaflet.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "@fortawesome/fontawesome-free/css/all.css";
 
 /* Estilos globales para la aplicación */
 * {
