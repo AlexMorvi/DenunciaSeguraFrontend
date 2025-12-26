@@ -1,0 +1,43 @@
+<div class="p-6 max-w-4xl mx-auto space-y-8 animate-fadeIn">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+        <h2 class="text-xl font-semibold mb-6 flex items-center gap-2 text-slate-800">
+            <span class="w-1 h-6 bg-primary-600 rounded-full"></span>
+            Registrar Nuevo Funcionario
+        </h2>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+
+            <!-- Row 1: Nombre y Email -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <app-input id="nombre" formControlName="nombre" [control]="getControl('nombre')"
+                    [label]="'Nombre Completo (Privado)'" placeholder="Ej: Juan Pérez"
+                    [errors]="{ required: 'El nombre es obligatorio', minlength: 'Mínimo 3 caracteres' }"></app-input>
+
+                <app-input id="email" type="email" formControlName="email" [control]="getControl('email')"
+                    [label]="'Correo Electrónico'" placeholder="funcionario@institucion.gob.ec"
+                    [errors]="{ required: 'El correo es obligatorio', email: 'Correo inválido' }"></app-input>
+            </div>
+
+            <!-- Row 2: Rol y Entidad -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <app-select formControlName="rol" label="Rol del Usuario" id="rol" [options]="roles" />
+
+                <app-select formControlName="entidad" label="Entidad Asignada" id="entidad" [options]="entidades" />
+            </div>
+
+            <!-- Row 3: Alias Público -->
+            <div class="space-y-1">
+                <app-input id="aliasPublico" formControlName="aliasPublico" [control]="getControl('aliasPublico')"
+                    [label]="'Alias Público (Opcional)'" placeholder="Ej: Agente Zona Norte"></app-input>
+                <p class="text-xs text-slate-500 ml-1">Este nombre será visible para los ciudadanos en el chat y
+                    reportes.</p>
+            </div>
+            <!-- Actions -->
+            <div class="pt-6 flex justify-end">
+                <app-submit-button [isLoading]="loading()" [isDisabled]="form.invalid || loading()"
+                    label="Registrar Funcionario" loadingLabel="Procesando..." icon="fa-user-plus" appearance="primary"
+                    variant="medium"></app-submit-button>
+            </div>
+        </form>
+    </div>
+</div>

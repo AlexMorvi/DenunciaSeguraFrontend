@@ -13,6 +13,11 @@ export const ADMIN_ROUTES: Routes = [
                 loadComponent: () => import('@/features/dashboard/views/admin-dashboard/dashboard.page')
                     .then(m => m.AdminDashboardPage),
                 resolve: { denunciasLoaded: DenunciasResolver }
+            },
+            {
+                path: 'roles',
+                loadComponent: () => import('@/features/roles/staff-manager.page')
+                    .then(m => m.StaffManagerPage)
             }
         ]
     }
