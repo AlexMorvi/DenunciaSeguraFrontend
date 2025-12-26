@@ -1,8 +1,8 @@
-<aside class="sidebar bg-white w-20 flex flex-col items-center py-6 shadow-xl z-20 h-full border-r border-gray-100"
+<aside class="sidebar bg-[#0f172a] w-20 flex flex-col items-center py-6 shadow-xl z-20 h-full border-r border-slate-800"
     aria-label="Barra lateral de navegación">
 
     <div
-        class="mb-10 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-200 cursor-default">
+        class="mb-10 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md shadow-blue-600/50 cursor-default overflow-hidden">
         <span class="text-xs tracking-tighter">UI</span>
     </div>
 
@@ -12,9 +12,9 @@
         <!-- TODO: utilizar notificationsLink() cuando la autenticación esté lista -->
         <a [routerLink]="['/ciudadano', 'notifications']"
             routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-200 ring-2 ring-blue-50 scale-105"
-            #rlaNotif="routerLinkActive" [class.bg-gray-50]="!rlaNotif.isActive"
-            [class.text-gray-400]="!rlaNotif.isActive" [class.hover:bg-blue-50]="!rlaNotif.isActive"
-            [class.hover:text-blue-600]="!rlaNotif.isActive"
+            #rlaNotif="routerLinkActive" [class.bg-slate-800]="!rlaNotif.isActive"
+            [class.text-slate-400]="!rlaNotif.isActive" [class.hover:bg-slate-700]="!rlaNotif.isActive"
+            [class.hover:text-blue-400]="!rlaNotif.isActive"
             class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 ease-out focus:outline-none focus:ring-4 active:scale-95 cursor-pointer"
             aria-label="Ver notificaciones">
 
@@ -31,8 +31,9 @@
 
         <a [routerLink]="dashboardLink()"
             routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-200 ring-2 ring-blue-50 scale-105"
-            #rlaMain="routerLinkActive" [class.bg-gray-50]="!rlaMain.isActive" [class.text-gray-400]="!rlaMain.isActive"
-            [class.hover:bg-blue-50]="!rlaMain.isActive" [class.hover:text-blue-600]="!rlaMain.isActive"
+            #rlaMain="routerLinkActive" [class.bg-slate-800]="!rlaMain.isActive"
+            [class.text-slate-400]="!rlaMain.isActive" [class.hover:bg-slate-700]="!rlaMain.isActive"
+            [class.hover:text-blue-400]="!rlaMain.isActive"
             class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 ease-out focus:outline-none focus:ring-4 active:scale-95 cursor-pointer"
             aria-label="Ir al panel de usuarios">
 
