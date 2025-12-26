@@ -1,28 +1,22 @@
-import { Component, ElementRef, inject, signal, viewChild, afterNextRender, OnDestroy } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
+import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, viewChild } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import * as L from 'leaflet';
+import { CategoriaEnum } from '@/core/api/denuncias/models/categoria-enum';
+import { CATEGORIA_ENUM } from '@/core/api/denuncias/models/categoria-enum-array';
+import { CrearDenunciaRequest } from '@/core/api/denuncias/models/crear-denuncia-request';
+import { NivelAnonimatoEnum } from '@/core/api/denuncias/models/nivel-anonimato-enum';
+import { NIVEL_ANONIMATO_ENUM } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
+import {
+    DenunciaSubmissionError,
+    FileTooLargeError,
+    FormValidationError,
+    GeolocationError,
+    MapInitializationError,
+    UnsupportedFileTypeError
+} from '@/core/errors/create-denuncia.errors';
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
-
-// Modelos y Constantes
-import { CrearDenunciaRequest } from '@/core/api/denuncias/models/crear-denuncia-request';
-import { CategoriaEnum } from '@/core/api/denuncias/models/categoria-enum';
-import { NivelAnonimatoEnum } from '@/core/api/denuncias/models/nivel-anonimato-enum';
-import { CATEGORIA_ENUM } from '@/core/api/denuncias/models/categoria-enum-array';
-import { NIVEL_ANONIMATO_ENUM } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
-
-// Errores de Dominio
-import {
-    FormValidationError,
-    FileTooLargeError,
-    UnsupportedFileTypeError,
-    MapInitializationError,
-    GeolocationError,
-    DenunciaSubmissionError
-} from '@/core/errors/create-denuncia.errors'; // Asumiendo ruta
-
-import * as L from 'leaflet';
 
 // CONSTANTES DE CONFIGURACIÓN (Evitamos Magic Numbers/Strings)
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
@@ -65,7 +59,7 @@ export class CrearDenunciaComponent implements OnDestroy {
     readonly imagePreview = signal<string | null>(null);
     readonly selectedFile = signal<File | null>(null);
     readonly currentCoords = signal<{ lat: number; lng: number } | null>(null);
-    readonly localError = signal<string | null>(null); // Para errores de validación síncronos
+    readonly localError = signal<string | null>(null);
 
     // Listados
     readonly listadoCategorias = CATEGORIA_ENUM;
