@@ -19,6 +19,7 @@ import { CommonModule } from '@angular/common';
 export class InputComponent implements ControlValueAccessor {
     // Inputs configurables
     id = input.required<string>();
+    label = input<string>('');
     type = input<'text' | 'email' | 'password'>('text');
     placeholder = input<string>('');
     icon = input<string>(''); // Clase de FontAwesome (ej: 'fa-envelope')
