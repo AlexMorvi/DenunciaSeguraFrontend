@@ -1,6 +1,6 @@
-import { Component, input, signal, inject, computed, ChangeDetectionStrategy } from '@angular/core';
-import { ControlValueAccessor, NgControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-select',
