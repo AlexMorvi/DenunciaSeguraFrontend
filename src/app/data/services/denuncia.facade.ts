@@ -54,15 +54,21 @@ export class DenunciaFacade {
         // para prevenir llamadas duplicadas al entrar a rutas.
     }
 
-    async crearDenuncia(datos: CrearDenunciaRequest, archivo?: File | null) {
+    async crearDenuncia(datos: CrearDenunciaRequest, archivos: File[] = []) {
         this._loading.set(true);
         this._error.set(null);
 
         try {
-            if (archivo) {
-                const idEvidencia = await this.subirEvidencia(archivo);
+            if (archivos && archivos.length > 0) {
+                const evidenciasIds: EvidenceId[] = [];
+
+                for (const archivo of archivos) {
+                    // Subida secuencial de evidencias para evitar picos de carga y problemas de rate limiting
+                    const evidenciaId = await this.subirEvidencia(archivo);
+                    evidenciasIds.push(evidenciaId);
+                }
                 datos.evidenciaIds = datos.evidenciaIds || [];
-                datos.evidenciaIds.push(idEvidencia);
+                datos.evidenciaIds.push(...evidenciasIds);
             }
             const respuesta = await this.api.crearDenuncia({ body: datos });
             this.router.navigate(['/ciudadano/dashboard']);
@@ -84,6 +90,7 @@ export class DenunciaFacade {
 
             return evidenceId;
         } catch (error) {
+            // TODO: Loguear el error correctamente y por cada archivo, en caso de que uno falle
             throw new EvidenceUploadError('No se pudo subir la evidencia. Por favor, intente nuevamente.');
         }
 

@@ -42,9 +42,32 @@ const ICON_RED_CONFIG = L.icon({
 export class CrearDenunciaComponent implements OnDestroy {
     evidencias = signal<File[]>([]);
 
-    guardarDenuncia() {
-        const files = this.evidencias();
-        // TODO: Enviar la denuncia al back
+    async guardarDenuncia() {
+        this.localError.set(null);
+
+        try {
+            if (this.form.invalid) {
+                this.form.markAllAsTouched();
+                const invalidFields = Object.keys(this.form.controls).filter(key => this.form.get(key)?.invalid);
+                throw new FormValidationError('Por favor, complete todos los campos obligatorios correctamente.', invalidFields);
+            }
+
+            const rawData = this.form.getRawValue();
+
+            const request: CrearDenunciaRequest = {
+                titulo: rawData.titulo!.trim(),
+                descripcion: rawData.descripcion!.trim(),
+                categoria: rawData.categoria!,
+                nivelAnonimato: rawData.nivelAnonimato!,
+                latitud: rawData.latitud!,
+                longitud: rawData.longitud!,
+            };
+
+            await this.facade.crearDenuncia(request, this.evidencias());
+
+        } catch (error) {
+            this.handleSubmissionError(error);
+        }
     }
     private readonly fb = inject(FormBuilder);
     private readonly facade = inject(DenunciaFacade);
@@ -240,37 +263,6 @@ export class CrearDenunciaComponent implements OnDestroy {
     // =================================================================
     // ENVÍO DEL FORMULARIO
     // =================================================================
-
-    async enviarDenuncia(): Promise<void> {
-        this.localError.set(null);
-
-        try {
-            if (this.form.invalid) {
-                this.form.markAllAsTouched();
-                const invalidFields = Object.keys(this.form.controls).filter(key => this.form.get(key)?.invalid);
-                throw new FormValidationError('Por favor, complete todos los campos obligatorios correctamente.', invalidFields);
-            }
-
-            const rawData = this.form.getRawValue();
-
-            const request: CrearDenunciaRequest = {
-                titulo: rawData.titulo!.trim(), // Sanitize: Trim whitespace
-                descripcion: rawData.descripcion!.trim(),
-                categoria: rawData.categoria!,
-                nivelAnonimato: rawData.nivelAnonimato!,
-                latitud: rawData.latitud!,
-                longitud: rawData.longitud!,
-            };
-
-            // 3. Llamar al Facade
-            // El facade ya maneja sus propios errores internos, pero aquí capturamos el rechazo final
-            await this.facade.crearDenuncia(request, this.selectedFile());
-
-        } catch (error) {
-            // Manejo centralizado de errores de UI
-            this.handleSubmissionError(error);
-        }
-    }
 
     private handleSubmissionError(error: unknown): void {
         if (error instanceof FormValidationError) {
