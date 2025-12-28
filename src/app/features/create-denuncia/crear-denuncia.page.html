@@ -92,7 +92,8 @@
             </div>
 
 
-            <app-file-upload (filesChange)="evidencias.set($event)"></app-file-upload>
+            <app-file-upload (filesChange)="evidencias.set($event)"
+                (uploadError)="handleUploadError($event)"></app-file-upload>
 
             <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
                 <app-submit-button [variant]="'medium'" [appearance]="'secondary'" [btnType]="'button'"

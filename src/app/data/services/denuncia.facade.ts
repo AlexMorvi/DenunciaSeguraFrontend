@@ -1,14 +1,11 @@
 import { CrearDenunciaRequest, DenunciaCitizenViewResponse, EvidenceId } from '@/core/api/denuncias/models';
 import { CiudadanoService as DenunciasApiService } from '@/core/api/denuncias/services';
-import { ArchivoPreCargaRequest } from '@/core/api/evidencias/models/archivo-pre-carga-request';
 import { CrearUploadRequest } from '@/core/api/evidencias/models/crear-upload-request';
-import { CrearUploadResponse } from '@/core/api/evidencias/models/crear-upload-response';
 import { UploadsService } from '@/core/api/evidencias/services/uploads.service';
 import { SKIP_AUTH } from '@/core/http/http-context';
 import { EvidenceUploadError } from '@/core/errors/create-denuncia.errors';
 import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, firstValueFrom, from, of } from 'rxjs';
 
 const PROPOSITO_CARGA = 'CIUDADANO_CREACION';
@@ -19,7 +16,6 @@ const PROPOSITO_CARGA = 'CIUDADANO_CREACION';
 export class DenunciaFacade {
     private api = inject(DenunciasApiService);
     private uploadsService = inject(UploadsService);
-    private router = inject(Router);
     private http = inject(HttpClient);
 
     private _loading = signal(false);
@@ -31,7 +27,6 @@ export class DenunciaFacade {
     private _denuncias = signal<DenunciaCitizenViewResponse[]>([]);
     public denuncias = this._denuncias.asReadonly();
 
-    // Refrescar la lista de denuncias desde la API
     async refresh(): Promise<void> {
         this._loading.set(true);
         try {
@@ -63,7 +58,6 @@ export class DenunciaFacade {
                 const evidenciasIds: EvidenceId[] = [];
 
                 for (const archivo of archivos) {
-                    // Subida secuencial de evidencias para evitar picos de carga y problemas de rate limiting
                     const evidenciaId = await this.subirEvidencia(archivo);
                     evidenciasIds.push(evidenciaId);
                 }
@@ -71,11 +65,11 @@ export class DenunciaFacade {
                 datos.evidenciaIds.push(...evidenciasIds);
             }
             const respuesta = await this.api.crearDenuncia({ body: datos });
-            this.router.navigate(['/ciudadano/dashboard']);
-
         } catch (err: any) {
+            // TODO: Mejorar los mensajes
             const mensaje = err?.error?.message || err?.message || 'Ocurrió un error inesperado al procesar su solicitud.';
             this._error.set(mensaje);
+            throw err;
 
         } finally {
             this._loading.set(false);

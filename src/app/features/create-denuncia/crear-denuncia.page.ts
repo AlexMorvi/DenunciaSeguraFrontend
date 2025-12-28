@@ -19,6 +19,7 @@ import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.compone
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { ToastService } from '@/core/service/toast.service';
 import { LoggerService } from '@/core/service/logger.service';
+import { Router } from '@angular/router';
 
 const DEFAULT_COORDS = { lat: -0.1807, lng: -78.4678 }; // Quito
 const DEFAULT_ZOOM = 13;
@@ -44,8 +45,18 @@ const ICON_RED_CONFIG = L.icon({
 export class CrearDenunciaComponent implements OnDestroy {
     private toast = inject(ToastService);
     private logger = inject(LoggerService);
+    private router = inject(Router);
 
     evidencias = signal<File[]>([]);
+
+    handleUploadError(errorMessage: string) {
+        this.toast.showWarning(errorMessage);
+        // TODO: Loguear el error de forma adecuada
+        this.logger.error('Intento de subida fallido en formulario de denuncia', {
+            error: errorMessage,
+            timestamp: new Date().toISOString()
+        });
+    }
 
     async guardarDenuncia() {
         this.localError.set(null);
@@ -70,12 +81,11 @@ export class CrearDenunciaComponent implements OnDestroy {
 
             await this.facade.crearDenuncia(request, this.evidencias());
             this.toast.showSuccess('Denuncia enviada', 'Su denuncia ha sido registrada correctamente.');
-
+            await this.router.navigate(['/ciudadano/dashboard']);
         } catch (error) {
-            // TODO: Mejorar el manejo de errores con clases de errores específicos
-            this.toast.showError('Ocurrió un error al enviar la denuncia. Por favor, intente nuevamente.');
-            // TODO: Loguear el error de forma adecuada
+            // TODO: Loggear correctamente el error (utilizando el logger)
             this.logger.error('Error al crear denuncia', error);
+            this.toast.showError("No pudimos procesar su solicitud. Por favor, intente nuevamente más tarde.");
         }
     }
     private readonly fb = inject(FormBuilder);
@@ -102,7 +112,7 @@ export class CrearDenunciaComponent implements OnDestroy {
         titulo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
         descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
         categoria: [null as CategoriaEnum | null, [Validators.required]],
-        // TODO: Para establecer una categoría por defecto
+        // INFO: Para establecer una categoría por defecto
         // categoria: ['VIALIDAD' as CategoriaEnum, [Validators.required]],
         nivelAnonimato: ['REAL' as NivelAnonimatoEnum, [Validators.required]],
         latitud: [null as number | null, Validators.required],

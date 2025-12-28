@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, input, OnDestroy, output, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, output, signal } from '@angular/core';
+
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE_BYTES } from '@/shared/constants/limit.const';
 
 // --- Clases de Error ---
@@ -25,7 +26,8 @@ export interface FileItem {
     imports: [CommonModule],
     templateUrl: './file-upload.component.html'
 })
-export class FileUploadComponent implements OnDestroy {
+export class FileUploadComponent {
+    private destroyRef = inject(DestroyRef);
     // === CONFIGURACIÓN ===
     maxSizeBytes = input<number>(MAX_FILE_SIZE_BYTES);
     allowedMimeTypes = input<string[]>(ALLOWED_MIME_TYPES);
@@ -33,21 +35,22 @@ export class FileUploadComponent implements OnDestroy {
 
     // === OUTPUTS ===
     filesChange = output<File[]>();
+    uploadError = output<string>();
 
     // === SIGNALS ===
     files = signal<FileItem[]>([]);
     isDragging = signal(false);
     globalError = signal<string | null>(null);
 
+    private uploadIntervals = new Map<string, any>();
+
     maxFileSizeMB = computed(() => Math.round(this.maxSizeBytes() / 1024 / 1024));
 
-    // === CONTROL DE MEMORIA ===
-    private activeIntervals: Set<any> = new Set();
-
-    ngOnDestroy(): void {
-        // Limpieza crítica para evitar Memory Leaks
-        this.activeIntervals.forEach(interval => clearInterval(interval));
-        this.activeIntervals.clear();
+    constructor() {
+        this.destroyRef.onDestroy(() => {
+            this.uploadIntervals.forEach((intervalId) => clearInterval(intervalId));
+            this.uploadIntervals.clear();
+        });
     }
 
     // === EVENTOS DEL DOM ===
@@ -87,7 +90,9 @@ export class FileUploadComponent implements OnDestroy {
         const incomingCount = fileList.length;
 
         if (currentCount + incomingCount > this.maxFilesCount()) {
-            this.globalError.set(`Solo puedes subir un máximo de ${this.maxFilesCount()} archivos.`);
+            const msg = `Solo puedes subir un máximo de ${this.maxFilesCount()} archivos.`;
+            this.globalError.set(msg);
+            this.uploadError.emit(msg);
             return;
         }
 
@@ -104,18 +109,19 @@ export class FileUploadComponent implements OnDestroy {
             try {
                 this.validarArchivo(file);
 
-                // Solo generamos preview si es válido y es imagen
-                // Y NO es un SVG (Vector de ataque XSS común)
                 if (ALLOWED_MIME_TYPES.includes(file.type)) {
                     this.procesarPrevisualizacion(file, itemId);
                 }
 
             } catch (err: any) {
+                // TODO: Mejorar el sistema de logging
                 if (err instanceof FileTooLargeError || err instanceof UnsupportedFileTypeError) {
                     errorMsg = err.message;
                 } else {
-                    errorMsg = 'Error al procesar el archivo.';
+                    errorMsg = "El archivo no pudo ser procesado. Verifique que sea un formato válido e intente nuevamente.";
                 }
+
+                this.uploadError.emit(errorMsg);
             }
 
             newItems.push({
@@ -134,24 +140,19 @@ export class FileUploadComponent implements OnDestroy {
     }
 
     private validarArchivo(file: File): void {
-        // Validación de Tamaño
         if (file.size > this.maxSizeBytes()) {
             throw new FileTooLargeError(`Excede ${this.maxFileSizeMB()}MB.`);
         }
 
-        // Validación de MIME Type contra la lista permitida
         if (!this.allowedMimeTypes().includes(file.type)) {
             throw new UnsupportedFileTypeError(`Formato no soportado.`);
         }
 
-        // Validación Extra: Bloqueo explícito de SVG por seguridad
-        // Los SVG pueden contener scripts incrustados
         if (file.type.includes('svg')) {
             throw new UnsupportedFileTypeError(`Por seguridad, no se admiten archivos SVG.`);
         }
     }
     private procesarPrevisualizacion(file: File, itemId: string): void {
-        // 1. Doble check de seguridad (Tamaño)
         if (file.size > this.maxSizeBytes()) return;
 
         const reader = new FileReader();
@@ -167,7 +168,6 @@ export class FileUploadComponent implements OnDestroy {
                         items.map(item => item.id === itemId ? { ...item, previewUrl: result } : item)
                     );
                 } else {
-                    console.warn(`Posible Mime Type mismatch o archivo corrupto: ${file.name}`);
 
                     this.files.update(items =>
                         items.map(item =>
@@ -175,8 +175,8 @@ export class FileUploadComponent implements OnDestroy {
                                 ? {
                                     ...item,
                                     error: 'El archivo parece estar dañado o no es una imagen válida.',
-                                    previewUrl: null, // Aseguramos que no haya preview
-                                    progress: 0       // Cancelamos visualmente el progreso
+                                    previewUrl: null,
+                                    progress: 0
                                 }
                                 : item
                         )
@@ -189,6 +189,12 @@ export class FileUploadComponent implements OnDestroy {
     }
 
     removeFile(id: string) {
+        const intervalId = this.uploadIntervals.get(id);
+        if (intervalId) {
+            clearInterval(intervalId);
+            this.uploadIntervals.delete(id);
+        }
+
         this.files.update(items => items.filter(i => i.id !== id));
         this.emitValidFiles();
     }
@@ -210,7 +216,7 @@ export class FileUploadComponent implements OnDestroy {
             if (progress >= 100) {
                 progress = 100;
                 clearInterval(interval);
-                this.activeIntervals.delete(interval); // Limpiamos referencia
+                this.uploadIntervals.delete(itemId);
             }
 
             this.files.update(currentFiles =>
@@ -220,8 +226,7 @@ export class FileUploadComponent implements OnDestroy {
             );
         }, 150);
 
-        // Guardamos la referencia para cancelarla en ngOnDestroy
-        this.activeIntervals.add(interval);
+        this.uploadIntervals.set(itemId, interval);
     }
 
     // === UI UTILS ===
