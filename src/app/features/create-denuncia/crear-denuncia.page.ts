@@ -17,6 +17,8 @@ import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { CategorySelectorComponent } from '@/shared/ui/category-selector/category-selector.component';
 import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
+import { ToastService } from '@/core/service/toast.service';
+import { LoggerService } from '@/core/service/logger.service';
 
 const DEFAULT_COORDS = { lat: -0.1807, lng: -78.4678 }; // Quito
 const DEFAULT_ZOOM = 13;
@@ -40,6 +42,9 @@ const ICON_RED_CONFIG = L.icon({
     styleUrls: ['./crear-denuncia.page.scss']
 })
 export class CrearDenunciaComponent implements OnDestroy {
+    private toast = inject(ToastService);
+    private logger = inject(LoggerService);
+
     evidencias = signal<File[]>([]);
 
     async guardarDenuncia() {
@@ -64,9 +69,13 @@ export class CrearDenunciaComponent implements OnDestroy {
             };
 
             await this.facade.crearDenuncia(request, this.evidencias());
+            this.toast.showSuccess('Denuncia enviada', 'Su denuncia ha sido registrada correctamente.');
 
         } catch (error) {
-            this.handleSubmissionError(error);
+            // TODO: Mejorar el manejo de errores con clases de errores específicos
+            this.toast.showError('Ocurrió un error al enviar la denuncia. Por favor, intente nuevamente.');
+            // TODO: Loguear el error de forma adecuada
+            this.logger.error('Error al crear denuncia', error);
         }
     }
     private readonly fb = inject(FormBuilder);
@@ -263,14 +272,4 @@ export class CrearDenunciaComponent implements OnDestroy {
     // =================================================================
     // ENVÍO DEL FORMULARIO
     // =================================================================
-
-    private handleSubmissionError(error: unknown): void {
-        if (error instanceof FormValidationError) {
-            this.localError.set(error.message);
-        } else if (error instanceof DenunciaSubmissionError) {
-            this.localError.set(error.message);
-        } else {
-            this.localError.set('Ocurrió un error inesperado al enviar la denuncia. Intente nuevamente.');
-        }
-    }
 }
