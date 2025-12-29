@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, viewChild } from '@angular/core';
+import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, viewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as L from 'leaflet';
 import { CategoriaEnum } from '@/core/api/denuncias/models/categoria-enum';
@@ -20,6 +20,8 @@ import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.c
 import { ToastService } from '@/core/service/toast.service';
 import { LoggerService } from '@/core/service/logger.service';
 import { Router } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faMapMarkerAlt, faInfoCircle, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 const DEFAULT_COORDS = { lat: -0.1807, lng: -78.4678 }; // Quito
 const DEFAULT_ZOOM = 13;
@@ -38,11 +40,16 @@ const ICON_RED_CONFIG = L.icon({
 @Component({
     selector: 'app-crear-denuncia',
     standalone: true,
-    imports: [ReactiveFormsModule, CommonModule, SubmitButtonComponent, FileUploadComponent, CategorySelectorComponent],
+    imports: [ReactiveFormsModule, CommonModule, SubmitButtonComponent, FileUploadComponent, CategorySelectorComponent, FontAwesomeModule],
     templateUrl: './crear-denuncia.page.html',
-    styleUrls: ['./crear-denuncia.page.scss']
+    styleUrls: ['./crear-denuncia.page.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class CrearDenunciaComponent implements OnDestroy {
+    protected readonly faMapMarkerAlt = faMapMarkerAlt;
+    protected readonly faInfoCircle = faInfoCircle;
+    protected readonly faPaperPlane = faPaperPlane;
+
     private toast = inject(ToastService);
     private logger = inject(LoggerService);
     private router = inject(Router);
