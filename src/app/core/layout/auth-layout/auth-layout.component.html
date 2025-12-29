@@ -1,32 +1,45 @@
 <div class="flex min-h-screen w-full">
 
-    <div class="hidden lg:flex lg:w-1/2 relative bg-blue-900 text-white flex-col justify-center px-12 overflow-hidden">
-        <img ngSrc="/images/background.webp" alt="Vista panorámica de la ciudad moderna representando seguridad" fill
-            priority class="object-cover object-center z-0">
+    <div class="hidden lg:flex lg:w-1/2 relative bg-blue-950 text-white flex-col px-14 py-16 pb-24 overflow-hidden">
 
-        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-0"></div>
+        <img ngSrc="/images/background.webp" alt="Vista panorámica" fill priority
+            class="object-cover object-center opacity-60">
 
-        <div class="relative z-10 max-w-lg">
-            <h1 class="text-4xl font-bold mb-6">Mejora tu ciudad hoy</h1>
-            <p class="text-lg text-blue-100 mb-8">Únete a miles de ciudadanos comprometidos. Reporta baches, fallas de
-                alumbrado y problemas comunitarios.</p>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-0"></div>
 
-            <div class="flex flex-wrap gap-3">
-                <span
-                    class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium">🛡️
-                    Reportes anónimos</span>
-                <span
-                    class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium">⚡
-                    Tiempo real</span>
+        <div class="relative z-10 max-w-lg mt-12">
+            <h1 class="text-5xl font-bold mb-4 tracking-tight text-white">
+                Denuncia <span class="text-blue-400">Segura EC</span>
+            </h1>
+            <p class="text-lg text-slate-300 font-light leading-relaxed">
+                Plataforma ciudadana para reportes seguros y gestión de denuncias municipales.
+            </p>
+        </div>
+
+        <div class="relative z-10 mt-auto">
+            <div class="grid grid-cols-2 gap-x-8 gap-y-8 max-w-md">
+                @for (item of features; track item.label) {
+                <div class="flex items-center gap-4 group">
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center 
+                                group-hover:bg-blue-500/20 group-hover:border-blue-400/30 transition-all duration-300">
+                        <fa-icon [icon]="item.icon" class="text-blue-200 text-lg group-hover:text-blue-100"></fa-icon>
+                    </div>
+
+                    <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
+                        {{ item.label }}
+                    </span>
+                </div>
+                }
             </div>
         </div>
 
-        <div class="absolute bottom-6 left-12 text-xs text-blue-200/50">
-            © 2025 Denuncias Ciudadanas
+        <div appText="caption" class="absolute bottom-6 left-14">
+            © {{ currentYear }} Denuncia Ciudadana EC &bull; Quito - Ecuador
         </div>
+
     </div>
 
-    <div class="lg:w-1/2">
+    <div class="w-full fade-in  lg:w-1/2">
         <router-outlet></router-outlet>
     </div>
 
