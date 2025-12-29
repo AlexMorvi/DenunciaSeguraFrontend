@@ -1,0 +1,33 @@
+<div class="flex min-h-screen w-full">
+
+    <div class="hidden lg:flex lg:w-1/2 relative bg-blue-900 text-white flex-col justify-center px-12 overflow-hidden">
+        <img ngSrc="/images/background.png" alt="Vista panorámica de la ciudad moderna representando seguridad" fill
+            priority class="object-cover object-center z-0">
+
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-0"></div>
+
+        <div class="relative z-10 max-w-lg">
+            <h1 class="text-4xl font-bold mb-6">Mejora tu ciudad hoy</h1>
+            <p class="text-lg text-blue-100 mb-8">Únete a miles de ciudadanos comprometidos. Reporta baches, fallas de
+                alumbrado y problemas comunitarios.</p>
+
+            <div class="flex flex-wrap gap-3">
+                <span
+                    class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium">🛡️
+                    Reportes anónimos</span>
+                <span
+                    class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium">⚡
+                    Tiempo real</span>
+            </div>
+        </div>
+
+        <div class="absolute bottom-6 left-12 text-xs text-blue-200/50">
+            © 2025 Denuncias Ciudadanas
+        </div>
+    </div>
+
+    <div class="lg:w-1/2">
+        <router-outlet></router-outlet>
+    </div>
+
+</div>

@@ -1,0 +1,12 @@
+// Un color de fondo temporal hasta que agregues tu imagen real
+.image-placeholder-bg {
+  background-color: #1e3a8a; // Un azul oscuro de fallback
+  // Cuando tengas la imagen, elimina la línea de arriba y usa en el HTML:
+  // class="... bg-[url('/assets/images/auth-bg.jpg')] ..."
+}
+
+
+// Estilo reutilizable para los items de características
+.feature-badge {
+    @apply flex items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-3 text-sm font-medium text-white transition-all hover:bg-white/20;
+}
