@@ -5,11 +5,12 @@ import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faKey, faCheckCircle, faExclamationCircle, faEnvelope, faInfoCircle, faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
 
 @Component({
     selector: 'app-forgot-password',
     standalone: true,
-    imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent, FontAwesomeModule],
+    imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent, FontAwesomeModule, UiStyleDirective],
     templateUrl: './forgot-password.page.html',
     styleUrls: ['./forgot-password.page.scss'],
 })

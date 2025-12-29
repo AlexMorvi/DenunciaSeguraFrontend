@@ -1,36 +1,50 @@
-<div class="max-w-md w-full ">
-    <div class="flex items-center justify-center mb-6">
-        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xl">
-            <fa-icon [icon]="faUserPlus"></fa-icon>
+<div class="w-full max-w-md p-2">
+
+    <div class="flex flex-col items-center justify-center mb-6">
+        <div
+            class="w-12 h-12 bg-blue-600 rounded-xl shadow-lg shadow-blue-600/20 flex items-center justify-center text-white text-xl mb-6">
+            <fa-icon [icon]="faUserPlus" aria-hidden="true"></fa-icon>
         </div>
+
+        <h1 appText="h1">Crear una cuenta</h1>
+        <p appText="body">Registra una nueva cuenta de usuario</p>
     </div>
 
-    <h2 class="text-center text-2xl font-bold text-gray-800 mb-2">Crear una cuenta</h2>
-    <p class="text-center text-sm text-gray-500 mb-6">Registra una nueva cuenta de usuario</p>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5">
+        <div>
+            <label appText="label" for="reg-name">Nombre completo</label>
+            <app-input id="reg-name" formControlName="nombre" type="text" autocomplete="name"
+                placeholder="Ej. Juan Pérez" [icon]="faUser" [control]="nombreControl"
+                [errors]="{ required: 'El nombre es obligatorio.', minlength: 'Mínimo 2 caracteres.' }" />
+        </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
-        <app-input id="reg-name" formControlName="nombre" type="text" autocomplete="name" placeholder="Nombre completo"
-            [icon]="faUser" [control]="nombreControl"
-            [errors]="{ required: 'El nombre es obligatorio.', minlength: 'Mínimo 2 caracteres.' }" />
+        <div>
+            <label appText="label" for="reg-email">Correo electrónico</label>
+            <app-input id="reg-email" formControlName="email" type="email" autocomplete="email" inputmode="email"
+                placeholder="ejemplo@correo.com" [icon]="faEnvelope" [control]="emailControl"
+                [errors]="{ required: 'El correo es obligatorio.', email: 'Formato de correo inválido.' }" />
+        </div>
 
-        <app-input id="reg-email" formControlName="email" type="email" autocomplete="email" inputmode="email"
-            placeholder="Correo electrónico" [icon]="faEnvelope" [control]="emailControl"
-            [errors]="{ required: 'El correo es obligatorio.', email: 'Formato de correo inválido.' }" />
-
-        <app-input id="reg-password" formControlName="password" type="password" autocomplete="new-password"
-            placeholder="Contraseña" [icon]="faLock" [control]="passwordControl"
-            [errors]="{ required: 'La contraseña es obligatoria.', minlength: 'Mínimo 8 caracteres.' }" />
+        <div>
+            <label appText="label" for="reg-password">Contraseña</label>
+            <app-input id="reg-password" formControlName="password" type="password" autocomplete="new-password"
+                placeholder="••••••••••••••" [icon]="faLock" [control]="passwordControl"
+                [errors]="{ required: 'La contraseña es obligatoria.', minlength: 'Mínimo 8 caracteres.' }" />
+        </div>
 
         @if (message(); as msg) {
-        <div class="p-4 rounded-lg border text-sm flex items-center" [class.bg-green-50]="messageClass() === 'success'"
-            [class.border-green-200]="messageClass() === 'success'"
-            [class.text-green-800]="messageClass() === 'success'" [class.bg-red-50]="messageClass() === 'error'"
-            [class.border-red-200]="messageClass() === 'error'" [class.text-red-800]="messageClass() === 'error'">
+        <div role="alert" class="p-4 rounded-lg border text-sm flex items-start animate-fade-in" [ngClass]="{
+                'bg-green-50 border-green-200 text-green-800': messageClass() === 'success',
+                'bg-red-50 border-red-200 text-red-800': messageClass() === 'error',
+                'bg-blue-50 border-blue-200 text-blue-800': messageClass() === 'info'
+             }">
 
-            @if (messageClass() === 'success') { <fa-icon [icon]="faCheckCircle" class="mr-3"></fa-icon> }
-            @if (messageClass() === 'error') { <fa-icon [icon]="faExclamationCircle" class="mr-3"></fa-icon> }
-            @if (messageClass() === 'info') { <fa-icon [icon]="faInfoCircle" class="mr-3"></fa-icon> }
-            {{ msg }}
+            <fa-icon [icon]="
+                messageClass() === 'success' ? faCheckCircle : 
+                messageClass() === 'error' ? faExclamationCircle : faInfoCircle
+            " class="mt-0.5 mr-3 flex-shrink-0" aria-hidden="true"></fa-icon>
+
+            <span>{{ msg }}</span>
         </div>
         }
 
@@ -38,14 +52,16 @@
             label="Crear cuenta" loadingLabel="Creando cuenta..." [icon]="faUserPlus">
         </app-submit-button>
 
-        <div class="text-center text-sm text-gray-600 pt-2">
-            ¿Ya tienes cuenta?
-            <a routerLink="/"
-                class="text-blue-600 font-medium hover:text-blue-800 hover:underline cursor-pointer transition-colors">
+
+        <div class="text-center">
+            <span appText="body-link">¿Ya tienes cuenta?</span>
+            <a routerLink="/auth/login" appText="link">
                 Iniciar sesión
             </a>
         </div>
     </form>
 
-    <p class="text-center text-xs text-gray-400 mt-6">Team List Dashboard — Administración</p>
+    <p class="mt-7" appText="caption">
+        Team List Dashboard — Administración
+    </p>
 </div>

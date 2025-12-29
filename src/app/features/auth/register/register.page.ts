@@ -10,11 +10,13 @@ import { InputComponent } from '@/shared/ui/input/input.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IconDefinition, faUserPlus, faUser, faEnvelope, faLock, faCheckCircle, faExclamationCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { NgClass } from '@angular/common';
+import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent, FontAwesomeModule],
+    imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent, FontAwesomeModule, NgClass, UiStyleDirective],
     templateUrl: './register.page.html',
     styleUrls: ['./register.page.scss']
 })
