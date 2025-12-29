@@ -18,6 +18,7 @@ export interface FileItem {
     previewUrl: string | null;
     error: string | null;
     progress: number;
+    completed?: boolean;
 }
 
 @Component({
@@ -217,6 +218,14 @@ export class FileUploadComponent {
                 progress = 100;
                 clearInterval(interval);
                 this.uploadIntervals.delete(itemId);
+                this.files.update(currentFiles =>
+                    currentFiles.map(fileItem =>
+                        fileItem.id === itemId
+                            ? { ...fileItem, progress: 100, completed: true }
+                            : fileItem
+                    )
+                );
+                return;
             }
 
             this.files.update(currentFiles =>
