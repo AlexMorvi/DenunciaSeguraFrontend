@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideAppInitializer, inject, importProvidersFrom } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { ApiModule as AuditoriaApi } from './core/api/auditoria/api.module';
@@ -14,7 +14,10 @@ import { AuthFacade } from '@/data/services/auth.facade';
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideRouter(routes),
+        provideRouter(
+            routes,
+            withViewTransitions()
+        ),
         provideHttpClient(
             withFetch(),
             withInterceptors([mockStorageInterceptor, authInterceptor])
