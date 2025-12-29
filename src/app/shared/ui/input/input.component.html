@@ -1,5 +1,6 @@
 <div class="relative">
-    <fa-icon [icon]="icon() ?? faDefault" class="absolute left-3 top-3 text-gray-400"></fa-icon>
+    <fa-icon [icon]="icon() ?? faDefault"
+        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></fa-icon>
     <input [id]="id()" [type]="inputType" [placeholder]="placeholder()" [autocomplete]="autocomplete()"
         [attr.inputmode]="inputmode() || null" [attr.maxlength]="maxlength()" [attr.autofocus]="autofocus() || null"
         [value]="value()" [disabled]="disabled()" (input)="onInput($event)" (blur)="onBlur()"
@@ -9,7 +10,7 @@
 
     @if (isPassword) {
     <button type="button" (click)="togglePasswordVisibility()"
-        class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
         [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'" tabindex="-1">
         <fa-icon [icon]="showPassword() ? faEyeSlash : faEye" class="text-base"></fa-icon>
     </button>
