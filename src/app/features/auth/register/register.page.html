@@ -2,7 +2,7 @@
     <div class="bg-white rounded-lg shadow-md p-8">
         <div class="flex items-center justify-center mb-6">
             <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xl">
-                <i class="fas fa-user-plus"></i>
+                <fa-icon [icon]="faUserPlus"></fa-icon>
             </div>
         </div>
 
@@ -11,15 +11,15 @@
 
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
             <app-input id="reg-name" formControlName="nombre" type="text" autocomplete="name"
-                placeholder="Nombre completo" icon="fa-user" [control]="nombreControl"
+                placeholder="Nombre completo" [icon]="faUser" [control]="nombreControl"
                 [errors]="{ required: 'El nombre es obligatorio.', minlength: 'Mínimo 2 caracteres.' }" />
 
             <app-input id="reg-email" formControlName="email" type="email" autocomplete="email" inputmode="email"
-                placeholder="Correo electrónico" icon="fa-envelope" [control]="emailControl"
+                placeholder="Correo electrónico" [icon]="faEnvelope" [control]="emailControl"
                 [errors]="{ required: 'El correo es obligatorio.', email: 'Formato de correo inválido.' }" />
 
             <app-input id="reg-password" formControlName="password" type="password" autocomplete="new-password"
-                placeholder="Contraseña" icon="fa-lock" [control]="passwordControl"
+                placeholder="Contraseña" [icon]="faLock" [control]="passwordControl"
                 [errors]="{ required: 'La contraseña es obligatoria.', minlength: 'Mínimo 8 caracteres.' }" />
 
             @if (message(); as msg) {
@@ -29,15 +29,15 @@
                 [class.text-green-800]="messageClass() === 'success'" [class.bg-red-50]="messageClass() === 'error'"
                 [class.border-red-200]="messageClass() === 'error'" [class.text-red-800]="messageClass() === 'error'">
 
-                <i class="fas mr-3" [class.fa-check-circle]="messageClass() === 'success'"
-                    [class.fa-exclamation-circle]="messageClass() === 'error'"
-                    [class.fa-info-circle]="messageClass() === 'info'"></i>
+                @if (messageClass() === 'success') { <fa-icon [icon]="faCheckCircle" class="mr-3"></fa-icon> }
+                @if (messageClass() === 'error') { <fa-icon [icon]="faExclamationCircle" class="mr-3"></fa-icon> }
+                @if (messageClass() === 'info') { <fa-icon [icon]="faInfoCircle" class="mr-3"></fa-icon> }
                 {{ msg }}
             </div>
             }
 
             <app-submit-button [variant]="'full'" [isLoading]="submitting()" [isDisabled]="!isFormValid"
-                label="Crear cuenta" loadingLabel="Creando cuenta..." icon="fa-user-plus">
+                label="Crear cuenta" loadingLabel="Creando cuenta..." [icon]="faUserPlus">
             </app-submit-button>
 
             <div class="text-center text-sm text-gray-600 pt-2">

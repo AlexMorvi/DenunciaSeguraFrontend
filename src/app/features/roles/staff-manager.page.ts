@@ -10,15 +10,19 @@ import { SelectComponent } from '@/shared/ui/select/select.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { ToastService } from '@/core/service/toast.service';
 import { LoggerService } from '@/core/service/logger.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-staff-manager',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, InputComponent, SelectComponent, SubmitButtonComponent],
+    imports: [CommonModule, ReactiveFormsModule, InputComponent, SelectComponent, SubmitButtonComponent, FontAwesomeModule],
     templateUrl: './staff-manager.page.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StaffManagerPage {
+    protected readonly faUserPlus = faUserPlus;
+
     private fb = inject(FormBuilder);
     private authFacade = inject(AuthFacade);
     private toast = inject(ToastService);

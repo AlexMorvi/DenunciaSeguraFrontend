@@ -2,15 +2,27 @@ import { Component, input, output, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faSearch, faPlus, faChevronDown, faChevronUp, faMapMarkerAlt, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-denuncias-table',
     standalone: true,
     // imports: [CommonModule, FormsModule, MapViewerComponent, SubmitButtonComponent],
-    imports: [FormsModule, SubmitButtonComponent],
+    imports: [FormsModule, SubmitButtonComponent, FontAwesomeModule],
     templateUrl: './denuncias-table.component.html',
 })
 export class DenunciasTableComponent {
+    protected readonly faSearch = faSearch;
+    protected readonly faPlus = faPlus;
+    protected readonly faChevronDown = faChevronDown;
+    protected readonly faChevronUp = faChevronUp;
+    protected readonly faMapMarkerAlt = faMapMarkerAlt;
+    protected readonly faCalendarAlt = faCalendarAlt;
+    protected readonly faInfoCircle = faInfoCircle;
+    protected readonly faImage = faImage;
+    protected readonly faFileAlt = faFileAlt;
+
     denuncias = input.required<Denuncia[]>();
 
     // Input con valor por defecto

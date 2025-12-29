@@ -1,11 +1,14 @@
 import { Component, input, signal, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-input',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule],
     templateUrl: './input.component.html',
     styleUrls: ['./input.component.scss'],
     providers: [
@@ -22,13 +25,13 @@ export class InputComponent implements ControlValueAccessor {
     label = input<string>('');
     type = input<'text' | 'email' | 'password'>('text');
     placeholder = input<string>('');
-    icon = input<string>(''); // Clase de FontAwesome (ej: 'fa-envelope')
+    icon = input<IconDefinition | null>(null);
     autocomplete = input<string>('off');
     inputmode = input<string>('');
     maxlength = input<number>(254);
     autofocus = input<boolean>(false);
-    control = input<FormControl | null>(null); // Para mostrar errores
-    errors = input<Record<string, string>>({}); // Mapa de errores personalizados
+    control = input<FormControl | null>(null);
+    errors = input<Record<string, string>>({});
 
     // Estado interno
     showPassword = signal(false);
@@ -38,6 +41,11 @@ export class InputComponent implements ControlValueAccessor {
     // Callbacks de ControlValueAccessor
     private onChange: (value: string) => void = () => { };
     private onTouched: () => void = () => { };
+
+    // Icons for password toggle
+    protected readonly faEye = faEye;
+    protected readonly faEyeSlash = faEyeSlash;
+    protected readonly faDefault: IconDefinition = faCircle;
 
     // ControlValueAccessor implementation
     writeValue(value: string): void {

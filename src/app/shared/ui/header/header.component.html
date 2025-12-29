@@ -8,18 +8,18 @@
     <div class="flex items-center gap-3">
         <button class="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 invisible"
             aria-hidden="true">
-            <i class="fas fa-bell"></i>
+            <fa-icon [icon]="faBell"></fa-icon>
         </button>
         <button class="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 invisible"
             aria-hidden="true">
-            <i class="fas fa-envelope"></i>
+            <fa-icon [icon]="faEnvelope"></fa-icon>
         </button>
 
         <div class="h-8 w-px bg-slate-700 mx-1"></div> <button (click)="onLogout()"
             class="group flex items-center justify-center w-10 h-10 rounded-full border border-transparent hover:bg-red-900/30 hover:border-red-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
             title="Cerrar Sesión">
-            <i
-                class="fas fa-sign-out-alt text-slate-400 group-hover:text-red-400 transition-colors text-lg transform group-hover:translate-x-0.5"></i>
+            <fa-icon [icon]="faSignOutAlt"
+                class="text-slate-400 group-hover:text-red-400 transition-colors text-lg transform group-hover:translate-x-0.5"></fa-icon>
         </button>
     </div>
 </header>

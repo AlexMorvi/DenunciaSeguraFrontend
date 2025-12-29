@@ -35,7 +35,7 @@
             <!-- Actions -->
             <div class="pt-6 flex justify-end">
                 <app-submit-button [isLoading]="loading()" [isDisabled]="form.invalid || loading()"
-                    label="Registrar Funcionario" loadingLabel="Procesando..." icon="fa-user-plus" appearance="primary"
+                    label="Registrar Funcionario" loadingLabel="Procesando..." [icon]="faUserPlus" appearance="primary"
                     variant="medium"></app-submit-button>
             </div>
         </form>

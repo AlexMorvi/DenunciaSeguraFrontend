@@ -2,11 +2,12 @@
     [class.opacity-50]="isDisabled || isLoading" [class.cursor-not-allowed]="isDisabled || isLoading"
     [class.hover:bg-blue-700]="!isDisabled && !isLoading">
     @if (isLoading) {
-    <i [class]="spinnerClass"></i>
+    <fa-icon [icon]="faSpinner" class="mr-2 fa-spin"
+        [ngClass]="{'text-xs': variant === 'small', 'text-sm': variant === 'medium'}"></fa-icon>
     <span>{{ loadingLabel }}</span>
     } @else {
     @if (variant !== 'small') {
-    <i [class]="iconClass"></i>
+    <fa-icon [icon]="icon ?? faDefault" class="mr-2" [ngClass]="{'text-sm': variant === 'medium'}"></fa-icon>
     }
     <span>{{ label }}</span>
     }

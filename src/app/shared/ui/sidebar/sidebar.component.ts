@@ -4,15 +4,20 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { NotificacionFacade } from '@/data/services/notificacion.facade';
 import { APP_ROLES } from '@/shared/constants/roles.const';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faBell, faUsers } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-sidebar',
     standalone: true,
-    imports: [CommonModule, RouterLink, RouterLinkActive],
+    imports: [CommonModule, RouterLink, RouterLinkActive, FontAwesomeModule],
     templateUrl: './sidebar.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
+    protected readonly faBell = faBell;
+    protected readonly faUsers = faUsers;
+
     private authFacade = inject(AuthFacade);
     private notificationFacade = inject(NotificacionFacade);
 

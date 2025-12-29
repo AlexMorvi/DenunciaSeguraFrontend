@@ -2,19 +2,20 @@ import { CommonModule } from '@angular/common';
 import { Component, forwardRef, signal } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import type { CategoriaEnum } from '@/core/api/denuncias/models/categoria-enum';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { IconDefinition, faRoad, faLightbulb, faTrashAlt, faShieldAlt, faTint, faSeedling, faEllipsisH, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
-// Definimos una interfaz para tipar nuestros datos
 interface CategoryOption {
-    value: CategoriaEnum; // <--- Aquí está la magia de la seguridad
+    value: CategoriaEnum;
     label: string;
-    icon: string;
+    icon: IconDefinition;
     colorClass: string;
 }
 
 @Component({
     selector: 'app-category-selector',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, FontAwesomeModule],
     templateUrl: './category-selector.component.html',
     providers: [
         {
@@ -31,14 +32,16 @@ export class CategorySelectorComponent implements ControlValueAccessor {
     private onTouched: () => void = () => { };
 
     readonly categories: CategoryOption[] = [
-        { value: 'VIALIDAD', label: 'Bacheo / Vialidad', icon: 'fa-road', colorClass: 'text-primary' },
-        { value: 'ILUMINACION', label: 'Alumbrado', icon: 'fa-lightbulb', colorClass: 'text-yellow-500' },
-        { value: 'SANIDAD', label: 'Basura / Limpieza', icon: 'fa-trash-alt', colorClass: 'text-green-500' },
-        { value: 'SEGURIDAD', label: 'Seguridad', icon: 'fa-shield-alt', colorClass: 'text-red-500' },
-        { value: 'AGUA', label: 'Agua', icon: 'fa-tint', colorClass: 'text-blue-500' },
-        { value: 'JARDINERIA', label: 'Jardinería', icon: 'fa-seedling', colorClass: 'text-emerald-500' },
-        { value: 'OTROS', label: 'Otro', icon: 'fa-ellipsis-h', colorClass: 'text-purple-500' }
+        { value: 'VIALIDAD', label: 'Bacheo / Vialidad', icon: faRoad, colorClass: 'text-primary' },
+        { value: 'ILUMINACION', label: 'Alumbrado', icon: faLightbulb, colorClass: 'text-yellow-500' },
+        { value: 'SANIDAD', label: 'Basura / Limpieza', icon: faTrashAlt, colorClass: 'text-green-500' },
+        { value: 'SEGURIDAD', label: 'Seguridad', icon: faShieldAlt, colorClass: 'text-red-500' },
+        { value: 'AGUA', label: 'Agua', icon: faTint, colorClass: 'text-blue-500' },
+        { value: 'JARDINERIA', label: 'Jardinería', icon: faSeedling, colorClass: 'text-emerald-500' },
+        { value: 'OTROS', label: 'Otro', icon: faEllipsisH, colorClass: 'text-purple-500' }
     ];
+
+    protected readonly faCheckCircle = faCheckCircle;
 
     writeValue(obj: CategoriaEnum | null): void {
         this.selectedCategory.set(obj);

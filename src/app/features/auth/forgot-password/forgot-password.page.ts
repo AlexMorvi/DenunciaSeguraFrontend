@@ -3,15 +3,25 @@ import { InputComponent } from '@/shared/ui/input/input.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faKey, faCheckCircle, faExclamationCircle, faEnvelope, faInfoCircle, faPaperPlane, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-forgot-password',
     standalone: true,
-    imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent],
+    imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent, FontAwesomeModule],
     templateUrl: './forgot-password.page.html',
     styleUrls: ['./forgot-password.page.scss'],
 })
 export class ForgotPasswordComponent {
+    protected readonly faKey = faKey;
+    protected readonly faCheckCircle = faCheckCircle;
+    protected readonly faExclamationCircle = faExclamationCircle;
+    protected readonly faEnvelope = faEnvelope;
+    protected readonly faInfoCircle = faInfoCircle;
+    protected readonly faPaperPlane = faPaperPlane;
+    protected readonly faArrowLeft = faArrowLeft;
+
     private readonly fb = inject(FormBuilder);
     private readonly router = inject(Router);
 

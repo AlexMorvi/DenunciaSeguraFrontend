@@ -1,12 +1,15 @@
 import { Component, input, computed, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCheckDouble, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { NotificacionResponse } from '@/core/api/notificaciones/models/notificacion-response';
 import { NotificationItemComponent } from '@/shared/ui/notification-item/notifiaction-item.component';
 
 @Component({
     selector: 'app-notifications-list',
     standalone: true,
-    imports: [CommonModule, NotificationItemComponent],
+    imports: [CommonModule, NotificationItemComponent, FontAwesomeModule],
     templateUrl: './notifications-list.component.html',
     styles: [`
     :host { display: block; }
@@ -25,6 +28,10 @@ export class NotificationsListComponent {
 
     // Signal computada para contar las no leídas
     unreadCount = computed(() => this.notifications().filter(n => !n.leida).length);
+
+    // Icons
+    protected readonly faCheckDouble: IconDefinition = faCheckDouble;
+    protected readonly faCircleCheck: IconDefinition = faCircleCheck;
 
     /**
      * Acción para marcar todas como leídas.

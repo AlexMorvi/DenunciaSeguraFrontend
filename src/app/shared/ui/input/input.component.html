@@ -1,12 +1,9 @@
 <div class="relative">
-    @if (icon()) {
-    <i class="fas {{ icon() }} absolute left-3 top-3 text-gray-400"></i>
-    }
-
+    <fa-icon [icon]="icon() ?? faDefault" class="absolute left-3 top-3 text-gray-400"></fa-icon>
     <input [id]="id()" [type]="inputType" [placeholder]="placeholder()" [autocomplete]="autocomplete()"
         [attr.inputmode]="inputmode() || null" [attr.maxlength]="maxlength()" [attr.autofocus]="autofocus() || null"
         [value]="value()" [disabled]="disabled()" (input)="onInput($event)" (blur)="onBlur()"
-        [class]="icon() ? 'pl-10' : 'pl-4'"
+        [class]="(icon() ?? faDefault) ? 'pl-10' : 'pl-4'"
         class="pr-4 py-2 border rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
         [class.pr-10]="isPassword" [class.border-red-500]="hasError" [class.border-gray-300]="!hasError" />
 
@@ -14,7 +11,7 @@
     <button type="button" (click)="togglePasswordVisibility()"
         class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 focus:outline-none"
         [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'" tabindex="-1">
-        <i class="fas" [class]="showPassword() ? 'fa-eye-slash' : 'fa-eye'"></i>
+        <fa-icon [icon]="showPassword() ? faEyeSlash : faEye" class="text-base"></fa-icon>
     </button>
     }
 

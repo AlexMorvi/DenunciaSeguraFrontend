@@ -4,15 +4,22 @@ import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, Validati
 import { ActivatedRoute } from '@angular/router';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faLock, faExclamationCircle, faCheck, faShieldAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-change-password',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, InputComponent, SubmitButtonComponent],
+    imports: [CommonModule, ReactiveFormsModule, InputComponent, SubmitButtonComponent, FontAwesomeModule],
     templateUrl: './change-password.page.html',
     styleUrls: ['./change-password.page.scss']
 })
 export class ChangePasswordComponent implements OnInit {
+    protected readonly faLock = faLock;
+    protected readonly faExclamationCircle = faExclamationCircle;
+    protected readonly faCheck = faCheck;
+    protected readonly faShieldAlt = faShieldAlt;
+
     private fb = inject(FormBuilder);
     private route = inject(ActivatedRoute);
 

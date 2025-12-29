@@ -79,7 +79,7 @@
 
             <div>
                 <label class="flex items-center text-sm font-semibold text-slate-700 mb-2 gap-2">
-                    <i class="fas fa-map-marker-alt text-blue-600"></i>
+                    <fa-icon [icon]="faMapMarkerAlt" class="text-blue-600"></fa-icon>
                     Ubicación del incidente
                 </label>
 
@@ -87,7 +87,7 @@
                     #mapContainer></div>
 
                 <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
-                    <i class="fas fa-info-circle"></i> Haz clic en el mapa para fijar el marcador.
+                    <fa-icon [icon]="faInfoCircle"></fa-icon> Haz clic en el mapa para fijar el marcador.
                 </p>
             </div>
 
@@ -100,7 +100,7 @@
                     label="Cancelar">
                 </app-submit-button>
                 <app-submit-button [variant]="'medium'" [isLoading]="isLoading()" [btnType]="'submit'"
-                    [isDisabled]="form.invalid" label="Enviar denuncia" icon="fa-paper-plane">
+                    [isDisabled]="form.invalid" label="Enviar denuncia" [icon]="faPaperPlane">
                 </app-submit-button>
             </div>
 

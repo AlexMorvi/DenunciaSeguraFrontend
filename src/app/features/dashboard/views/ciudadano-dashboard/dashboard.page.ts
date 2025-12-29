@@ -9,7 +9,8 @@ import { DenunciasTableComponent } from '@/features/dashboard/ui/denuncias-table
     selector: 'app-ciudadano-dashboard',
     standalone: true,
     imports: [CommonModule, FormsModule, DenunciasTableComponent],
-    templateUrl: './dashboard.page.html'
+    templateUrl: './dashboard.page.html',
+    styleUrls: ['./dashboard.page.scss']
 })
 
 export class CiudadanoDashboardPage {

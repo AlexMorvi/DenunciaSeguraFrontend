@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, DestroyRef, inject, input, output, signal } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPaperclip, faCloudUploadAlt, faCheckCircle, faXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE_BYTES } from '@/shared/constants/limit.const';
 
@@ -24,7 +26,7 @@ export interface FileItem {
 @Component({
     selector: 'app-file-upload',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, FontAwesomeModule],
     templateUrl: './file-upload.component.html'
 })
 export class FileUploadComponent {
@@ -46,6 +48,13 @@ export class FileUploadComponent {
     private uploadIntervals = new Map<string, any>();
 
     maxFileSizeMB = computed(() => Math.round(this.maxSizeBytes() / 1024 / 1024));
+
+    // Icons
+    protected readonly faPaperclip = faPaperclip;
+    protected readonly faCloudUploadAlt = faCloudUploadAlt;
+    protected readonly faCheckCircle = faCheckCircle;
+    protected readonly faXmark = faXmark;
+    protected readonly faInfoCircle = faInfoCircle;
 
     constructor() {
         this.destroyRef.onDestroy(() => {

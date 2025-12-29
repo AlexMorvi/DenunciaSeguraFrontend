@@ -1,10 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { IconDefinition, faSpinner, faCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-submit-button',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, FontAwesomeModule],
     templateUrl: './submit-button.componente.html',
     styles: [`
         :host {
@@ -13,11 +15,14 @@ import { CommonModule } from '@angular/common';
     `]
 })
 export class SubmitButtonComponent {
+    protected readonly faSpinner = faSpinner;
+    protected readonly faDefault: IconDefinition = faCircle;
+
     @Input() isLoading: boolean = false;
     @Input() isDisabled: boolean = false;
     @Input({ required: true }) label: string = '';
     @Input() loadingLabel: string = 'Cargando...';
-    @Input() icon: string = '';
+    @Input() icon: IconDefinition | null = null;
     @Input() variant: 'full' | 'medium' | 'small' = 'full';
     @Input() appearance: 'primary' | 'secondary' = 'primary';
     @Input() btnType: 'submit' | 'button' | 'reset' = 'submit';
@@ -52,16 +57,4 @@ export class SubmitButtonComponent {
         return '';
     }
 
-    get iconClass(): string {
-        if (this.variant === 'small' || !this.icon) return '';
-        const size = this.variant === 'medium' ? 'text-sm' : '';
-        return `fas ${this.icon} mr-2 ${size}`.trim();
-    }
-
-    get spinnerClass(): string {
-        const base = 'fas fa-spinner fa-spin mr-2';
-        if (this.variant === 'small') return `${base} text-xs`;
-        if (this.variant === 'medium') return `${base} text-sm`;
-        return base;
-    }
 }
