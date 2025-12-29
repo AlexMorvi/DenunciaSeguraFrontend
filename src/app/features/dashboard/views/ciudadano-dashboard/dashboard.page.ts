@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { DenunciasTableComponent } from '@/features/dashboard/ui/denuncias-table/denuncias-table.component';
+import { SkeletonLoaderComponent } from '@/shared/components/skeleton-loader/skeleton-loader';
 
 @Component({
     selector: 'app-ciudadano-dashboard',
     standalone: true,
-    imports: [CommonModule, FormsModule, DenunciasTableComponent],
+    imports: [CommonModule, FormsModule, DenunciasTableComponent, SkeletonLoaderComponent],
     templateUrl: './dashboard.page.html',
     styleUrls: ['./dashboard.page.scss']
 })
