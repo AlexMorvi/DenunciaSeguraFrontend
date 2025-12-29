@@ -6,7 +6,7 @@
         "start": "ng serve",
         "build": "ng build",
         "watch": "ng build --watch --configuration development",
-        "prod": "ng build && npx angular-http-server --path dist/frontend/browser",
+        "prod": "ng build && npx angular-http-server --path dist/frontend/browser -c86400",
         "test": "ng test",
         "api:gen:auditoria": "ng-openapi-gen -cng-openapi-gen.json -i node_modules/@jotavalla/denunciasegura-openapi/auditoria-api.yaml -o src/app/core/api/auditoria",
         "api:gen:auth": "ng-openapi-gen -c ng-openapi-gen.json -i node_modules/@jotavalla/denunciasegura-openapi/auth.api.yaml -o src/app/core/api/auth",
