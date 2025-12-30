@@ -1,5 +1,6 @@
 @import 'leaflet/dist/leaflet.css';
 
+:host { display: block; height: 100%; }
 /* Fix para conflicto entre Leaflet y Tailwind GLOBAL */
 /* Fix para conflicto entre Leaflet y Tailwind GLOBAL */
 .leaflet-container img.leaflet-image-layer,
