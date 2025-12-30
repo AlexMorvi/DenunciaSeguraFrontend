@@ -16,6 +16,7 @@ import {
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { CategorySelectorComponent } from '@/shared/ui/category-selector/category-selector.component';
 import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.component';
+import { SelectComponent } from '@/shared/ui/select/select.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { ToastService } from '@/core/service/toast.service';
 import { LoggerService } from '@/core/service/logger.service';
@@ -40,7 +41,7 @@ const ICON_RED_CONFIG = L.icon({
 @Component({
     selector: 'app-crear-denuncia',
     standalone: true,
-    imports: [ReactiveFormsModule, CommonModule, SubmitButtonComponent, FileUploadComponent, CategorySelectorComponent, FontAwesomeModule],
+    imports: [ReactiveFormsModule, CommonModule, SubmitButtonComponent, FileUploadComponent, CategorySelectorComponent, SelectComponent, FontAwesomeModule],
     templateUrl: './crear-denuncia.page.html',
     styleUrls: ['./crear-denuncia.page.scss'],
     encapsulation: ViewEncapsulation.None
