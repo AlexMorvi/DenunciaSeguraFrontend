@@ -57,6 +57,26 @@ export class CrearDenunciaComponent implements OnDestroy {
 
     evidencias = signal<File[]>([]);
 
+    private readonly fb = inject(FormBuilder);
+    private readonly facade = inject(DenunciaFacade);
+
+    private readonly mapContainer = viewChild.required<ElementRef>('mapContainer');
+    private readonly scrollArea = viewChild.required<ElementRef>('scrollArea');
+
+    readonly isLoading = this.facade.loading;
+    readonly errorMessage = this.facade.error;
+
+    readonly imagePreview = signal<string | null>(null);
+    readonly selectedFile = signal<File | null>(null);
+    readonly currentCoords = signal<{ lat: number; lng: number } | null>(null);
+    readonly localError = signal<string | null>(null);
+
+    readonly listadoCategorias = CATEGORIA_ENUM;
+    readonly listadoAnonimato = NIVEL_ANONIMATO_ENUM;
+
+    private map: L.Map | undefined;
+    private marker: L.Marker | undefined;
+
     handleUploadError(errorMessage: string) {
         this.toast.showWarning(errorMessage);
         // TODO: Loguear el error de forma adecuada
@@ -96,25 +116,6 @@ export class CrearDenunciaComponent implements OnDestroy {
             this.toast.showError("No pudimos procesar su solicitud. Por favor, intente nuevamente más tarde.");
         }
     }
-    private readonly fb = inject(FormBuilder);
-    private readonly facade = inject(DenunciaFacade);
-
-    private readonly mapContainer = viewChild.required<ElementRef>('mapContainer');
-    private readonly scrollArea = viewChild.required<ElementRef>('scrollArea');
-
-    readonly isLoading = this.facade.loading;
-    readonly errorMessage = this.facade.error;
-
-    readonly imagePreview = signal<string | null>(null);
-    readonly selectedFile = signal<File | null>(null);
-    readonly currentCoords = signal<{ lat: number; lng: number } | null>(null);
-    readonly localError = signal<string | null>(null);
-
-    readonly listadoCategorias = CATEGORIA_ENUM;
-    readonly listadoAnonimato = NIVEL_ANONIMATO_ENUM;
-
-    private map: L.Map | undefined;
-    private marker: L.Marker | undefined;
 
     readonly form = this.fb.group({
         titulo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
