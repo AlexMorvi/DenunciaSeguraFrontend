@@ -12,8 +12,7 @@ export const CITIZEN_ROUTES: Routes = [
             {
                 path: 'dashboard',
                 loadComponent: () => import('@/features/dashboard/views/ciudadano-dashboard/dashboard.page')
-                    .then(m => m.CiudadanoDashboardPage),
-                resolve: { denunciasLoaded: DenunciasResolver }
+                    .then(m => m.CiudadanoDashboardPage)
             },
             {
                 path: 'create',

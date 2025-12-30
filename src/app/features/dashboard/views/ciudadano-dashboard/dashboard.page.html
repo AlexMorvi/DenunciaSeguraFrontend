@@ -1,2 +1,17 @@
-<app-denuncias-table [denuncias]="denuncias()" [showCreateButton]="true"
-    (onCreate)="goToCreate()"></app-denuncias-table>
+<div class="h-[calc(100%-4rem)] overflow-y-auto px-6 py-4">
+    @if (isLoading()) {
+    <div class="animate-pulse w-full">
+
+
+        <div class="space-y-3 mt-7">
+            @for (item of [1, 2, 3]; track $index) {
+            <app-skeleton-loader customClass="h-[60px] w-[90%] rounded-lg block" />
+            }
+        </div>
+
+    </div>
+    } @else {
+    <app-denuncias-table [denuncias]="denuncias()" [showCreateButton]="true" (onCreate)="goToCreate()">
+    </app-denuncias-table>
+    }
+</div>

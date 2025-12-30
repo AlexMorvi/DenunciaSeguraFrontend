@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,15 +14,17 @@ import { SkeletonLoaderComponent } from '@/shared/components/skeleton-loader/ske
     styleUrls: ['./dashboard.page.scss']
 })
 
-export class CiudadanoDashboardPage {
+export class CiudadanoDashboardPage implements OnInit {
     public denunciaService = inject(DenunciaFacade);
     private router = inject(Router);
+    public isLoading = this.denunciaService.loading;
+    protected denuncias = this.denunciaService.denuncias;
+
+    ngOnInit(): void {
+        this.denunciaService.refresh();
+    }
 
     goToCreate(): void {
         this.router.navigate(['/ciudadano', 'create']);
     }
-
-    protected denuncias = this.denunciaService.denuncias;
-
-    // Data is loaded by the route resolver (`DenunciasResolver`) before activation.
 }

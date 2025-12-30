@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideAppInitializer, inject, importProvidersFrom } from '@angular/core';
-import { provideRouter, withViewTransitions } from '@angular/router';
+import { provideRouter, withViewTransitions, PreloadAllModules, withPreloading } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { ApiModule as AuditoriaApi } from './core/api/auditoria/api.module';
@@ -16,7 +16,8 @@ export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(
             routes,
-            withViewTransitions()
+            withViewTransitions(),
+            withPreloading(PreloadAllModules)
         ),
         provideHttpClient(
             withFetch(),
