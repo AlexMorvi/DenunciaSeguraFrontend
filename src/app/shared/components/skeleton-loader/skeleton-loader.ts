@@ -1,12 +1,14 @@
+import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
     selector: 'app-skeleton-loader',
-    imports: [],
+    standalone: true,
+    imports: [NgClass],
     templateUrl: './skeleton-loader.html',
     styleUrl: './skeleton-loader.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkeletonLoaderComponent {
-    readonly type = input<'text' | 'title' | 'card' | 'circle'>('text');
+    customClass = input<string>('');
 }
