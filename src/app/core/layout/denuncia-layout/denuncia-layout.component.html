@@ -1,0 +1,11 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-80px)] p-4 md:p-6 bg-slate-50">
+
+    <div class="lg:col-span-2 h-full overflow-y-auto pr-2 custom-scrollbar">
+        <ng-content select="[slot=details]"></ng-content>
+    </div>
+
+    <div class="lg:col-span-1 h-full overflow-y-auto pl-2 custom-scrollbar">
+        <ng-content select="[slot=actions]"></ng-content>
+    </div>
+
+</div>
