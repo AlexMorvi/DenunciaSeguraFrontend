@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { DenunciasResolver } from './denuncias.resolver';
 import { MainLayoutComponent } from '@/core/layout/main-layout.component';
 
 export const CITIZEN_ROUTES: Routes = [
@@ -16,7 +15,7 @@ export const CITIZEN_ROUTES: Routes = [
             },
             {
                 path: 'create',
-                loadComponent: () => import('@/features/create-denuncia/crear-denuncia.page')
+                loadComponent: () => import('@/features/create-denuncia/ciudadano-create-denuncia/crear-denuncia.page')
                     .then(m => m.CrearDenunciaComponent)
             },
             {
