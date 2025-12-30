@@ -120,9 +120,9 @@ export class CrearDenunciaComponent implements OnDestroy {
     readonly form = this.fb.group({
         titulo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
         descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
-        categoria: [null as CategoriaEnum | null, [Validators.required]],
         // INFO: Para establecer una categoría por defecto
         // categoria: ['VIALIDAD' as CategoriaEnum, [Validators.required]],
+        categoria: [null as CategoriaEnum | null, [Validators.required]],
         nivelAnonimato: ['REAL' as NivelAnonimatoEnum, [Validators.required]],
         latitud: [null as number | null, Validators.required],
         longitud: [null as number | null, Validators.required],
