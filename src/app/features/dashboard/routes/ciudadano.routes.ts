@@ -15,7 +15,7 @@ export const CITIZEN_ROUTES: Routes = [
             },
             {
                 path: 'create',
-                loadComponent: () => import('@/features/create-denuncia/ciudadano-create-denuncia/crear-denuncia.page')
+                loadComponent: () => import('@/features/create-denuncia/crear-denuncia.page')
                     .then(m => m.CrearDenunciaComponent)
             },
             {
