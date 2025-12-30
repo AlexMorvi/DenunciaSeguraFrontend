@@ -1,4 +1,4 @@
-import { CrearDenunciaRequest, DenunciaCitizenViewResponse, EvidenceId } from '@/core/api/denuncias/models';
+import { CrearDenunciaRequest, DenunciaCitizenViewResponse, DenunciaStaffViewResponse, EvidenceId } from '@/core/api/denuncias/models';
 import { CiudadanoService as DenunciasApiService } from '@/core/api/denuncias/services';
 import { CrearUploadRequest } from '@/core/api/evidencias/models/crear-upload-request';
 import { UploadsService } from '@/core/api/evidencias/services/uploads.service';
@@ -14,7 +14,7 @@ const PROPOSITO_CARGA = 'CIUDADANO_CREACION';
     providedIn: 'root'
 })
 export class DenunciaFacade {
-    private api = inject(DenunciasApiService);
+    private denunciaService = inject(DenunciasApiService);
     private uploadsService = inject(UploadsService);
     private http = inject(HttpClient);
 
@@ -31,7 +31,7 @@ export class DenunciaFacade {
         this._loading.set(true);
         try {
             const data = await firstValueFrom(
-                from(this.api.denunciasMeGet()).pipe(
+                from(this.denunciaService.denunciasMeGet()).pipe(
                     catchError(() => of([] as DenunciaCitizenViewResponse[]))
                 )
             );
@@ -64,7 +64,7 @@ export class DenunciaFacade {
                 datos.evidenciaIds = datos.evidenciaIds || [];
                 datos.evidenciaIds.push(...evidenciasIds);
             }
-            const respuesta = await this.api.crearDenuncia({ body: datos });
+            const respuesta = await this.denunciaService.crearDenuncia({ body: datos });
         } catch (err: any) {
             // TODO: Mejorar los mensajes
             const mensaje = err?.error?.message || err?.message || 'Ocurrió un error inesperado al procesar su solicitud.';
@@ -130,5 +130,13 @@ export class DenunciaFacade {
             uploadId,
             body: { evidenceIds: [evidenceId] }
         });
+    }
+
+    async getById(denunciaId: number): Promise<DenunciaStaffViewResponse> {
+        // await this.denunciasService.uploadsUploadIdConfirmarPost({
+        //     uploadId,
+        //     body: { evidenceIds: [evidenceId] }
+        // });
+        return null as any;
     }
 }
