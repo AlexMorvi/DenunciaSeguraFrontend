@@ -21,7 +21,7 @@ import { ToastService } from '@/core/service/toast.service';
 import { LoggerService } from '@/core/service/logger.service';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMapMarkerAlt, faInfoCircle, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const DEFAULT_COORDS = { lat: -0.1807, lng: -78.4678 }; // Quito
 const DEFAULT_ZOOM = 13;
@@ -49,6 +49,7 @@ export class CrearDenunciaComponent implements OnDestroy {
     protected readonly faMapMarkerAlt = faMapMarkerAlt;
     protected readonly faInfoCircle = faInfoCircle;
     protected readonly faPaperPlane = faPaperPlane;
+    protected readonly faTimes = faTimes;
 
     private toast = inject(ToastService);
     private logger = inject(LoggerService);
