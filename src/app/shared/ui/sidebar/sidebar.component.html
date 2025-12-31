@@ -8,6 +8,20 @@
 
     <nav class="flex flex-col gap-4 items-center w-full">
 
+
+        <a [routerLink]="dashboardLink()"
+            routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-200 ring-2 ring-blue-50 scale-105"
+            #rlaMain="routerLinkActive" [class.bg-slate-800]="!rlaMain.isActive"
+            [class.text-slate-400]="!rlaMain.isActive" [class.hover:bg-slate-700]="!rlaMain.isActive"
+            [class.hover:text-blue-400]="!rlaMain.isActive"
+            class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 ease-out focus:outline-none focus:ring-4 active:scale-95 cursor-pointer"
+            aria-label="Ir al panel de usuarios">
+
+            <fa-icon [icon]="faUsers" class="text-sm transition-transform duration-300"
+                [class.group-hover:-translate-y-0.5]="!rlaMain.isActive"></fa-icon>
+        </a>
+
+
         <!-- <a [routerLink]="notificationsLink()" -->
         <!-- TODO: utilizar notificationsLink() cuando la autenticación esté lista -->
         <a [routerLink]="['/ciudadano', 'notifications']"
@@ -28,19 +42,6 @@
             </span>
             }
         </a>
-
-        <a [routerLink]="dashboardLink()"
-            routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-200 ring-2 ring-blue-50 scale-105"
-            #rlaMain="routerLinkActive" [class.bg-slate-800]="!rlaMain.isActive"
-            [class.text-slate-400]="!rlaMain.isActive" [class.hover:bg-slate-700]="!rlaMain.isActive"
-            [class.hover:text-blue-400]="!rlaMain.isActive"
-            class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 ease-out focus:outline-none focus:ring-4 active:scale-95 cursor-pointer"
-            aria-label="Ir al panel de usuarios">
-
-            <fa-icon [icon]="faUsers" class="text-sm transition-transform duration-300"
-                [class.group-hover:-translate-y-0.5]="!rlaMain.isActive"></fa-icon>
-        </a>
-
     </nav>
 
     <div class="mt-auto pb-4">

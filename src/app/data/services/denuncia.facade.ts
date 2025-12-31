@@ -1,5 +1,5 @@
 import { CrearDenunciaRequest, DenunciaCitizenViewResponse, DenunciaStaffViewResponse, EvidenceId } from '@/core/api/denuncias/models';
-import { CiudadanoService as DenunciasApiService } from '@/core/api/denuncias/services';
+import { CiudadanoService as DenunciasApiService, GestionInternaService } from '@/core/api/denuncias/services';
 import { CrearUploadRequest } from '@/core/api/evidencias/models/crear-upload-request';
 import { UploadsService } from '@/core/api/evidencias/services/uploads.service';
 import { SKIP_AUTH } from '@/core/http/http-context';
@@ -15,6 +15,7 @@ const PROPOSITO_CARGA = 'CIUDADANO_CREACION';
 })
 export class DenunciaFacade {
     private denunciaService = inject(DenunciasApiService);
+    private gestionInternaService = inject(GestionInternaService);
     private uploadsService = inject(UploadsService);
     private http = inject(HttpClient);
 
@@ -38,6 +39,22 @@ export class DenunciaFacade {
             this._denuncias.set(data || []);
         } catch (err) {
             this._denuncias.set([]);
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async asignarDenuncia(id: number, operadorId: number): Promise<void> {
+        this._loading.set(true);
+        this._error.set(null);
+        try {
+            await this.gestionInternaService.denunciasIdAsignacionPost({
+                id,
+                body: { operadorId }
+            });
+        } catch (err) {
+            this._error.set('Error al asignar la denuncia.');
+            throw err;
         } finally {
             this._loading.set(false);
         }
@@ -139,4 +156,5 @@ export class DenunciaFacade {
         // });
         return null as any;
     }
+
 }

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { DenunciasResolver } from './denuncias.resolver';
-import { MainLayoutComponent } from '@/core/layout/main-layout.component';
+import { MainLayoutComponent } from '@/core/layout/main-layout/main-layout.component';
 
 export const ADMIN_ROUTES: Routes = [
     {

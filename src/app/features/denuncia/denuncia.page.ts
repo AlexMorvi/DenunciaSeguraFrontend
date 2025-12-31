@@ -3,18 +3,32 @@ import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models/denuncia-
 import { DenunciaLayoutComponent } from '@/core/layout/denuncia-layout/denuncia-layout.component';
 import { DenunciaDetailsComponent } from '@/shared/ui/denuncia-details/denuncia-details.component';
 import { ActionsSupervisorComponent } from '@/shared/ui/actions-panel/action-supervisor/actions-supervisor.component';
+import { ActionsJefeComponent } from '@/shared/ui/actions-panel/action-jefe/actions-jefe.component';
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
+import { AuthFacade } from '@/data/services/auth.facade';
 
 @Component({
     selector: 'app-denuncia-page',
     standalone: true,
-    imports: [DenunciaLayoutComponent, DenunciaDetailsComponent, ActionsSupervisorComponent],
+    imports: [DenunciaLayoutComponent, DenunciaDetailsComponent, ActionsSupervisorComponent, ActionsJefeComponent],
     templateUrl: './denuncia.page.html',
 })
 export class DenunciaPageComponent implements OnInit {
     denunciaService = inject(DenunciaFacade);
+    authService = inject(AuthFacade);
 
-    // ESTADO: Writable Signal que contiene la fuente de la verdad
+    // TODO: Lo comentado es la implementación final, por ahora devuelve siempre true
+    isJefe() {
+        // const rol = this.authService.currentUser()?.rol;
+        // return rol === 'JEFE_INTERNO' || rol === 'JEFE_EXTERNO';
+        return true;
+    }
+    isSupervisor() {
+        // const rol = this.authService.currentUser()?.rol;
+        // return rol === 'SUPERVISOR_DENUNCIAS';
+    }
+
+    // TODO: utilizar el tipo correcto
     denunciaSignal = signal<any>({
         // denunciaSignal = signal<DenunciaStaffViewResponse>({
         id: 4921,

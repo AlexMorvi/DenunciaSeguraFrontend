@@ -33,7 +33,7 @@ export const appConfig: ApplicationConfig = {
         ),
         provideAppInitializer(() => {
             const authFacade = inject(AuthFacade);
-            return authFacade.loadUser();
+            return authFacade.getMe();
         })
     ],
 };

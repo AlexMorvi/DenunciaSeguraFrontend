@@ -1,8 +1,7 @@
-
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from '@/core/layout/main-layout/main-layout.component';
 
-export const SUPERVISOR_ROUTES: Routes = [
+export const JEFE_ROUTES: Routes = [
     {
         path: '',
         component: MainLayoutComponent,

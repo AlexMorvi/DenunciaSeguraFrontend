@@ -25,6 +25,6 @@ export class CiudadanoDashboardPage implements OnInit {
     }
 
     goToCreate(): void {
-        this.router.navigate(['/ciudadano', 'create']);
+        this.router.navigate(['/ciudadano', 'denuncia']);
     }
 }

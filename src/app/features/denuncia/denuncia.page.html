@@ -3,8 +3,21 @@
     <app-denuncia-details slot="details" [denuncia]="denunciaSignal()">
     </app-denuncia-details>
 
-    <app-actions-supervisor slot="actions">
+    <div slot="actions" class="h-full">
 
-    </app-actions-supervisor>
+        @defer (when isJefe()) {
+        <app-actions-jefe [currentDenuncia]="denunciaSignal()">
+        </app-actions-jefe>
+        }
+
+        @defer (when isSupervisor()) {
+        <app-actions-supervisor [currentDenuncia]="denunciaSignal()">
+        </app-actions-supervisor>
+        }
+
+
+    </div>
+
+
 
 </app-denuncia-layout>

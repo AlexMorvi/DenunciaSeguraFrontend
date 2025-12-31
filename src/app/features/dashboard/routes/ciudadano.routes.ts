@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { MainLayoutComponent } from '@/core/layout/main-layout.component';
+import { MainLayoutComponent } from '@/core/layout/main-layout/main-layout.component';
 
 export const CITIZEN_ROUTES: Routes = [
     {
@@ -14,7 +14,7 @@ export const CITIZEN_ROUTES: Routes = [
                     .then(m => m.CiudadanoDashboardPage)
             },
             {
-                path: 'create',
+                path: 'denuncia',
                 loadComponent: () => import('@/features/create-denuncia/crear-denuncia.page')
                     .then(m => m.CrearDenunciaComponent)
             },

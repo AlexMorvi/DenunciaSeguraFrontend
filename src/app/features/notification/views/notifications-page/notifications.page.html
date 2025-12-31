@@ -1,15 +1,7 @@
-@if (loading()) {
-<div class="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
-    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+<div class="flex flex-col h-full min-h-0 pb-6">
+    <div class="flex-1 min-h-0 overflow-hidden">
+        <app-notifications-list class="h-full" [notifications]="notificaciones()" (markAsRead)="marcarComoLeida($event)"
+            (markAllRead)="marcarTodasComoLeidas()">
+        </app-notifications-list>
+    </div>
 </div>
-}
-
-@if (error()) {
-<div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 m-6" role="alert">
-    <span class="font-medium">Error:</span> {{ error() }}
-</div>
-}
-
-<app-notifications-list [notifications]="notificaciones()" (markAsRead)="marcarComoLeida($event)"
-    (markAllRead)="marcarTodasComoLeidas()">
-</app-notifications-list>

@@ -35,7 +35,7 @@ export class AuthFacade {
         }
     });
 
-    async loadUser(): Promise<void> {
+    async getMe(): Promise<void> {
         if (this.currentUser()) {
             return;
         }
@@ -53,7 +53,7 @@ export class AuthFacade {
 
     refreshUser() {
         this.currentUser.set(null);
-        return this.loadUser();
+        return this.getMe();
     }
 
     registerStaff(request: RegistroStaffRequest): Promise<RegistroUsuarioResponse> {
