@@ -78,14 +78,18 @@ export class CrearDenunciaComponent implements OnDestroy {
     private map: L.Map | undefined;
     private marker: L.Marker | undefined;
 
-    handleUploadError(errorMessage: string) {
-        this.toast.showWarning(errorMessage);
-        // TODO: Loguear el error de forma adecuada
-        this.logger.error('Intento de subida fallido en formulario de denuncia', {
-            error: errorMessage,
-            timestamp: new Date().toISOString()
-        });
-    }
+    readonly form = this.fb.group({
+        titulo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
+        descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
+        // INFO: Para establecer una categoría por defecto
+        // categoria: ['VIALIDAD' as CategoriaEnum, [Validators.required]],
+        categoria: [null as CategoriaEnum | null, [Validators.required]],
+        nivelAnonimato: ['REAL' as NivelAnonimatoEnum, [Validators.required]],
+        latitud: [null as number | null, Validators.required],
+        longitud: [null as number | null, Validators.required],
+        evidenciaIds: []
+    });
+
 
     async guardarDenuncia() {
         this.localError.set(null);
@@ -118,17 +122,6 @@ export class CrearDenunciaComponent implements OnDestroy {
         }
     }
 
-    readonly form = this.fb.group({
-        titulo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
-        descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
-        // INFO: Para establecer una categoría por defecto
-        // categoria: ['VIALIDAD' as CategoriaEnum, [Validators.required]],
-        categoria: [null as CategoriaEnum | null, [Validators.required]],
-        nivelAnonimato: ['REAL' as NivelAnonimatoEnum, [Validators.required]],
-        latitud: [null as number | null, Validators.required],
-        longitud: [null as number | null, Validators.required],
-        evidenciaIds: []
-    });
 
     constructor() {
         afterNextRender(() => {
@@ -214,6 +207,14 @@ export class CrearDenunciaComponent implements OnDestroy {
         this.form.get('latitud')?.markAsTouched();
     }
 
+    handleUploadError(errorMessage: string) {
+        this.toast.showWarning(errorMessage);
+        // TODO: Loguear el error de forma adecuada
+        this.logger.error('Intento de subida fallido en formulario de denuncia', {
+            error: errorMessage,
+            timestamp: new Date().toISOString()
+        });
+    }
     /*     // =================================================================
         // MANEJO DE ARCHIVOS (OWASP: Validación estricta)
         // =================================================================
