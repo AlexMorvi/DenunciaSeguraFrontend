@@ -8,5 +8,10 @@ import { SidebarComponent } from '@/shared/ui/sidebar/sidebar.component';
     standalone: true,
     imports: [RouterOutlet, HeaderComponent, SidebarComponent],
     templateUrl: './main-layout.component.html',
+    styles: [`
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+    `]
 })
 export class MainLayoutComponent { }
