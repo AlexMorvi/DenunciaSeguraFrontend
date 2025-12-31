@@ -15,6 +15,11 @@
         </app-actions-supervisor>
         }
 
+        @defer (when isOperador()) {
+        <app-actions-operador [currentDenuncia]="denunciaSignal()">
+        </app-actions-operador>
+        }
+
 
     </div>
 
