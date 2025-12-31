@@ -108,20 +108,47 @@ export class DenunciaFacade {
             this._loading.set(false);
         }
     }
-
     async subirEvidencia(archivo: File): Promise<EvidenceId> {
+        let currentStep = 'INICIO';
         try {
+            currentStep = 'SESION';
             const { uploadUrl, uploadId, evidenceId } = await this.iniciarSesionCarga(archivo);
+
+            currentStep = 'CARGA_NUBE';
             await this.cargarArchivoEnNube(uploadUrl, archivo);
+
+            currentStep = 'CONFIRMACION';
             await this.confirmarSubida(uploadId, evidenceId);
 
             return evidenceId;
         } catch (error) {
-            // TODO: Loguear el error correctamente y por cada archivo, en caso de que uno falle
-            throw new EvidenceUploadError('No se pudo subir la evidencia. Por favor, intente nuevamente.');
-        }
+            console.error(`Error en fase ${currentStep}:`, error);
 
+            // Mapeo de errores para el usuario
+            if (currentStep === 'SESION') {
+                throw new EvidenceUploadError('El servidor rechazó el inicio de la carga. Verifique el tamaño o tipo.');
+            } else if (currentStep === 'CARGA_NUBE') {
+                throw new EvidenceUploadError('Error de conexión al subir la imagen. Verifique su internet.');
+            } else {
+                // Caso raro: Se subió pero no se confirmó. 
+                // Aquí podrías implementar una lógica de "compensación" o cola de reintento silencioso.
+                throw new EvidenceUploadError('La imagen se subió pero no pudimos verificarla. Intente guardar nuevamente.');
+            }
+        }
     }
+    // async subirEvidencia(archivo: File): Promise<EvidenceId> {
+    //     try {
+    //         const { uploadUrl, uploadId, evidenceId } = await this.iniciarSesionCarga(archivo);
+    //         await this.cargarArchivoEnNube(uploadUrl, archivo);
+    //         await this.confirmarSubida(uploadId, evidenceId);
+
+    //         return evidenceId;
+    //     } catch (error) {
+    //         // TODO: Loguear el error correctamente y por cada archivo, en caso de que uno falle
+    //         throw new EvidenceUploadError('No se pudo subir la evidencia. Por favor, intente nuevamente.');
+    //     }
+
+    // }
 
     private async iniciarSesionCarga(archivo: File) {
         const payload: CrearUploadRequest = {
