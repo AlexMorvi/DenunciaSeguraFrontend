@@ -6,7 +6,7 @@ import { SKIP_AUTH } from '@/core/http/http-context';
 import { EvidenceUploadError } from '@/core/errors/create-denuncia.errors';
 import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { catchError, firstValueFrom, from, of } from 'rxjs';
+import { catchError, firstValueFrom, from, of, retry, timeout } from 'rxjs';
 
 const PROPOSITO_CARGA = 'CIUDADANO_CREACION';
 
@@ -54,6 +54,22 @@ export class DenunciaFacade {
             });
         } catch (err) {
             this._error.set('Error al asignar la denuncia.');
+            throw err;
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async marcarComoResuelta(id: number, comentarioResolucion?: string): Promise<void> {
+        this._loading.set(true);
+        this._error.set(null);
+        try {
+            await this.gestionInternaService.denunciasIdResolucionPatch({
+                id,
+                body: comentarioResolucion ? { comentarioTecnico: comentarioResolucion } : {}
+            });
+        } catch (err) {
+            this._error.set('Error al marcar la denuncia como resuelta.');
             throw err;
         } finally {
             this._loading.set(false);
@@ -133,13 +149,20 @@ export class DenunciaFacade {
     }
 
     private async cargarArchivoEnNube(url: string, archivo: File): Promise<void> {
-        // Aquí encapsulamos la complejidad de HTTP headers y Contextos
         await firstValueFrom(
             this.http.put(url, archivo, {
-                headers: new HttpHeaders({ 'Content-Type': archivo.type }),
-                context: new HttpContext().set(SKIP_AUTH, true)
-            })
+                headers: new HttpHeaders({
+                    'Content-Type': archivo.type
+                }),
+                context: new HttpContext().set(SKIP_AUTH, true),
+                reportProgress: true,
+                observe: 'events'
+            }).pipe(
+                retry({ count: 2, delay: 1000 }),
+                timeout(120000)
+            )
         );
+
     }
 
     private async confirmarSubida(uploadId: string, evidenceId: string): Promise<void> {
