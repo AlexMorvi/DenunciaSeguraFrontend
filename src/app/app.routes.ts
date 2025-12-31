@@ -24,6 +24,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/dashboard/routes/supervisor.routes').then(m => m.SUPERVISOR_ROUTES)
     },
     {
+        path: 'operador',
+        // canMatch: [authGuard, roleGuard('ADMIN')],
+        loadChildren: () => import('./features/dashboard/routes/operador.routes').then(m => m.OPERADOR_ROUTES)
+    },
+    {
         path: 'jefe',
         // canMatch: [authGuard, roleGuard('ADMIN')],
         loadChildren: () => import('./features/dashboard/routes/jefe.routes').then(m => m.JEFE_ROUTES)
