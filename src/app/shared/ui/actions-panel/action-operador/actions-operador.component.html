@@ -1,22 +1,45 @@
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-0">
-    <h2 appText="h3" class="mb-1">Supervisión de denuncia</h2>
+    <header class="mb-4">
+        <h2 appText="h3" class="mb-1 text-gray-900">Resolución de Denuncia</h2>
+        <p appText="body" class="text-gray-500">Actualiza el estado y adjunta evidencia visual.</p>
+    </header>
 
-    <div class="space-y-4">
+    <form [formGroup]="form" (ngSubmit)="marcarResuelta()" class="space-y-5">
+
         <div>
-            <app-select id="entidad" label="Asignar entidad responsable" placeholder="Seleccione una entidad..."
-                [options]="entidadesOptions" [formControl]="entidadControl">
+            <app-select id="estado" label="Nuevo Estado de la Denuncia" placeholder="Seleccione estado..."
+                [options]="estadoOptions" [formControl]="form.controls.estado">
             </app-select>
+
+            @if (form.controls.estado.touched && form.controls.estado.hasError('required')) {
+            <p class="mt-1 text-xs text-red-600 flex items-center gap-1">
+                <span class="material-icons text-[14px]">error</span> El estado es requerido
+            </p>
+            }
         </div>
 
         <div>
-            <label appText="label" for="notas">Comentarios</label>
-            <textarea [formControl]="notasControl" id="notas" rows="3"
-                class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:ring-blue-500 focus:border-blue-500 py-3 px-4 text-sm resize-none"
-                placeholder="Comentarios..."></textarea>
+            <label appText="label" for="evidenciaInput" class="mb-2 block">
+                Evidencia Fotográfica <span class="text-gray-400 font-normal">(Opcional)</span>
+            </label>
+
+            <div class="relative group">
+                <app-file-upload (filesChange)="evidencias.set($event)" (uploadError)="handleUploadError($event)">
+                </app-file-upload>
+
+            </div>
         </div>
 
-        <app-submit-button label="Guardar Asignación" [icon]="faSave" (click)="guardarAccion()" btnType="button"
-            class="mt-2">
+        <div>
+            <label appText="label" for="notas">Comentarios del Operador</label>
+            <textarea id="notas" rows="3" [formControl]="form.controls.comentarios"
+                class="block w-full rounded-lg bg-gray-50 border-gray-200 focus:ring-blue-500 focus:border-blue-500 py-3 px-4 text-sm resize-none placeholder-gray-400 transition-shadow"
+                placeholder="Justifique el cambio de estado...">
+            </textarea>
+        </div>
+
+        <app-submit-button label="Actualizar Denuncia" [icon]="faSave" [isLoading]="isSubmitting()"
+            [isDisabled]="form.invalid || isSubmitting()" type="submit" class="w-full mt-4">
         </app-submit-button>
-    </div>
+    </form>
 </div>
