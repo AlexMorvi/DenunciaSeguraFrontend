@@ -18,6 +18,21 @@ export class SelectComponent implements ControlValueAccessor {
     options = input.required<string[]>();
     customErrors = input<Record<string, string>>({}, { alias: 'errors' });
 
+    // Options as pairs: keep original value, and a formatted label for display
+    private formatOptionLabel(option: string): string {
+        // Si ya tiene espacios o no tiene guiones bajos, asumimos que el texto ya está formateado
+        if (option.includes(' ') || !option.includes('_')) {
+            return option;
+        }
+
+        // Caso típico: valores en SNAKE_CASE → reemplazamos "_" por espacios
+        return option.replace(/_/g, ' ');
+    }
+
+    optionPairs = computed(() => this.options().map(opt => ({
+        value: opt,
+        label: this.formatOptionLabel(opt)
+    })));
     value = signal<string>('');
     disabled = signal(false);
 

@@ -9,8 +9,8 @@
             [class.border-red-500]="showError()" [attr.aria-invalid]="showError()"
             [attr.aria-describedby]="showError() ? id() + '-error' : null">
             <option value="" disabled selected>{{ placeholder() }}</option>
-            @for (option of options(); track option) {
-            <option [value]="option">{{ option | titlecase }}</option>
+            @for (opt of optionPairs(); track opt) {
+            <option [value]="opt.value">{{ opt.label | titlecase }}</option>
             }
         </select>
 
