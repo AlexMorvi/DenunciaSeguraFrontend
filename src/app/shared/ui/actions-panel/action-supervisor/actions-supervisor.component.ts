@@ -29,24 +29,24 @@ export class ActionsSupervisorComponent {
 
     entidadesOptions = ENTIDAD_ENUM;
 
-    saveAssignment = output<{ entidadId: string, notas: string }>();
+    saveAssignment = output<{ entidadId: string, comments: string }>();
 
     form = new FormGroup({
         entidadId: new FormControl('', {
             nonNullable: true,
             validators: [Validators.required]
         }),
-        notas: new FormControl('', { nonNullable: true })
+        comments: new FormControl('', { nonNullable: true })
     });
 
     onSubmit() {
         if (this.form.valid) {
             // Extraemos los valores ya tipados y limpios
-            const { entidadId, notas } = this.form.getRawValue();
+            const { entidadId, comments: comments } = this.form.getRawValue();
 
             this.saveAssignment.emit({
                 entidadId,
-                notas
+                comments
             });
 
             // Opcional: Resetear form
