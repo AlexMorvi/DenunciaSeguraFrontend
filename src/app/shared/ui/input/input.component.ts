@@ -1,4 +1,4 @@
-import { Component, input, signal, forwardRef } from '@angular/core';
+import { Component, input, signal, forwardRef, computed } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -20,7 +20,6 @@ import { faEye, faEyeSlash, faCircle } from '@fortawesome/free-solid-svg-icons';
     ]
 })
 export class InputComponent implements ControlValueAccessor {
-    // Inputs configurables
     id = input.required<string>();
     label = input<string>('');
     type = input<'text' | 'email' | 'password'>('text');
@@ -30,24 +29,41 @@ export class InputComponent implements ControlValueAccessor {
     inputmode = input<string>('');
     maxlength = input<number>(254);
     autofocus = input<boolean>(false);
+    multiline = input<boolean>(false);
+    rows = input<number>(3);
     control = input<FormControl | null>(null);
     errors = input<Record<string, string>>({});
 
-    // Estado interno
     showPassword = signal(false);
     value = signal('');
     disabled = signal(false);
 
-    // Callbacks de ControlValueAccessor
     private onChange: (value: string) => void = () => { };
     private onTouched: () => void = () => { };
 
-    // Icons for password toggle
     protected readonly faEye = faEye;
     protected readonly faEyeSlash = faEyeSlash;
     protected readonly faDefault: IconDefinition = faCircle;
 
-    // ControlValueAccessor implementation
+    protected iconClasses = computed(() => {
+        const baseClasses = 'absolute left-3 text-gray-400 pointer-events-none';
+
+        const positionClasses = this.multiline()
+            ? 'top-3'
+            : 'top-1/2 -translate-y-1/2';
+
+        return `${baseClasses} ${positionClasses}`;
+    });
+
+    canToggleVisibility = computed(() => this.type() === 'password');
+
+    inputType = computed(() => {
+        if (this.canToggleVisibility() && this.showPassword()) {
+            return 'text';
+        }
+        return this.type();
+    });
+
     writeValue(value: string): void {
         this.value.set(value || '');
     }
@@ -64,9 +80,8 @@ export class InputComponent implements ControlValueAccessor {
         this.disabled.set(isDisabled);
     }
 
-    // Métodos públicos
     onInput(event: Event): void {
-        const target = event.target as HTMLInputElement;
+        const target = event.target as HTMLInputElement | HTMLTextAreaElement;
         this.value.set(target.value);
         this.onChange(target.value);
     }
@@ -77,17 +92,6 @@ export class InputComponent implements ControlValueAccessor {
 
     togglePasswordVisibility(): void {
         this.showPassword.update(v => !v);
-    }
-
-    get isPassword(): boolean {
-        return this.type() === 'password';
-    }
-
-    get inputType(): string {
-        if (this.isPassword && this.showPassword()) {
-            return 'text';
-        }
-        return this.type();
     }
 
     get hasError(): boolean {
