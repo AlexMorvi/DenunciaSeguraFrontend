@@ -16,7 +16,7 @@ export const SUPERVISOR_ROUTES: Routes = [
             // },
             {
                 path: 'denuncia',
-                loadComponent: () => import('@/features/denuncia/denuncia.page')
+                loadComponent: () => import('@/features/denuncia/views/staff/denuncia.page')
                     .then(m => m.DenunciaPageComponent)
             },
             // {
