@@ -1,0 +1,27 @@
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-0">
+    <h2 appText="h3" class="mb-1">Supervisión de denuncia</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+
+        <div>
+            <app-select id="entidad" label="Asignar entidad responsable" placeholder="Seleccione una entidad..."
+                [options]="entidadesOptions" formControlName="entidadId">
+            </app-select>
+
+            @if (form.controls.entidadId.invalid && form.controls.entidadId.touched) {
+            <p class="text-xs text-red-500 mt-1">Debes seleccionar una entidad.</p>
+            }
+        </div>
+
+        <div>
+            <app-input id="notas" label="Comentarios" formControlName="comments" [multiline]="true" [rows]="3"
+                [icon]="faComment" placeholder="Instrucciones para la entidad...">
+            </app-input>
+        </div>
+
+        <app-submit-button label="Guardar Asignación" [icon]="faSave" btnType="submit" [isDisabled]="form.invalid"
+            class="mt-2 block w-full">
+        </app-submit-button>
+
+    </form>
+</div>
