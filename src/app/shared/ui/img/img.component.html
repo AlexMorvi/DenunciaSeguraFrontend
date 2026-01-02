@@ -1,0 +1,14 @@
+@if (safeUrl() && !loadError(); as url) {
+
+<img [ngSrc]="url" [width]="width()" [height]="height()" alt="Evidencia adjunta"
+    class="w-full h-full object-cover transition-opacity duration-300" (error)="handleError()" />
+
+} @else {
+
+<div
+    class="flex flex-col items-center justify-center h-full bg-gray-100 text-gray-600 text-sm text-center p-4 border border-gray-200 rounded">
+    <p class="mb-1 font-medium">Imagen no disponible</p>
+    <p class="text-xs text-gray-500">No se pudo cargar la evidencia. Intenta recargar la página.</p>
+</div>
+
+}
