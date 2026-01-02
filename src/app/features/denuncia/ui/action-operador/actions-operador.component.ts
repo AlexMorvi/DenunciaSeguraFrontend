@@ -1,3 +1,6 @@
+    // currentDenuncia = input.required<DenunciaStaffViewResponse>();
+    currentDenuncia = input.required<any>();
+
         } catch (err) {
             // TODO: mejorar manejo de errores
             this.logger.error('Error al marcar denuncia como resuelta', err);
