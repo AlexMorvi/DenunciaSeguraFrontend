@@ -2,13 +2,11 @@
     <div class="flex flex-col flex-1">
         <div class="bg-white px-6 py-5 border-b border-gray-100 flex items-center justify-between shrink-0 gap-4">
             <div class="relative group w-full max-w-sm">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <fa-icon [icon]="faSearch"
-                        class="text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200"></fa-icon>
-                </div>
-                <input type="text" [ngModel]="searchText()" (ngModelChange)="searchText.set($event)"
-                    placeholder="Buscar por título o categoría..."
-                    class="block w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-transparent text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:bg-white focus:border-blue-500 transition-all duration-200 placeholder-gray-400 outline-none">
+                <app-input id="search" placeholder="Buscar por título o categoría..." [formControl]="searchControl"
+                    [icon]="faSearch">
+                </app-input>
+                <app-input-error [control]="searchControl"
+                    [messages]="{ pattern: 'La búsqueda contiene caracteres no permitidos.' }"></app-input-error>
             </div>
 
             @if (showCreateButton()) {

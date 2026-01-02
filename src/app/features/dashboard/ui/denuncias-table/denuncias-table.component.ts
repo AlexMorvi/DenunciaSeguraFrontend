@@ -1,15 +1,20 @@
 import { Component, input, output, signal, computed } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
+import { InputComponent } from '@/shared/ui/input/input.component';
+import { InputErrorComponent } from '@/shared/ui/input-error/input-error.component';
 import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSearch, faPlus, faChevronDown, faChevronUp, faMapMarkerAlt, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+const SEARCH_PATTERN = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-\.\_]*$/;
 
 @Component({
     selector: 'app-denuncias-table',
     standalone: true,
-    // imports: [CommonModule, FormsModule, MapViewerComponent, SubmitButtonComponent],
-    imports: [FormsModule, SubmitButtonComponent, FontAwesomeModule],
+    imports: [FormsModule, ReactiveFormsModule, SubmitButtonComponent, FontAwesomeModule, InputComponent, InputErrorComponent],
     templateUrl: './denuncias-table.component.html',
 })
 export class DenunciasTableComponent {
@@ -25,21 +30,30 @@ export class DenunciasTableComponent {
 
     denuncias = input.required<Denuncia[]>();
 
-    // Input con valor por defecto
     showCreateButton = input(true);
 
-    // 2. OUTPUTS MODERNOS
     onCreate = output<void>();
 
-    // 3. ESTADO INTERNO
-    searchText = signal('');
     expandedId = signal<number | null>(null);
+    searchControl = new FormControl('', {
+        nonNullable: true,
+        validators: [
+            Validators.maxLength(100),
+            Validators.pattern(SEARCH_PATTERN)
+        ]
+    });
 
-    // 4. LÓGICA COMPUTADA (Ahora sí funciona)
-    // Se recalcula automágicamente si cambia 'searchText' O SI CAMBIA 'denuncias'
+    searchText = toSignal(
+        this.searchControl.valueChanges.pipe(
+            debounceTime(300),
+            distinctUntilChanged()
+        ),
+        { initialValue: '' }
+    );
+
     filteredDenuncias = computed(() => {
         const term = this.searchText().toLowerCase();
-        const list = this.denuncias(); // Accedemos al valor de la signal
+        const list = this.denuncias();
 
         if (!term) return list;
 
@@ -49,7 +63,6 @@ export class DenunciasTableComponent {
         );
     });
 
-    // 5. MÉTODOS DE UI
     toggleDetail(id?: number) {
         if (id == null) return;
         this.expandedId.update(curr => curr === id ? null : id);
