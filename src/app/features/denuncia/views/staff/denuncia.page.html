@@ -1,15 +1,12 @@
 @if (denuncia(); as denuncia) {
-
-<app-denuncia-layout>
-
+<app-denuncia-layout [hasActionsPanel]="showActionsPanel()">
     <app-denuncia-details slot="details" [denuncia]="denuncia">
     </app-denuncia-details>
 
 
+    @if (showActionsPanel()) {
     <div slot="actions" class="h-full">
-
         @switch (true) {
-
         @case (isJefe()) {
         @defer (on immediate) {
         <app-actions-jefe [currentDenuncia]="denuncia" />
@@ -29,6 +26,7 @@
         }
         }
     </div>
+    }
 
 </app-denuncia-layout>
 

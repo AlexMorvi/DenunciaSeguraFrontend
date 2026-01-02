@@ -1,11 +1,14 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-80px)] p-4 md:p-6 bg-slate-50">
 
-    <div class="lg:col-span-2 h-full overflow-y-auto pr-2 custom-scrollbar">
+    <div class="h-full overflow-y-auto pr-2 custom-scrollbar transition-all duration-300"
+        [class]="hasActionsPanel() ? 'lg:col-span-2' : 'lg:col-span-3'">
+
         <ng-content select="[slot=details]"></ng-content>
     </div>
 
-    <div class="lg:col-span-1 h-full overflow-y-auto pl-2 custom-scrollbar">
+    @if (hasActionsPanel()) {
+    <div class="lg:col-span-1 h-full overflow-y-auto pl-2 custom-scrollbar border-l border-slate-200">
         <ng-content select="[slot=actions]"></ng-content>
     </div>
-
+    }
 </div>

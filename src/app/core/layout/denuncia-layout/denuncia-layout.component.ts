@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 
 @Component({
     selector: 'app-denuncia-layout',
@@ -11,4 +11,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
     .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
   `]
 })
-export class DenunciaLayoutComponent { }
+export class DenunciaLayoutComponent {
+    hasActionsPanel = input(true);
+}

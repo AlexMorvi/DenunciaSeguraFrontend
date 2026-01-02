@@ -39,7 +39,19 @@ export class DenunciaPageComponent {
     isOperador = computed(() => {
         // const rol = this.authService.currentUser()?.rol;
         // return [ROLES.OPERADOR_INTERNO, ROLES.OPERADOR_EXTERNO].includes(rol as any);
+        // return false;
         return true;
+    });
+
+    isCiudadano = computed(() => {
+        // const rol = this.authService.currentUser()?.rol;
+        // return [ROLES.CIUDADANO].includes(rol as any);
+        return false;
+        // return true;
+    });
+
+    showActionsPanel = computed(() => {
+        return this.isJefe() || this.isSupervisor() || this.isOperador();
     });
 
     // TODO: eliminar este signal temporal y utilizar el de la fachada
@@ -55,10 +67,8 @@ export class DenunciaPageComponent {
         lat: -0.18,
         lng: -78.4,
         prioridad: 'Alta',
-        evidencias: [
-            { type: 'image', url: 'assets/bache1.jpg' },
-            { type: 'image', url: 'assets/bache2.jpg' }
-        ],
+        // Evidencias reales deben provenir del backend con signed URLs (nunca desde assets locales)
+        evidencias: [],
         ubicacion: { lat: -0.18, lng: -78.4, address: 'Av. Siempre Viva 123' }
     });
 }
