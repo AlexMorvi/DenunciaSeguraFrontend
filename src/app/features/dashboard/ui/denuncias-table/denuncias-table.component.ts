@@ -71,7 +71,7 @@ export class DenunciasTableComponent {
         return `${base} ${colors[estado] || 'bg-gray-100 text-gray-800'}`;
     }
 
-    // Helpers to access possibly-undeclared properties returned by the API
+    // TODO: No utilizar any, sino el tipo de openapi correcto
     getLat(denuncia: any): string {
         const v = denuncia?.latitud ?? denuncia?.latitude ?? null;
         return v != null ? String(v) : '-';

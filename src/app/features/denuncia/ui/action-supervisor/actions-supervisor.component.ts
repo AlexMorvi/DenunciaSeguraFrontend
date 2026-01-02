@@ -5,26 +5,27 @@ import { AuthFacade } from '@/data/services/auth.facade';
 import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { SelectComponent } from '@/shared/ui/select/select.component';
+import { InputComponent } from '@/shared/ui/input/input.component';
 import { ENTIDAD_ENUM } from '@/core/api/auth/models/entidad-enum-array';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
-import { faSave } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faComment } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-actions-supervisor',
     standalone: true,
-    imports: [ReactiveFormsModule, UiStyleDirective, SelectComponent, SubmitButtonComponent],
+    imports: [ReactiveFormsModule, UiStyleDirective, SelectComponent, SubmitButtonComponent, InputComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './actions-supervisor.component.html'
 })
 export class ActionsSupervisorComponent {
     auth = inject(AuthFacade);
     protected readonly faSave = faSave;
+    protected readonly faComment = faComment;
 
     // TODO: una vez corregido el contrato utilizar el tipo correcto
     // currentDenuncia = input.required<DenunciaStaffViewResponse>();
     currentDenuncia = input.required<any>();
 
-    // Outputs para comunicar al Smart Component que algo pasó
     onUpdateStatus = output<{ prioridad: string }>();
 
     entidadesOptions = ENTIDAD_ENUM;
@@ -41,7 +42,6 @@ export class ActionsSupervisorComponent {
 
     onSubmit() {
         if (this.form.valid) {
-            // Extraemos los valores ya tipados y limpios
             const { entidadId, comments: comments } = this.form.getRawValue();
 
             this.saveAssignment.emit({
@@ -49,8 +49,7 @@ export class ActionsSupervisorComponent {
                 comments
             });
 
-            // Opcional: Resetear form
-            // this.form.reset(); 
+            this.form.reset();
         }
     }
 
