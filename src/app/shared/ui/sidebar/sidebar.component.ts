@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { NotificacionFacade } from '@/data/services/notificacion.facade';
-import { APP_ROLES } from '@/shared/constants/roles.const';
+import { ROLES } from '@/shared/constants/roles.const';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBell, faUsers } from '@fortawesome/free-solid-svg-icons';
 
@@ -36,7 +36,7 @@ export class SidebarComponent {
     });
 
     public settingsLink = computed(() => {
-        if (this.currentUser()?.rol === APP_ROLES.ADMIN) {
+        if (this.currentUser()?.rol === ROLES.ADMIN) {
             return ['/admin', 'configuracion-avanzada'];
         }
 
