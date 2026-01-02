@@ -122,6 +122,7 @@ export class DenunciaFacade {
 
             return evidenceId;
         } catch (error) {
+            // TODO: Loguear el error correctamente
             console.error(`Error en fase ${currentStep}:`, error);
 
             // Mapeo de errores para el usuario
@@ -200,10 +201,16 @@ export class DenunciaFacade {
     }
 
     async getById(denunciaId: number): Promise<DenunciaStaffViewResponse> {
+        //TODO: Conectar con el método correcto de openapi (aún no existe)
         // await this.denunciasService.uploadsUploadIdConfirmarPost({
         //     uploadId,
         //     body: { evidenceIds: [evidenceId] }
         // });
+        return null as any;
+    }
+
+    // TODO: arreglar esto con el método de openapi correcto
+    async currentDenuncia() {
         return null as any;
     }
 
