@@ -1,4 +1,3 @@
-// components/actions-panel/actions-panel.component.ts
 import { Component, input, output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthFacade } from '@/data/services/auth.facade';
