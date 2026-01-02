@@ -16,7 +16,7 @@ export class UiStyleDirective {
         'h1': 'text-4xl md:text-4xl font-extrabold tracking-tight text-slate-900 mb-3',
         'h2': 'text-center text-3xl md:text-2xl font-bold text-slate-800 mb-4 tracking-tight',
         'h3': 'text-lg font-semibold text-slate-900 mb-2',
-        'body': 'text-sm md:text-base text-slate-500 font-normal leading-relaxed',
+        'body': 'text-sm md:text-base text-slate-500 font-normal leading-relaxed break-anywhere',
         'body-link': 'text-center text-sm text-gray-600 mr-2',
         'link': 'inline-flex items-center justify-center gap-2 font-medium text-blue-600 transition-colors rounded-sm hover:text-blue-800 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 text-sm',
         'label': 'text-sm font-semibold text-slate-700 mb-1.5 block',
