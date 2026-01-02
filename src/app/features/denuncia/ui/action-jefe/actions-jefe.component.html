@@ -1,0 +1,19 @@
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-0">
+    <h2 appText="h3" class="mb-1">Asignación de Responsables</h2>
+    <p appText="caption" class="mb-6">Seleccione el operador para atender el caso.</p>
+
+    <form [formGroup]="form" (ngSubmit)="asignarOperador()" class="space-y-4">
+
+        <div>
+            <app-select id="operador" label="Operador Encargado" placeholder="Seleccione un operador..."
+                [options]="operadores()" [formControl]="form.controls.operadorId">
+            </app-select>
+            <app-input-error [control]="form.get('operadorId')"></app-input-error>
+        </div>
+
+        <app-submit-button label="Asignar Operador" [icon]="faUsers" btnType="submit" [isDisabled]="form.invalid"
+            class="mt-2 block w-full">
+        </app-submit-button>
+
+    </form>
+</div>
