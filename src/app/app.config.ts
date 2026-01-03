@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideAppInitializer, inject, importProvidersFrom } from '@angular/core';
-import { provideRouter, withViewTransitions, PreloadAllModules, withPreloading } from '@angular/router';
+import { provideRouter, withViewTransitions, PreloadAllModules, withPreloading, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { ApiModule as AuditoriaApi } from './core/api/auditoria/api.module';
@@ -11,17 +11,19 @@ import { environment } from '@/../environments/environment';
 import { authInterceptor } from '@/core/http/auth.interceptor';
 import { mockStorageInterceptor } from '@/core/http/mock-storage.interceptor';
 import { AuthFacade } from '@/data/services/auth.facade';
+import { errorInterceptor } from '@/core/interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(
             routes,
             withViewTransitions(),
-            withPreloading(PreloadAllModules)
+            withPreloading(PreloadAllModules),
+            withComponentInputBinding()
         ),
         provideHttpClient(
             withFetch(),
-            withInterceptors([mockStorageInterceptor, authInterceptor])
+            withInterceptors([mockStorageInterceptor, authInterceptor, errorInterceptor])
         ),
         importProvidersFrom(
             AuditoriaApi.forRoot({ rootUrl: environment.apiAuditoriaUrl! }),
