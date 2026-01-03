@@ -9,6 +9,7 @@ import { NivelAnonimatoEnum } from '@/core/api/denuncias/models/nivel-anonimato-
 import { NIVEL_ANONIMATO_ENUM } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
 import {
     DenunciaSubmissionError,
+    EvidenceUploadError,
     FormValidationError,
     GeolocationError,
     MapInitializationError,
@@ -18,8 +19,8 @@ import { CategorySelectorComponent } from '@/shared/ui/category-selector/categor
 import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.component';
 import { SelectComponent } from '@/shared/ui/select/select.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
-import { ToastService } from '@/core/service/toast.service';
-import { LoggerService } from '@/core/service/logger.service';
+import { ToastService } from '@/core/service/toast/toast.service';
+import { LoggerService } from '@/core/service/logging/logger.service';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -118,9 +119,13 @@ export class CrearDenunciaComponent implements OnDestroy {
             this.toast.showSuccess('Denuncia enviada', 'Su denuncia ha sido registrada correctamente.');
             await this.router.navigate(['/ciudadano/dashboard']);
         } catch (error) {
-            // TODO: Loggear correctamente el error (utilizando el logger)
-            this.logger.error('Error al crear denuncia', error);
-            this.toast.showError("No pudimos procesar su solicitud. Por favor, intente nuevamente más tarde.");
+            if (error instanceof EvidenceUploadError) {
+                this.toast.showError(error.message);
+                this.logger.logWarn('Flujo detenido por error controlado', { reason: error.message });
+            } else {
+                this.toast.showError("No pudimos procesar su solicitud. Por favor, intente nuevamente más tarde.");
+                this.logger.logError('CRASH NO CONTROLADO en Smart Component', error);
+            }
         }
     }
 
@@ -209,14 +214,16 @@ export class CrearDenunciaComponent implements OnDestroy {
         this.form.get('latitud')?.markAsTouched();
     }
 
-    handleUploadError(errorMessage: string) {
-        this.toast.showWarning(errorMessage);
-        // TODO: Loguear el error de forma adecuada
-        this.logger.error('Intento de subida fallido en formulario de denuncia', {
-            error: errorMessage,
-            timestamp: new Date().toISOString()
-        });
+    handleUploadError(event: FileUploadErrorEvent) {
+        this.toast.showWarning(event.userMessage);
+
+        if (event.severity === 'WARNING') {
+            this.logger.logWarn(event.technicalMessage, event.logData);
+        } else {
+            this.logger.logError(event.technicalMessage, event.logData);
+        }
     }
+
     /*     // =================================================================
         // MANEJO DE ARCHIVOS (OWASP: Validación estricta)
         // =================================================================

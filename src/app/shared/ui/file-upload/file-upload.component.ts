@@ -4,6 +4,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaperclip, faCloudUploadAlt, faCheckCircle, faXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE_BYTES } from '@/shared/constants/limit.const';
+import { FileUploadErrorEvent } from '@/core/model/file-upload.model';
 
 // --- Clases de Error ---
 class FileTooLargeError extends Error {
@@ -38,7 +39,7 @@ export class FileUploadComponent {
 
     // === OUTPUTS ===
     filesChange = output<File[]>();
-    uploadError = output<string>();
+    uploadError = output<FileUploadErrorEvent>();
 
     // === SIGNALS ===
     files = signal<FileItem[]>([]);
@@ -98,23 +99,32 @@ export class FileUploadComponent {
     private handleFileBatch(fileList: FileList) {
         const currentCount = this.files().length;
         const incomingCount = fileList.length;
+        const excedeLimite = currentCount + incomingCount > this.maxFilesCount();
 
-        if (currentCount + incomingCount > this.maxFilesCount()) {
-            const msg = `Solo puedes subir un máximo de ${this.maxFilesCount()} archivos.`;
-            this.globalError.set(msg);
-            this.uploadError.emit(msg);
+        if (excedeLimite) {
+            this.uploadError.emit({
+                userMessage: `Solo puedes subir ${this.maxFilesCount()} archivos.`,
+
+                technicalMessage: 'Upload Batch Limit Exceeded',
+                severity: 'WARNING',
+                logData: {
+                    limit: this.maxFilesCount(),
+                    current: currentCount,
+                    attempted: incomingCount
+                }
+            });
             return;
         }
-
         this.processFiles(fileList);
     }
+
 
     private processFiles(fileList: FileList) {
         const newItems: FileItem[] = [];
 
         Array.from(fileList).forEach(file => {
             const itemId = crypto.randomUUID();
-            let errorMsg: string | null = null;
+            let errorEvent: FileUploadErrorEvent | null = null;
 
             try {
                 this.validarArchivo(file);
@@ -124,29 +134,43 @@ export class FileUploadComponent {
                 }
 
             } catch (err: any) {
-                // TODO: Mejorar el sistema de logging
-                if (err instanceof FileTooLargeError || err instanceof UnsupportedFileTypeError) {
-                    errorMsg = err.message;
-                } else {
-                    errorMsg = "El archivo no pudo ser procesado. Verifique que sea un formato válido e intente nuevamente.";
-                }
+                const isSizeError = err instanceof FileTooLargeError;
+                const isTypeError = err instanceof UnsupportedFileTypeError;
 
-                this.uploadError.emit(errorMsg);
+                const userMsg = isSizeError || isTypeError
+                    ? err.message
+                    : 'El archivo no pudo ser procesado. Verifique el formato e intente nuevamente.';
+
+                errorEvent = {
+                    userMessage: userMsg,
+                    technicalMessage: 'File Validation Failed',
+                    severity: 'WARNING',
+                    logData: {
+                        fileName: file.name,
+                        fileType: file.type,
+                        fileSize: file.size,
+                        reason: isSizeError ? 'SIZE_LIMIT' : (isTypeError ? 'INVALID_TYPE' : 'UNKNOWN'),
+                        originalError: !isSizeError && !isTypeError ? err.toString() : null
+                    }
+                };
             }
 
             newItems.push({
                 id: itemId,
                 file: file,
                 previewUrl: null,
-                error: errorMsg,
-                progress: errorMsg ? 0 : 0
+                error: errorEvent?.userMessage ?? null,
+                progress: errorEvent ? 0 : 0
             });
 
-            if (!errorMsg) this.simulateUpload(itemId);
+            if (errorEvent) {
+                this.uploadError.emit(errorEvent);
+            } else {
+                this.simulateUpload(itemId);
+            }
         });
 
         this.files.update(current => [...current, ...newItems]);
-        this.emitValidFiles();
     }
 
     private validarArchivo(file: File): void {
