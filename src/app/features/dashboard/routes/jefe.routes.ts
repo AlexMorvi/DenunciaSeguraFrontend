@@ -14,8 +14,8 @@ export const JEFE_ROUTES: Routes = [
             //         .then(m => m.SupervisorDashboardPage)
             // },
             {
-                path: 'denuncia',
-                loadComponent: () => import('@/features/denuncia/views/staff/denuncia.page')
+                path: 'denuncias/:id',
+                loadComponent: () => import('@/features/denuncia/views/denuncia.page')
                     .then(m => m.DenunciaPageComponent)
             },
             // {

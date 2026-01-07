@@ -8,8 +8,8 @@ import { RegistroStaffRequest } from '@/core/api/auth/models/registro-staff-requ
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { SelectComponent } from '@/shared/ui/select/select.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
-import { ToastService } from '@/core/service/toast.service';
-import { LoggerService } from '@/core/service/logger.service';
+import { ToastService } from '@/core/service/toast/toast.service';
+import { LoggerService } from '@/core/service/logging/logger.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -68,7 +68,7 @@ export class StaffManagerPage {
             this.toast.showSuccess('Funcionario registrado', 'Nuevo funcionario registrado correctamente.');
             this.form.reset();
         } catch (error) {
-            this.logger.error('Error al registrar staff', error);
+            this.logger.logError('Error al registrar staff', error);
             this.toast.showError('No se pudo completar el registro. Verifique su conexión o intente más tarde.');
         } finally {
             this.loading.set(false);

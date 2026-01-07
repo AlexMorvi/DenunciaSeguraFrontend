@@ -1,4 +1,4 @@
-@if (control() && control()?.invalid && (control()?.touched || control()?.dirty)) {
+@if (control() && control()?.invalid && control()?.touched) {
 <div class="mt-1 text-xs text-red-500 flex flex-col gap-0.5" role="alert">
     @for (error of control()?.errors | keyvalue; track error.key) {
     <span>{{ getErrorMessage(error.key, error.value) }}</span>

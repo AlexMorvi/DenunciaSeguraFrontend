@@ -1,0 +1,36 @@
+<div class="flex h-full gap-4 overflow-x-auto pb-2">
+
+    @for (evidencia of evidencias(); track evidencia.url) {
+
+    <div
+        class="relative shrink-0 w-full h-full rounded-lg overflow-hidden border border-gray-200 bg-gray-100 shadow-sm hover:shadow-md transition-shadow">
+        @if (evidencia.type === 'image') {
+        <app-secure-image [src]="evidencia.url" class="w-full h-full object-cover"
+            (uploadError)="propagateError($event)" />
+        } @else {
+        <div class="flex flex-col items-center justify-center h-full text-slate-400 bg-slate-50">
+            <fa-icon [icon]="faVideo" class="text-2xl mb-2"></fa-icon>
+            <span class="text-xs font-medium">Video Adjunto</span>
+        </div>
+        }
+    </div>
+
+    } @empty {
+    <div
+        class="w-full h-full p-6 rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center text-center">
+
+        <div class="bg-slate-200 rounded-full p-3 mb-3 text-slate-400">
+            <fa-icon [icon]="faImages" class="text-xl"></fa-icon>
+        </div>
+
+        <h4 class="text-sm font-semibold text-slate-700 mb-1">
+            Sin evidencia visual
+        </h4>
+
+        <p class="text-xs text-slate-500 max-w-xs">{{ emptyStateMessage() }}</p>
+
+    </div>
+
+    }
+
+</div>

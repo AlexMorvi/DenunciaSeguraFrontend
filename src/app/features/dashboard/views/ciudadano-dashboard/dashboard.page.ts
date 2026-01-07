@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,10 +21,10 @@ export class CiudadanoDashboardPage implements OnInit {
     protected denuncias = this.denunciaService.denuncias;
 
     ngOnInit(): void {
-        this.denunciaService.refresh();
+        this.denunciaService.loadAll();
     }
 
     goToCreate(): void {
-        this.router.navigate(['/ciudadano', 'denuncia']);
+        this.router.navigate(['/ciudadano', 'denuncias', 'nueva']);
     }
 }

@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule } from '@angular/forms';
 
+type OptionObject = { id?: number | string; value?: number | string; label?: string };
+
 @Component({
     selector: 'app-select',
     standalone: true,
@@ -15,24 +17,28 @@ export class SelectComponent implements ControlValueAccessor {
     id = input.required<string>();
     label = input.required<string>();
     placeholder = input<string>('Seleccione una opción');
-    options = input.required<string[]>();
+    options = input.required<Array<string | Record<string, any>>>();
     customErrors = input<Record<string, string>>({}, { alias: 'errors' });
 
-    // Options as pairs: keep original value, and a formatted label for display
     private formatOptionLabel(option: string): string {
-        // Si ya tiene espacios o no tiene guiones bajos, asumimos que el texto ya está formateado
         if (option.includes(' ') || !option.includes('_')) {
             return option;
         }
 
-        // Caso típico: valores en SNAKE_CASE → reemplazamos "_" por espacios
         return option.replace(/_/g, ' ');
     }
 
-    optionPairs = computed(() => this.options().map(opt => ({
-        value: opt,
-        label: this.formatOptionLabel(opt)
-    })));
+    // TODO: Eliminar este computed y obtener los operadores del back
+    optionPairs = computed(() => this.options().map(opt => {
+        if (typeof opt === 'string') {
+            return { value: opt, label: this.formatOptionLabel(opt) };
+        }
+
+        const o = opt as OptionObject;
+        const value = o.value ?? (o.id !== undefined ? String(o.id) : String(o));
+        const label = o.label ?? this.formatOptionLabel(String(value));
+        return { value, label };
+    }));
     value = signal<string>('');
     disabled = signal(false);
 

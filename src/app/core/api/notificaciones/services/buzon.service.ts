@@ -13,6 +13,8 @@ import { marcarLeida } from '../fn/buzon/marcar-leida';
 import { MarcarLeida$Params } from '../fn/buzon/marcar-leida';
 import { meGet } from '../fn/buzon/me-get';
 import { MeGet$Params } from '../fn/buzon/me-get';
+import { meLeidasPatch } from '../fn/buzon/me-leidas-patch';
+import { MeLeidasPatch$Params } from '../fn/buzon/me-leidas-patch';
 import { NotificacionResponse } from '../models/notificacion-response';
 
 
@@ -116,6 +118,39 @@ export class BuzonService extends BaseService {
    */
   marcarLeida(params: MarcarLeida$Params, context?: HttpContext): Promise<void> {
     const resp = this.marcarLeida$Response(params, context);
+    return resp.then((r: StrictHttpResponse<void>): void => r.body);
+  }
+
+  /** Path part for operation `meLeidasPatch()` */
+  static readonly MeLeidasPatchPath = '/me/leidas';
+
+  /**
+   * Marcar todas mis notificaciones no leídas como leídas.
+   *
+   * Marca como leídas todas las notificaciones del usuario autenticado que aún estén en estado no leído. Operación idempotente: si no existen no leídas, no realiza cambios.
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `meLeidasPatch()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  meLeidasPatch$Response(params?: MeLeidasPatch$Params, context?: HttpContext): Promise<StrictHttpResponse<void>> {
+    const obs = meLeidasPatch(this.http, this.rootUrl, params, context);
+    return firstValueFrom(obs);
+  }
+
+  /**
+   * Marcar todas mis notificaciones no leídas como leídas.
+   *
+   * Marca como leídas todas las notificaciones del usuario autenticado que aún estén en estado no leído. Operación idempotente: si no existen no leídas, no realiza cambios.
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `meLeidasPatch$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  meLeidasPatch(params?: MeLeidasPatch$Params, context?: HttpContext): Promise<void> {
+    const resp = this.meLeidasPatch$Response(params, context);
     return resp.then((r: StrictHttpResponse<void>): void => r.body);
   }
 

@@ -5,5 +5,7 @@ export type { MeGet$Params as MeGet$Params } from './fn/buzon/me-get';
 export { meGet as meGet } from './fn/buzon/me-get';
 export type { MarcarLeida$Params as MarcarLeida$Params } from './fn/buzon/marcar-leida';
 export { marcarLeida as marcarLeida } from './fn/buzon/marcar-leida';
+export type { MeLeidasPatch$Params as MeLeidasPatch$Params } from './fn/buzon/me-leidas-patch';
+export { meLeidasPatch as meLeidasPatch } from './fn/buzon/me-leidas-patch';
 export type { InternoDispararPost$Params as InternoDispararPost$Params } from './fn/interno/interno-disparar-post';
 export { internoDispararPost as internoDispararPost } from './fn/interno/interno-disparar-post';

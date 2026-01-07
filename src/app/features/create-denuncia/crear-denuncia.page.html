@@ -80,8 +80,8 @@
                 (uploadError)="handleUploadError($event)"></app-file-upload> -->
             <!-- crear-denuncia.page.html -->
             @defer (on viewport) {
-            <app-file-upload (filesChange)="evidencias.set($event)"
-                (uploadError)="handleUploadError($event)"></app-file-upload>
+            <app-file-upload (filesChange)="evidencias.set($event)" [uploadFn]="uploadEvidenceStrategy"
+                (uploadError)=" handleUploadError($event)"></app-file-upload>
 
             } @placeholder {
             <div class="h-32 border-2 border-dashed border-gray-300 rounded-lg"></div>

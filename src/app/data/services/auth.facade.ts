@@ -18,22 +18,16 @@ export class AuthFacade {
     readonly availableRoles = ROL_ENUM;
     readonly availableEntities = ENTIDAD_ENUM;
 
-    readonly defaultPath = computed(() => {
+    public defaultPath = computed(() => {
         const user = this.currentUser();
+        if (!user) return '/auth/login'; // O default público
 
-        if (!user || !user.rol) {
-            return '/auth';
-        }
-
-        switch (user.rol) {
-            case 'ADMIN_PLATAFORMA':
-                return '/admin';
-            case 'CIUDADANO':
-                return '/ciudadano';
-            default:
-                return '/auth';
-        }
+        // Devuelve la ruta basada en el nombre del rol.
+        // Normalizamos el rol a minúsculas y reemplazamos guiones bajos por guiones.
+        const rol = String(user.rol || '').toLowerCase().replace(/_/g, '-');
+        return `/${rol}`;
     });
+
 
     async getMe(): Promise<void> {
         if (this.currentUser()) {
@@ -58,5 +52,13 @@ export class AuthFacade {
 
     registerStaff(request: RegistroStaffRequest): Promise<RegistroUsuarioResponse> {
         return this.adminService.registerStaff({ body: request });
+    }
+    // TODO: manejar errores
+    async logout(): Promise<void> {
+        try {
+            await this.accountService.logout();
+        } finally {
+            this.currentUser.set(null);
+        }
     }
 }

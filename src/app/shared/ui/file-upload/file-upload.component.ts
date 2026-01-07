@@ -4,7 +4,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaperclip, faCloudUploadAlt, faCheckCircle, faXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE_BYTES } from '@/shared/constants/limit.const';
-import { FileUploadErrorEvent } from '@/core/model/file-upload.model';
+import { FileUploadErrorEvent } from '@/core/model/file-upload.event';
 
 // --- Clases de Error ---
 class FileTooLargeError extends Error {
@@ -32,13 +32,16 @@ export interface FileItem {
 })
 export class FileUploadComponent {
     private destroyRef = inject(DestroyRef);
+
     // === CONFIGURACIÓN ===
     maxSizeBytes = input<number>(MAX_FILE_SIZE_BYTES);
     allowedMimeTypes = input<string[]>(ALLOWED_MIME_TYPES);
     maxFilesCount = input<number>(2);
+    uploadFn = input.required<(file: File) => Promise<string>>();
 
     // === OUTPUTS ===
     filesChange = output<File[]>();
+    fileUploaded = output<string>();
     uploadError = output<FileUploadErrorEvent>();
 
     // === SIGNALS ===
@@ -166,11 +169,16 @@ export class FileUploadComponent {
             if (errorEvent) {
                 this.uploadError.emit(errorEvent);
             } else {
-                this.simulateUpload(itemId);
+                if (this.uploadFn()) {
+                    this.realUpload(itemId, file);
+                } else {
+                    this.simulateUpload(itemId);
+                }
             }
         });
 
         this.files.update(current => [...current, ...newItems]);
+        this.emitValidFiles();
     }
 
     private validarArchivo(file: File): void {
@@ -239,6 +247,44 @@ export class FileUploadComponent {
             .map(i => i.file);
 
         this.filesChange.emit(validFiles);
+    }
+
+    private async realUpload(itemId: string, file: File) {
+        // Simular progreso visual hasta 90%
+        const progressInterval = setInterval(() => {
+            this.files.update(items =>
+                items.map(i => {
+                    if (i.id === itemId && i.progress < 90) {
+                        return { ...i, progress: i.progress + 5 };
+                    }
+                    return i;
+                })
+            );
+        }, 200);
+        this.uploadIntervals.set(itemId, progressInterval);
+
+        try {
+            const uploader = this.uploadFn();
+            if (!uploader) throw new Error("No uploader function");
+
+            const id = await uploader(file);
+
+            clearInterval(progressInterval);
+            this.uploadIntervals.delete(itemId);
+
+            this.files.update(items =>
+                items.map(i => i.id === itemId ? { ...i, progress: 100, completed: true } : i)
+            );
+            this.fileUploaded.emit(id);
+            this.emitValidFiles();
+        } catch (error: any) {
+            clearInterval(progressInterval);
+            this.uploadIntervals.delete(itemId);
+
+            this.files.update(items =>
+                items.map(i => i.id === itemId ? { ...i, error: error.message || 'Error al subir', progress: 0 } : i)
+            );
+        }
     }
 
     private simulateUpload(itemId: string) {

@@ -1,4 +1,4 @@
-@if (safeUrl() && !loadError(); as url) {
+<!-- @if (safeUrl() && !loadError(); as url) {
 
 <img [ngSrc]="url" [width]="width()" [height]="height()" alt="Evidencia adjunta"
     class="w-full h-full object-cover transition-opacity duration-300" (error)="handleError()" />
@@ -11,4 +11,14 @@
     <p class="text-xs text-gray-500">No se pudo cargar la evidencia. Intenta recargar la página.</p>
 </div>
 
+} -->
+
+@if (safeUrl()) {
+<img [ngSrc]="safeUrl()!" [width]="width()" [height]="height()" (error)="handleLoadError()" alt="User provided content"
+    class="rounded-md object-cover" />
+} @else {
+<div class="flex items-center justify-center bg-gray-100 text-gray-500 text-xs text-center p-2"
+    [style.width.px]="width()" [style.height.px]="height()">
+    {{ displayError() }}
+</div>
 }

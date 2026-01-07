@@ -1,8 +1,9 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBell, faEnvelope, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
+import { AuthFacade } from '@/data/services/auth.facade';
 // breadcrumb imports removed: nav was eliminated from template
 
 @Component({
@@ -13,23 +14,18 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
     private router = inject(Router);
+    private authFacade = inject(AuthFacade);
 
     protected readonly faBell = faBell;
     protected readonly faEnvelope = faEnvelope;
     protected readonly faSignOutAlt = faSignOutAlt;
 
-    onLogout() {
-        // this.http.post(`${environment.apiUrl}/logout`, {}, { withCredentials: true })
-        //     .subscribe({
-        //         next: () => this.finalizeLogout(),
-        //         error: (err) => {
-        //             console.warn('El backend reportó error, pero cerramos sesión localmente igual.', err);
-        //             this.finalizeLogout();
-        //         }
-        //     });
+    async onLogout() {
+        await this.authFacade.logout();
+        this.finalizeLogout();
     }
 
     private finalizeLogout() {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/auth/login']);
     }
 }

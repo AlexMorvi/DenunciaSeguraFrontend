@@ -1,4 +1,4 @@
-<button [attr.type]="btnType" [disabled]="isDisabled || isLoading" [ngClass]="buttonClasses"
+<!-- <button [attr.type]="btnType" [disabled]="isDisabled || isLoading" [ngClass]="buttonClasses"
     [class.opacity-50]="isDisabled || isLoading" [class.cursor-not-allowed]="isDisabled || isLoading"
     [class.hover:bg-blue-700]="!isDisabled && !isLoading">
     @if (isLoading) {
@@ -8,6 +8,22 @@
     } @else {
     @if (variant !== 'small') {
     <fa-icon [icon]="icon ?? faDefault" class="mr-2" [ngClass]="{'text-sm': variant === 'medium'}"></fa-icon>
+    }
+    <span>{{ label }}</span>
+    }
+</button> -->
+<button [type]="btnType" [disabled]="isDisabled || isLoading" [class]="rootClasses" [attr.aria-busy]="isLoading"
+    [attr.aria-label]="isLoading ? loadingLabel : label">
+
+    @if (isLoading) {
+    <fa-icon [icon]="faSpinner" class="mr-2 fa-spin" [class]="iconSizeClasses">
+    </fa-icon>
+    <span>{{ loadingLabel }}</span>
+    }
+    @else {
+    @if (variant !== 'small' && icon) {
+    <fa-icon [icon]="icon" class="mr-2" [class]="iconSizeClasses">
+    </fa-icon>
     }
     <span>{{ label }}</span>
     }

@@ -1,0 +1,60 @@
+@if (denuncia(); as denuncia) {
+
+<app-denuncia-layout [hasActionsPanel]="showActionsPanel()">
+
+    <app-denuncia-details slot="details" [denuncia]="denuncia">
+    </app-denuncia-details>
+
+
+    @if (showActionsPanel()) {
+    <div slot="actions" class="h-full">
+
+        @switch (true) {
+
+        @case (isJefe()) {
+        @defer (on idle) {
+        <app-actions-jefe [currentDenuncia]="denuncia" (asignar)="asignarOperadorPorJefe($event)"
+            (validar)="validarDenunciaPorJefe($event)" [isLoading]="isLoading()" />
+        } @placeholder {
+        <div class=" h-full w-full bg-slate-100 animate-pulse rounded-lg min-h-[200px]"></div>
+        }
+        }
+
+        @case (isSupervisor()) {
+        @defer (on idle) {
+        <app-actions-supervisor [currentDenuncia]="denuncia" (asignar)="asignarJefePorSupervisor($event)"
+            [isLoading]="isLoading()" />
+        } @placeholder {
+        <div class="h-full w-full bg-slate-100 animate-pulse rounded-lg min-h-[200px]"></div>
+        }
+        }
+
+        @case (isOperador()) {
+        @defer (on idle) {
+        <app-actions-operador [currentDenuncia]="denuncia" [uploadEvidenceStrategy]="uploadEvidenceStrategy"
+            [isLoading]="isLoading()" (save)="resolverDenunciaPorOperador($event)" />
+        } @placeholder {
+        <div class=" h-full w-full bg-slate-100 animate-pulse rounded-lg min-h-[200px]">
+        </div>
+
+
+        }
+        }
+        }
+    </div>
+    }
+
+</app-denuncia-layout>
+
+} @else {
+<div class="animate-pulse w-full">
+
+
+    <div class="space-y-3 mt-7">
+        @for (item of [1, 2, 3]; track $index) {
+        <app-skeleton-loader customClass="h-[60px] w-[90%] rounded-lg block" />
+        }
+    </div>
+
+</div>
+}

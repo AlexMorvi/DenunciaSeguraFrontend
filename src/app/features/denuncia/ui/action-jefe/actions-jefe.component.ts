@@ -1,80 +1,85 @@
 // components/actions-panel/actions-panel.component.ts
-import { Component, input, output, inject, ChangeDetectionStrategy, signal, effect } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, input, output, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { SelectComponent } from '@/shared/ui/select/select.component';
 import { InputErrorComponent } from '@/shared/ui/input-error/input-error.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
-import { faUsers } from '@fortawesome/free-solid-svg-icons';
-import { ToastService } from '@/core/service/toast.service';
-import { LoggerService } from '@/core/service/logger.service';
-import { Router } from '@angular/router';
+import { faCheckCircle, faComment, faUsers, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { ToastService } from '@/core/service/toast/toast.service';
+import { InputComponent } from '@/shared/ui/input/input.component';
 
 @Component({
     selector: 'app-actions-jefe',
     standalone: true,
-    imports: [ReactiveFormsModule, UiStyleDirective, SelectComponent, SubmitButtonComponent, InputErrorComponent],
+    imports: [ReactiveFormsModule, UiStyleDirective, SelectComponent, SubmitButtonComponent, InputErrorComponent, InputComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './actions-jefe.component.html'
 })
 export class ActionsJefeComponent {
-    private denunciaFacade = inject(DenunciaFacade);
+    private fb = inject(FormBuilder);
     private toast = inject(ToastService);
-    private router = inject(Router);
+
+    protected readonly faCheck = faCheckCircle;
+    protected readonly faComment = faComment;
     protected readonly faUsers = faUsers;
+    protected readonly faTimes = faTimesCircle;
+
+    // onAssignmentComplete = output<void>();
+    validar = output<{ idDenuncia: number, aprobada: boolean, comentario?: string }>();
+    rechazar = output<{ idDenuncia: number, aprobada: boolean, comentario?: string }>();
+    asignar = output<{ idDenuncia: number, idOperador: number }>();
+
+    // TODO: Eliminar el signal true y utilizar el dinámico
+    // isEnValidacion = computed(() => this.currentDenuncia().estado === 'EN_VALIDACION');
+    isEnValidacion = signal(true);
+
+    // TODO: Cargar lista real de operadores desde un servicio
+    // Ahora `operadores` es un arreglo de objetos con `id` y `label`.
+    operadores = signal<{ id: number; label: string }[]>([
+        { id: 1, label: '1 - Operador Alpha' },
+        { id: 2, label: '2 - Operador Bravo' },
+        { id: 3, label: '3 - Operador Charlie' }
+    ]);
 
     // TODO: Utilizar la denuncia actual que envía denuncia page
     // currentDenuncia = input.required<DenunciaStaffViewResponse>();
     currentDenuncia = input.required<any>();
+    public isLoading = input<boolean>(false);
 
-    onAssignmentComplete = output<void>();
-
-    form = new FormGroup({
+    form = this.fb.nonNullable.group({
         operadorId: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-        notas: new FormControl('', { nonNullable: true })
+        comentarios: ['', [Validators.minLength(10), Validators.maxLength(500)]]
     });
 
-    // TODO: Cargar lista real de operadores desde un servicio
-    operadores = signal<string[]>(['1 - Operador Alpha', '2 - Operador Bravo', '3 - Operador Charlie']);
+    async asignarOperadorPorJefe() {
+        const denuncia = this.currentDenuncia();
+        if (!denuncia || !denuncia.id) return;
 
-    async asignarOperador() {
+        if (this.form.invalid) return;
 
-        if (this.form.invalid) {
+        const operadorId = Number(this.form.controls['operadorId'].value);
+
+        if (Number.isNaN(operadorId)) {
+            this.toast?.showWarning('Operador inválido');
             return;
         }
 
-        const denunciaId = this.currentDenuncia()?.id;
-        if (!denunciaId) {
-            return;
-        }
+        this.asignar.emit({
+            idDenuncia: denuncia.id,
+            idOperador: operadorId
+        });
+    }
 
-        // TODO: Obtener de forma correcta el operadorId
-        const selection = this.form.controls.operadorId.value;
+    async validarDenunciaPorJefe(aprobada = true) {
+        const denuncia = this.currentDenuncia();
+        if (!denuncia?.id) return;
 
-        if (typeof selection !== 'string' || !selection.trim()) {
-            this.form.controls.operadorId.setErrors({ invalidOperator: true });
-            this.toast.showError('Selecciona un operador válido.');
-            return;
-        }
+        if (!denuncia?.id || this.form.invalid) return;
 
-        // TODO: corregir esto en caso de que el formato del id cambie
-        const [idPart] = selection.split(' - ');
-        const operadorId = Number.parseInt(idPart, 10);
-        if (!Number.isInteger(operadorId)) {
-            this.form.controls.operadorId.setErrors({ invalidOperator: true });
-            this.toast.showError('Selecciona un operador válido.');
-            return;
-        }
-        try {
-            await this.denunciaFacade.asignarDenuncia(denunciaId, operadorId);
-            this.onAssignmentComplete.emit();
-            this.form.reset();
-
-            this.toast.showSuccess('Denuncia asignada', 'La denuncia ha sido asignada correctamente.');
-            await this.router.navigate(['/jefe/dashboard']);
-        } catch (error) {
-        }
+        const comentario = this.form.controls['comentarios'].value ?? '';
+        this.validar.emit({ idDenuncia: denuncia.id, aprobada, comentario: comentario });
     }
 }

@@ -1,4 +1,3 @@
-<!-- <div class="h-[calc(100%-2rem)] overflow-y-auto  "> -->
 <div class="h-full overflow-y-auto mb-6 ">
     @if (isLoading()) {
     <div class="animate-pulse w-full">
@@ -12,7 +11,15 @@
 
     </div>
     } @else {
-    <app-denuncias-table [denuncias]="denuncias()" [showCreateButton]="true" (onCreate)="goToCreate()">
+    @if (denuncias(); as denuncias) {
+
+    <app-denuncias-table [denuncias]="denuncias" [showCreateButton]="true" (onCreate)="goToCreate()">
     </app-denuncias-table>
+
+    } @else {
+    <p>Cargando...</p>
+    }
+    <!-- <app-denuncias-table [denuncias]="denuncias()" [showCreateButton]="true" (onCreate)="goToCreate()">
+    </app-denuncias-table> -->
     }
 </div>

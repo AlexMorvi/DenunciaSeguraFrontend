@@ -14,9 +14,14 @@ export const CITIZEN_ROUTES: Routes = [
                     .then(m => m.CiudadanoDashboardPage)
             },
             {
-                path: 'denuncia',
+                path: 'denuncias/nueva',
                 loadComponent: () => import('@/features/create-denuncia/crear-denuncia.page')
                     .then(m => m.CrearDenunciaComponent)
+            },
+            {
+                path: 'denuncias/:id',
+                loadComponent: () => import('@/features/denuncia/views/denuncia.page')
+                    .then(m => m.DenunciaPageComponent)
             },
             {
                 path: 'notifications',

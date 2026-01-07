@@ -11,6 +11,7 @@ export interface DenunciaStaffViewResponse {
    * Si es ANÓNIMO viene null. Si es SEUDÓNIMO viene alias.
    */
   datosCiudadano?: string;
+  descripcion?: string;
   estado?: EstadoDenunciaEnum;
 
   /**
@@ -24,6 +25,8 @@ export interface DenunciaStaffViewResponse {
   evidenciaResolucionIds?: Array<EvidenceId>;
   feedbackSupervisor?: string;
   id?: number;
+  latitud?: number;
+  longitud?: number;
   operadorId?: number;
   titulo?: string;
 }

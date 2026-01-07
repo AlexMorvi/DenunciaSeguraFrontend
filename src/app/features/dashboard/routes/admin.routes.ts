@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { DenunciasResolver } from './denuncias.resolver';
+// import { DenunciasResolver } from './denuncias.resolver';
 import { MainLayoutComponent } from '@/core/layout/main-layout/main-layout.component';
 
 export const ADMIN_ROUTES: Routes = [
@@ -12,7 +12,7 @@ export const ADMIN_ROUTES: Routes = [
                 path: 'dashboard',
                 loadComponent: () => import('@/features/dashboard/views/admin-dashboard/dashboard.page')
                     .then(m => m.AdminDashboardPage),
-                resolve: { denunciasLoaded: DenunciasResolver }
+                // resolve: { denunciasLoaded: DenunciasResolver }
             },
             {
                 path: 'roles',

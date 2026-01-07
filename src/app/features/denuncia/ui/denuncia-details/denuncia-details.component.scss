@@ -1,0 +1,38 @@
+@import 'leaflet/dist/leaflet.css';
+
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container img.leaflet-tile {
+  max-width: none !important;
+  max-height: none !important;
+  width: auto;
+  padding: 0;
+}
+
+/* Page-level layout to keep header/sidebar fixed and allow internal scrolling */
+:host {
+  display: block;
+  /* Match main layout calc used elsewhere (header ~80px). Adjust if your header height differs */
+  height: calc(100vh - 80px);
+}
+
+.page-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 1.5rem; /* keep existing spacing */
+}
+
+.page-root > .px-8 {
+  /* ensure header row does not shrink */
+  flex: 0 0 auto;
+}
+
+.page-scroll {
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+/* Reuse custom scrollbar style similar to denuncia layout */
+.page-scroll.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.page-scroll.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.page-scroll.custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }

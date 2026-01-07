@@ -1,11 +1,12 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { InputErrorComponent } from '@/shared/ui/input-error/input-error.component';
 import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faSearch, faPlus, faChevronDown, faChevronUp, faMapMarkerAlt, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faPlus, faChevronDown, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -21,8 +22,7 @@ export class DenunciasTableComponent {
     protected readonly faSearch = faSearch;
     protected readonly faPlus = faPlus;
     protected readonly faChevronDown = faChevronDown;
-    protected readonly faChevronUp = faChevronUp;
-    protected readonly faMapMarkerAlt = faMapMarkerAlt;
+    // protected readonly faChevronUp = faChevronUp; // Removed unused import
     protected readonly faCalendarAlt = faCalendarAlt;
     protected readonly faInfoCircle = faInfoCircle;
     protected readonly faImage = faImage;
@@ -34,7 +34,7 @@ export class DenunciasTableComponent {
 
     onCreate = output<void>();
 
-    expandedId = signal<number | null>(null);
+    // expandedId = signal<number | null>(null); // Removed signal logic
     searchControl = new FormControl('', {
         nonNullable: true,
         validators: [
@@ -63,9 +63,12 @@ export class DenunciasTableComponent {
         );
     });
 
-    toggleDetail(id?: number) {
-        if (id == null) return;
-        this.expandedId.update(curr => curr === id ? null : id);
+    constructor(private router: Router) { }
+
+    // TODO: Arreglar el tipo del id
+    navigateToDenuncia(id?: number | null | undefined) {
+        if (typeof id !== 'number' || !Number.isFinite(id) || id <= 0) return;
+        this.router.navigate(['/ciudadano/denuncias', id]);
     }
 
     getStatusClasses(estado?: EstadoDenunciaEnum | string | null): string {
@@ -90,11 +93,14 @@ export class DenunciasTableComponent {
         return v != null ? String(v) : '-';
     }
 
+
+    // TODO: No utilizar any, sino el tipo de openapi correcto
     getLng(denuncia: any): string {
         const v = denuncia?.longitud ?? denuncia?.longitude ?? null;
         return v != null ? String(v) : '-';
     }
 
+    // TODO: No utilizar any, sino el tipo de openapi correcto
     getFechaFormatted(denuncia: any): string {
         const val = denuncia?.fechaCreacion ?? denuncia?.createdAt ?? denuncia?.created_at ?? null;
         if (!val) return '-';

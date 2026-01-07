@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { FileUploadErrorEvent } from '@/core/model/file-upload.event';
 import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, viewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as L from 'leaflet';
@@ -26,9 +27,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { InputErrorComponent } from "@/shared/ui/input-error/input-error.component";
 import { InputComponent } from '@/shared/ui/input/input.component';
+import { FileUploadService } from '@/core/service/file-upload.service';
 
-const DEFAULT_COORDS = { lat: -0.1807, lng: -78.4678 }; // Quito
 const DEFAULT_ZOOM = 13;
+const DEFAULT_COORDS = { lat: -0.1807, lng: -78.4678 }; // Quito
 const FOCUSED_ZOOM = 15;
 
 // Configuración de iconos Leaflet (fuera de la clase para no recrear)
@@ -58,6 +60,7 @@ export class CrearDenunciaComponent implements OnDestroy {
     private toast = inject(ToastService);
     private logger = inject(LoggerService);
     private router = inject(Router);
+    private fileService = inject(FileUploadService);
 
     evidencias = signal<File[]>([]);
 
@@ -83,7 +86,7 @@ export class CrearDenunciaComponent implements OnDestroy {
 
     readonly form = this.fb.group({
         titulo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
-        descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
+        descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
         // INFO: Para establecer una categoría por defecto
         // categoria: ['VIALIDAD' as CategoriaEnum, [Validators.required]],
         categoria: [null as CategoriaEnum | null, [Validators.required]],
@@ -117,6 +120,7 @@ export class CrearDenunciaComponent implements OnDestroy {
 
             await this.facade.crearDenuncia(request, this.evidencias());
             this.toast.showSuccess('Denuncia enviada', 'Su denuncia ha sido registrada correctamente.');
+
             await this.router.navigate(['/ciudadano/dashboard']);
         } catch (error) {
             if (error instanceof EvidenceUploadError) {
@@ -129,6 +133,9 @@ export class CrearDenunciaComponent implements OnDestroy {
         }
     }
 
+    uploadEvidenceStrategy = (file: File): Promise<string> => {
+        return this.fileService.subirEvidencia(file);
+    }
 
     constructor() {
         afterNextRender(() => {
@@ -147,7 +154,6 @@ export class CrearDenunciaComponent implements OnDestroy {
     // =================================================================
     // LÓGICA DE MAPA Y GEOLOCALIZACIÓN
     // =================================================================
-
     private inicializarMapaSeguro(): void {
         try {
             const container = this.mapContainer().nativeElement;
@@ -159,7 +165,6 @@ export class CrearDenunciaComponent implements OnDestroy {
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(this.map);
 
-            L.Marker.prototype.options.icon = ICON_RED_CONFIG;
 
             this.map.on('click', (e: L.LeafletMouseEvent) => {
                 this.actualizarMarcador(e.latlng.lat, e.latlng.lng);
@@ -193,7 +198,11 @@ export class CrearDenunciaComponent implements OnDestroy {
         if (!this.map) return;
 
         if (!this.marker) {
-            this.marker = L.marker([lat, lng], { draggable: true }).addTo(this.map);
+            this.marker = L.marker([lat, lng], {
+                draggable: true,
+                icon: ICON_RED_CONFIG
+            }).addTo(this.map);
+
             this.marker.on('dragend', (event) => {
                 const position = event.target.getLatLng();
                 this.sincronizarCoordenadasFormulario(position.lat, position.lng);

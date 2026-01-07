@@ -2,27 +2,34 @@
     <div class="flex items-start justify-between mb-4">
         <div>
             <span
-                class="inline-flex items-center gap-1.5 py-1 px-3 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800 mb-3">
+                class="inline-flex items-center gap-1.5 py-1 px-3 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800 mb-2">
                 {{ denuncia().estado | titlecase }}
             </span>
             <h1 appText="h1">{{ denuncia().titulo }}</h1>
             <div appText="caption" class="text-left text-slate-500">
-                Reportado el {{denuncia().fechaCreacion | date:'medium' }}
+                Reportado el {{denuncia().fechaCreacion }}
             </div>
+        </div>
+        <div class="shrink-0 text-right">
+            <span class="block text-xm font-bold text-slate-400 uppercase tracking-wider">
+                #{{ denuncia().id }}
+            </span>
         </div>
     </div>
 
-    <hr class="border-gray-200 my-6">
+    <hr class="border-gray-200 my-4">
 
     <div class="mb-8">
-        <h3 appText="label" class="mb-2">
-            <fa-icon [icon]="faTriangleExclamation" class="mr-2 text-blue-600"></fa-icon>
+        <h3 appText="subtitle" class="mb-2">
+            <fa-icon [icon]="faFileAlt" class=" text-blue-600"></fa-icon>
             Descripción de la denuncia
         </h3>
         <p appText="body" class="whitespace-pre-wrap">{{ denuncia().descripcion }}</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-4 bg-gray-100 rounded-lg border border-gray-100">
+    <hr class="border-gray-200 my-4">
+
+    <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-4 bg-gray-100 rounded-lg border border-gray-100">
         <div>
             <span appText="caption" class="block text-left mb-1">Categoría</span>
             <div class="font-semibold text-slate-700 flex items-center gap-2">
@@ -33,58 +40,73 @@
             <span appText="caption" class="block text-left mb-1">ID Denuncia</span>
             <div class="font-mono text-slate-600">#{{ denuncia().id }}</div>
         </div>
+    </div> -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+        <div>
+            <span class=" text-xs text-slate-500 font-medium block text-left mb-1">Categoría</span>
+            <div class="font-semibold text-slate-700 flex items-center gap-2">
+                <fa-icon [icon]="faLayerGroup" class="text-slate-500"></fa-icon>
+                {{ denuncia().categoria }}
+            </div>
+        </div>
+
+        <div>
+            <span class="text-xs text-slate-500 font-medium block text-left mb-1">Reportado por</span>
+            <div class="font-semibold text-slate-700 flex items-center gap-2">
+                <fa-icon [icon]="faUser" class="text-slate-500"></fa-icon>
+
+                <span>{{ denuncia().datosCiudadano || 'Anónimo' }}</span>
+            </div>
+        </div>
+
     </div>
 
-    <h3 appText="label" class="mb-3">
-        <fa-icon [icon]="faImages" class="mr-2"></fa-icon> Evidencia Adjunta
-    </h3>
-    <div class="flex gap-4 overflow-x-auto pb-2">
-        @for (evidencia of denuncia().evidencias; track evidencia.url) {
-        <div class="relative shrink-0 w-40 h-40 rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
 
-            @if (evidencia.type === 'image') {
-            <app-secure-image [src]="evidencia.url" />
+    <!-- bg-slate-50 border-2 border-dashed border-slate-300 flex flex-col h-72 items-center justify-center p-6 rounded-lg text-center w-full -->
+    <!-- bg-gray-100 border border-emerald-100 h-72 leaflet-container leaflet-fade-anim leaflet-grab leaflet-retina leaflet-touch leaflet-touch-drag leaflet-touch-zoom overflow-hidden p-6 rounded-lg w-full -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 items-stretch">
+        <div class="h-72 box-border">
+            <h3 appText="label" class="mb-2 flex items-center gap-2">
+                <fa-icon [icon]="faImages" class="text-blue-600"></fa-icon>
+                Evidencia Adjunta
+            </h3>
 
+            <div class="h-full">
+                <app-evidencia-viewer class="h-full" [evidencias]="denuncia().evidencias" [emptyStateKey]="'ciudadano'"
+                    (imageError)="propagateError($event)"></app-evidencia-viewer>
+            </div>
+        </div>
+
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <h3 appText="label">
+                    <fa-icon [icon]="faMapMarkerAlt" class="text-blue-600"></fa-icon>
+                    Ubicación
+                </h3>
+                @if (googleMapsUrl(); as url) {
+                <a [href]="url" target="_blank" rel="noopener noreferrer"
+                    class="text-blue-600 hover:underline flex items-center gap-2"
+                    aria-label="Abrir ubicación de la denuncia en Google Maps">
+                    Ver en Google Maps
+                </a>
+                } @else {
+                <span class="text-gray-400 italic text-sm flex items-center gap-2" title="Coordenadas no válidas">
+                    <fa-icon [icon]="faCircleExclamation" class="text-gray-400"></fa-icon>
+                    Ubicación no disponible
+                </span>
+                }
+
+            </div>
+            @if (googleMapsUrl(); as url) {
+            <div #mapContainer
+                class="w-full h-72 box-border p-6 bg-gray-100 rounded-lg border-2 border-slate-300 overflow-hidden"
+                role="region" aria-label="Mapa de la denuncia"></div>
             } @else {
-            <div class="flex items-center justify-center h-full text-slate-400">
-                <span><fa-icon [icon]="faVideo" class="mr-1"></fa-icon> Video</span>
+            <div class="w-full h-48 bg-gray-100 rounded-lg border border-emerald-100 flex items-center justify-center">
+                <span class="text-emerald-600 font-medium">Ubicación no disponible</span>
             </div>
             }
-
-        </div>
-        }
-    </div>
-
-    <div class="mt-8">
-        <div class="flex justify-between items-center mb-3">
-            <h3 appText="label">
-                <fa-icon [icon]="faMapMarkerAlt" class="text-blue-600"></fa-icon>
-                Ubicación
-            </h3>
-            <!-- @if (googleMapsUrl(); as url) {
-            <a [href]="url" target="_blank" rel="noopener noreferrer" appText="link">
-                Ver en Google Maps
-            </a>
-            } @else {
-            <span class="text-gray-400 italic text-sm">Ubicación no disponible</span>
-            } -->
-
-            @if (googleMapsUrl(); as url) {
-            <a [href]="url" target="_blank" rel="noopener noreferrer"
-                class="text-blue-600 hover:underline flex items-center gap-2"
-                aria-label="Abrir ubicación de la denuncia en Google Maps">
-                Ver en Google Maps
-            </a>
-            } @else {
-            <span class="text-gray-400 italic text-sm flex items-center gap-2" title="Coordenadas no válidas">
-                <fa-icon [icon]="faCircleExclamation" class="mr-2 text-gray-400"></fa-icon>
-                Ubicación no disponible
-            </span>
-            }
-
-        </div>
-        <div class="w-full h-48 bg-gray-100 rounded-lg border border-emerald-100 flex items-center justify-center">
-            <span class="text-emerald-600 font-medium">Mapa interactivo aquí</span>
         </div>
     </div>
 
@@ -92,7 +114,7 @@
 
     <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
         <h3 appText="h3" class="mb-4 text-slate-800 flex items-center">
-            <fa-icon [icon]="faClipboardCheck" class="mr-2 text-slate-600"></fa-icon>
+            <fa-icon [icon]="faClipboardCheck" class="text-slate-600"></fa-icon>
             Gestión y Resolución
         </h3>
 
@@ -146,10 +168,9 @@
             } @else {
             <div
                 class="flex items-center justify-center p-6 bg-white rounded-lg border border-dashed border-slate-300 text-slate-400 text-sm">
-                <span><fa-icon [icon]="faImages" class="mr-2"></fa-icon> Sin evidencias adjuntas</span>
+                <span><fa-icon [icon]="faImages"></fa-icon> Sin evidencias adjuntas</span>
             </div>
             }
         </div>
     </div>
-
 </div>

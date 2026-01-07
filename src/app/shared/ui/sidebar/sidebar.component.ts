@@ -4,6 +4,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { NotificacionFacade } from '@/data/services/notificacion.facade';
 import { ROLES } from '@/shared/constants/roles.const';
+import { MENU_ITEMS } from './menu.config';
+import { MenuItem } from './menu.types';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBell, faUsers } from '@fortawesome/free-solid-svg-icons';
 
@@ -28,6 +30,23 @@ export class SidebarComponent {
 
     public dashboardLink = computed(() => [this.basePath(), 'dashboard']);
     public notificationsLink = computed(() => [this.basePath(), 'notificaciones']);
+
+    public menuItems = computed<MenuItem[]>(() => {
+        const user = this.currentUser();
+        const base = this.basePath();
+
+        if (!user) return [];
+        const userRol = user.rol;
+        if (!userRol) return [];
+
+        return MENU_ITEMS
+            .filter((item: MenuItem) => item.allowedRoles.includes(userRol)) // 1. Filtrado por Rol
+            .map((item: MenuItem) => ({
+                ...item,
+                // 2. Construcción de Ruta Dinámica: ['/supervisor', 'dashboard']
+                fullPath: [base, item.pathFragment]
+            }));
+    });
 
     public badgeLabel = computed(() => {
         const count = this.noLeidasCount();

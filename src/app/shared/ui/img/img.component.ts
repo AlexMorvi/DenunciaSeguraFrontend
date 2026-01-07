@@ -1,5 +1,8 @@
-import { Component, input, computed, signal, effect, untracked } from '@angular/core';
+import { Component, input, computed, signal, effect, untracked, output } from '@angular/core';
 import { NgOptimizedImage, CommonModule } from '@angular/common';
+import { ImgEvent } from '@/core/model/app.event';
+
+const ALLOWED_DOMAINS = ['tu-bucket.s3.amazonaws.com', 'api.tudominio.com', 'storage.googleapis.com'];
 
 @Component({
     selector: 'app-secure-image',
@@ -9,54 +12,90 @@ import { NgOptimizedImage, CommonModule } from '@angular/common';
 })
 export class SecureImageComponent {
     src = input.required<string>();
-    width = input<number>(160); // INFO: 160 = w-40
+    width = input<number>(160);
     height = input<number>(160);
 
-    loadError = signal<string | null>(null);
+    uploadError = output<ImgEvent>();
 
-    safeUrl = computed(() => this.validationState().url);
+    private browserLoadError = signal<string | null>(null);
 
-    displayError = computed(() => this.validationState().error || this.loadError());
-
-    constructor() {
-        effect(() => {
-            this.src();
-            untracked(() => this.loadError.set(null));
-        });
-    }
-
-    handleError() {
-        this.loadError.set('Imagen no disponible o expirada');
-    }
-
-    private validationState = computed(() => {
+    private validationResult = computed(() => {
         const rawUrl = this.src();
 
         if (!rawUrl.startsWith('https://')) {
-            // TODO: En desarrollo localhost podría ser http, ajusta según environment
-            // TODO: Loggear correctamente este incidente
-            console.warn('[Security] Bloqueado (No HTTPS):', rawUrl);
-            return { url: null, error: 'Fuente no segura' };
+            return {
+                isValid: false,
+                userMsg: 'Fuente no segura (No HTTPS)',
+                techMsg: 'Security Block: Mixed Content/Non-HTTPS',
+                reason: 'protocol_violation'
+            };
         }
 
         try {
             const urlObj = new URL(rawUrl);
-            // TODO: añadir el url de los dominios permitidos en producción
-            const allowList = ['tu-bucket.s3.amazonaws.com', 'api.tudominio.com', 'storage.googleapis.com'];
 
-            const isAllowed = allowList.some(domain => urlObj.hostname.includes(domain));
+            const isAllowed = ALLOWED_DOMAINS.some(domain =>
+                urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
+            );
 
             if (!isAllowed) {
-                // TODO: Loggear correctamente este incidente
-                console.warn('[Security] Dominio no autorizado:', urlObj.hostname);
-                return { url: null, error: 'Dominio externo no permitido' };
+                return {
+                    isValid: false,
+                    userMsg: 'Dominio externo no permitido',
+                    techMsg: `Security Block: Unauthorized Domain (${urlObj.hostname})`,
+                    reason: 'domain_policy'
+                };
             }
 
-            return { url: rawUrl, error: null };
-
-        } catch (e) {
-            // TODO: Loguear correctamente esto
-            return { url: null, error: 'URL mal formada' };
+            return { isValid: true, url: rawUrl, userMsg: null, techMsg: null, reason: null };
+        } catch {
+            return {
+                isValid: false,
+                userMsg: 'URL inválida',
+                techMsg: 'Security Block: Malformed URL',
+                reason: 'malformed_url'
+            };
         }
     });
+
+    safeUrl = computed(() => this.validationResult().isValid ? this.validationResult().url : null);
+    displayError = computed(() => this.validationResult().userMsg || this.browserLoadError());
+
+    constructor() {
+        effect(() => {
+            const result = this.validationResult();
+
+            untracked(() => {
+                if (!result.isValid) {
+                    this.emitErrorEvent(
+                        result.userMsg!,
+                        result.techMsg!,
+                        result.reason!,
+                        this.src()
+                    );
+                } else {
+                    this.browserLoadError.set(null);
+                }
+            });
+        });
+    }
+
+    handleLoadError() {
+        const msg = 'Imagen no disponible';
+        this.browserLoadError.set(msg);
+        this.emitErrorEvent(msg, 'Image Resource Not Found (404/Network)', 'network_error', this.src());
+    }
+
+    private emitErrorEvent(userMsg: string, techMsg: string, reason: string, url: string) {
+        const event: ImgEvent = {
+            userMessage: userMsg,
+            technicalMessage: techMsg,
+            severity: 'WARNING',
+            logData: {
+                format: reason,
+                url: url
+            }
+        };
+        this.uploadError.emit(event);
+    }
 }

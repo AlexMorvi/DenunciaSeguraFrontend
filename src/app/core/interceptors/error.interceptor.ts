@@ -10,7 +10,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
-            let userMessage = 'Ocurrió un error inesperado. Por favor intente más tarde.';
+            let userMessage = 'inter Ocurrió un error inesperado. Por favor intente más tarde.';
 
             logger.logError('API Error', { url: req.url, status: error.status, message: error.message });
 

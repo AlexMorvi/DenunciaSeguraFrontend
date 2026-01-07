@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IconDefinition, faSpinner, faCircle } from '@fortawesome/free-solid-svg-icons';
 
+type ButtonVariant = 'small' | 'medium' | 'full';
+type ButtonAppearance = 'primary' | 'secondary' | 'danger';
+
 @Component({
     selector: 'app-submit-button',
     standalone: true,
@@ -18,43 +21,36 @@ export class SubmitButtonComponent {
     protected readonly faSpinner = faSpinner;
     protected readonly faDefault: IconDefinition = faCircle;
 
-    @Input() isLoading: boolean = false;
-    @Input() isDisabled: boolean = false;
-    @Input({ required: true }) label: string = '';
-    @Input() loadingLabel: string = 'Cargando...';
+    @Input() isLoading = false;
+    @Input() isDisabled = false;
+    @Input({ required: true }) label = '';
+    @Input() loadingLabel = 'Cargando...';
     @Input() icon: IconDefinition | null = null;
-    @Input() variant: 'full' | 'medium' | 'small' = 'full';
-    @Input() appearance: 'primary' | 'secondary' = 'primary';
     @Input() btnType: 'submit' | 'button' | 'reset' = 'submit';
+    @Input() variant: ButtonVariant = 'full';
+    @Input() appearance: ButtonAppearance = 'primary';
 
-    get buttonClasses(): string {
-        const shared = 'inline-flex items-center justify-center rounded-lg transition-all duration-200 shadow-sm hover:shadow-md';
+    get rootClasses(): string {
+        const base = 'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1';
 
-        const variantSizes: Record<'small' | 'medium' | 'full', string> = {
-            small: 'px-3 py-3 text-xs',
-            medium: 'px-5 py-3 text-sm',
-            full: 'w-full py-3'
+        const disabledState = 'disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none';
+
+        const sizes = {
+            small: 'px-3 py-1.5 text-xs',
+            medium: 'px-4 py-2 text-sm',
+            full: 'w-full px-5 py-2.5 text-sm'
         };
 
-        if (this.appearance === 'primary') {
-            if (this.variant === 'full') {
-                return `${variantSizes.full} bg-blue-500 text-white rounded-lg font-medium flex items-center justify-center space-x-2 ${shared}`;
-            }
+        const colors = {
+            primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+            secondary: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-gray-200',
+            danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
+        };
 
-            const ring = this.variant === 'medium' ? 'focus:ring-4 focus:ring-blue-300' : 'focus:ring-3 focus:ring-blue-300';
-            return `${variantSizes[this.variant]} border border-transparent font-medium text-white bg-blue-600 hover:bg-blue-700 ${ring} ${shared}`;
-        }
-
-        // secondary
-        if (this.appearance === 'secondary') {
-            if (this.variant === 'full') {
-                return `${variantSizes.full} px-4 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200`;
-            }
-
-            return `${variantSizes[this.variant]} border border-gray-300 font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 ${shared}`;
-        }
-
-        return '';
+        return `${base} ${disabledState} ${sizes[this.variant]} ${colors[this.appearance]}`;
     }
 
+    get iconSizeClasses(): string {
+        return this.variant === 'small' ? 'text-xs' : 'text-sm';
+    }
 }

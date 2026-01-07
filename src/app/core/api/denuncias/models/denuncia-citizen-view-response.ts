@@ -27,5 +27,7 @@ export interface DenunciaCitizenViewResponse {
    */
   evidenciaResolucionIds?: Array<EvidenceId>;
   id?: number;
+  latitud?: number;
+  longitud?: number;
   titulo?: string;
 }

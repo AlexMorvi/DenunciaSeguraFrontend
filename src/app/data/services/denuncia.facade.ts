@@ -1,14 +1,11 @@
-import { CrearDenunciaRequest, DenunciaCitizenViewResponse, DenunciaStaffViewResponse, EvidenceId } from '@/core/api/denuncias/models';
+import { CrearDenunciaRequest, EvidenceId } from '@/core/api/denuncias/models';
+import { DenunciaView } from '@/core/model/denuncia.model';
 import { CiudadanoService as DenunciasApiService, GestionInternaService } from '@/core/api/denuncias/services';
-import { CrearUploadRequest } from '@/core/api/evidencias/models/crear-upload-request';
-import { UploadsService } from '@/core/api/evidencias/services/uploads.service';
-import { SKIP_AUTH } from '@/core/http/http-context';
-import { EvidenceUploadError } from '@/core/errors/create-denuncia.errors';
-import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { catchError, firstValueFrom, from, of, retry, timeout } from 'rxjs';
+import { LoggerService } from '@/core/service/logging/logger.service';
+import { FileUploadService } from '@/core/service/file-upload.service';
 
-const PROPOSITO_CARGA = 'CIUDADANO_CREACION';
 
 @Injectable({
     providedIn: 'root'
@@ -16,66 +13,141 @@ const PROPOSITO_CARGA = 'CIUDADANO_CREACION';
 export class DenunciaFacade {
     private denunciaService = inject(DenunciasApiService);
     private gestionInternaService = inject(GestionInternaService);
-    private uploadsService = inject(UploadsService);
     private http = inject(HttpClient);
+    private logger = inject(LoggerService);
+    private uploadService = inject(FileUploadService);
 
     private _loading = signal(false);
     private _error = signal<string | null>(null);
     readonly loading = this._loading.asReadonly();
     readonly error = this._error.asReadonly();
 
-    // Señal interna para la lista de denuncias y acceso público de solo-lectura
-    private _denuncias = signal<DenunciaCitizenViewResponse[]>([]);
-    public denuncias = this._denuncias.asReadonly();
+    private _denuncias = signal<DenunciaView[]>([]);
+    private _currentDenuncia = signal<DenunciaView | null>(null);
 
-    async refresh(): Promise<void> {
+    public denuncias = this._denuncias.asReadonly();
+    public currentDenuncia = this._currentDenuncia.asReadonly();
+
+    async loadAll(): Promise<void> {
         this._loading.set(true);
+
         try {
-            const data = await firstValueFrom(
-                from(this.denunciaService.denunciasMeGet()).pipe(
-                    catchError(() => of([] as DenunciaCitizenViewResponse[]))
-                )
-            );
+            const data = await this.denunciaService.denunciasMeGet();
             this._denuncias.set(data || []);
         } catch (err) {
+            this._error.set("No se pudo cargar las denuncias.");
             this._denuncias.set([]);
         } finally {
             this._loading.set(false);
         }
     }
 
-    async asignarDenuncia(id: number, operadorId: number): Promise<void> {
+    async loadById(id: number): Promise<void> {
+        this._loading.set(true);
+
+        this._currentDenuncia.set(null);
+
+        try {
+            // TODO: Reemplazar por el método correcto cuando esté disponible
+            // let data: DenunciaView;
+            // data = await this.denunciaService.denunciasIdGet({ id });
+            // this._currentDenuncia.set(data);
+            const list = await this.denunciaService.denunciasMeGet();
+            const first = Array.isArray(list) && list.length > 0 ? list[0] : null;
+            this._currentDenuncia.set(first);
+
+        } catch (err) {
+            this._error.set("No se pudo cargar la información de la denuncia.");
+            this._currentDenuncia.set(null);
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async asignarOperadorPorJefe(idDenuncia: number, idOperador: number): Promise<void> {
         this._loading.set(true);
         this._error.set(null);
         try {
             await this.gestionInternaService.denunciasIdAsignacionPost({
-                id,
-                body: { operadorId }
+                id: idDenuncia,
+                body: { operadorId: idOperador }
             });
         } catch (err) {
-            this._error.set('Error al asignar la denuncia.');
-            throw err;
+            this._error.set('Error al asignar la denuncia a operador.');
         } finally {
             this._loading.set(false);
         }
     }
 
-    async marcarComoResuelta(id: number, comentarioResolucion?: string): Promise<void> {
+    async asignarJefePorSupervisor(idDenuncia: number, idOperador: number): Promise<void> {
         this._loading.set(true);
         this._error.set(null);
+
+
+        try {
+            // TODO: Reemplazar por el método correcto cuando esté disponible del back
+            // await this.gestionInternaService.denunciasIdAsignacionPost({
+            //     id: idDenuncia,
+            //     body: { operadorId: idOperador }
+            // });
+        } catch (err) {
+            this._error.set('Error al asignar la denuncia a entidad responsable.');
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async resolverDenunciaPorOperador(id: number, comentarioResolucion: string, evidenciasIds?: string[]): Promise<void> {
+        this._loading.set(true);
+        this._error.set(null);
+
         try {
             await this.gestionInternaService.denunciasIdResolucionPatch({
                 id,
-                body: comentarioResolucion ? { comentarioTecnico: comentarioResolucion } : {}
+                body: {
+                    ...(comentarioResolucion ? { comentarioTecnico: comentarioResolucion } : {}),
+                    ...(evidenciasIds ? { evidenciaIds: evidenciasIds } : {})
+                }
             });
         } catch (err) {
             this._error.set('Error al marcar la denuncia como resuelta.');
-            throw err;
         } finally {
             this._loading.set(false);
         }
     }
 
+    async iniciarDenunciaPorOperador(idDenuncia: number): Promise<void> {
+        this._loading.set(true);
+        this._error.set(null);
+
+        try {
+            // await this.gestionInternaService.denunciasIdResolucionPatch({
+            //     id: idDenuncia,
+            // });
+        } catch (err) {
+            this._error.set('Error al marcar la denuncia como resuelta.');
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async validarDenunciaPorSupervisor(id: number, aprobada: boolean, feedbackSupervisor?: string): Promise<void> {
+        this._loading.set(true);
+        this._error.set(null);
+        try {
+            await this.gestionInternaService.denunciasIdValidacionPatch({
+                id,
+                body: {
+                    aprobada,
+                    ...(feedbackSupervisor ? { feedbackSupervisor } : {})
+                }
+            });
+        } catch (err) {
+            this._error.set('Error al validar la denuncia.');
+        } finally {
+            this._loading.set(false);
+        }
+    }
     constructor() {
         // Constructor sin carga automática: la carga se realizará desde un Resolver
         // o desde el componente que necesite los datos. Evitamos auto-refresh aquí
@@ -86,132 +158,24 @@ export class DenunciaFacade {
         this._loading.set(true);
         this._error.set(null);
 
-        try {
-            if (archivos && archivos.length > 0) {
-                const evidenciasIds: EvidenceId[] = [];
+        if (archivos && archivos.length > 0) {
+            const evidenciasIds: EvidenceId[] = [];
 
-                for (const archivo of archivos) {
-                    const evidenciaId = await this.subirEvidencia(archivo);
-                    evidenciasIds.push(evidenciaId);
-                }
-                datos.evidenciaIds = datos.evidenciaIds || [];
-                datos.evidenciaIds.push(...evidenciasIds);
+            for (const archivo of archivos) {
+                const evidenciaId = await this.uploadService.subirEvidencia(archivo);
+                evidenciasIds.push(evidenciaId);
             }
-            const respuesta = await this.denunciaService.crearDenuncia({ body: datos });
-        } catch (err: any) {
-            // TODO: Mejorar los mensajes
-            const mensaje = err?.error?.message || err?.message || 'Ocurrió un error inesperado al procesar su solicitud.';
-            this._error.set(mensaje);
-            throw err;
-
-        } finally {
-            this._loading.set(false);
-        }
-    }
-    async subirEvidencia(archivo: File): Promise<EvidenceId> {
-        let currentStep = 'INICIO';
-        try {
-            currentStep = 'SESION';
-            const { uploadUrl, uploadId, evidenceId } = await this.iniciarSesionCarga(archivo);
-
-            currentStep = 'CARGA_NUBE';
-            await this.cargarArchivoEnNube(uploadUrl, archivo);
-
-            currentStep = 'CONFIRMACION';
-            await this.confirmarSubida(uploadId, evidenceId);
-
-            return evidenceId;
-        } catch (error) {
-            // TODO: Loguear el error correctamente
-            console.error(`Error en fase ${currentStep}:`, error);
-
-            // Mapeo de errores para el usuario
-            if (currentStep === 'SESION') {
-                throw new EvidenceUploadError('El servidor rechazó el inicio de la carga. Verifique el tamaño o tipo.');
-            } else if (currentStep === 'CARGA_NUBE') {
-                throw new EvidenceUploadError('Error de conexión al subir la imagen. Verifique su internet.');
-            } else {
-                // Caso raro: Se subió pero no se confirmó. 
-                // Aquí podrías implementar una lógica de "compensación" o cola de reintento silencioso.
-                throw new EvidenceUploadError('La imagen se subió pero no pudimos verificarla. Intente guardar nuevamente.');
-            }
-        }
-    }
-    // async subirEvidencia(archivo: File): Promise<EvidenceId> {
-    //     try {
-    //         const { uploadUrl, uploadId, evidenceId } = await this.iniciarSesionCarga(archivo);
-    //         await this.cargarArchivoEnNube(uploadUrl, archivo);
-    //         await this.confirmarSubida(uploadId, evidenceId);
-
-    //         return evidenceId;
-    //     } catch (error) {
-    //         // TODO: Loguear el error correctamente y por cada archivo, en caso de que uno falle
-    //         throw new EvidenceUploadError('No se pudo subir la evidencia. Por favor, intente nuevamente.');
-    //     }
-
-    // }
-
-    private async iniciarSesionCarga(archivo: File) {
-        const payload: CrearUploadRequest = {
-            proposito: PROPOSITO_CARGA,
-            archivos: [{
-                nombreArchivo: archivo.name,
-                contentType: archivo.type,
-                sizeBytes: archivo.size
-            }]
-        };
-
-        const response = await this.uploadsService.uploadsPost({ body: payload });
-        const item = response.items?.[0];
-
-        // Cláusulas de guarda para validación temprana
-        if (!response.uploadId || !item?.uploadUrl || !item?.evidenceId) {
-            throw new Error('La sesión de carga no devolvió los datos requeridos (URL o IDs faltantes).');
+            datos.evidenciaIds = datos.evidenciaIds || [];
+            datos.evidenciaIds.push(...evidenciasIds);
         }
 
-        return {
-            uploadId: response.uploadId,
-            uploadUrl: item.uploadUrl,
-            evidenceId: item.evidenceId
-        };
-    }
-
-    private async cargarArchivoEnNube(url: string, archivo: File): Promise<void> {
-        await firstValueFrom(
-            this.http.put(url, archivo, {
-                headers: new HttpHeaders({
-                    'Content-Type': archivo.type
-                }),
-                context: new HttpContext().set(SKIP_AUTH, true),
-                reportProgress: true,
-                observe: 'events'
-            }).pipe(
-                retry({ count: 2, delay: 1000 }),
-                timeout(120000)
-            )
-        );
-
-    }
-
-    private async confirmarSubida(uploadId: string, evidenceId: string): Promise<void> {
-        await this.uploadsService.uploadsUploadIdConfirmarPost({
-            uploadId,
-            body: { evidenceIds: [evidenceId] }
-        });
-    }
-
-    async getById(denunciaId: number): Promise<DenunciaStaffViewResponse> {
-        //TODO: Conectar con el método correcto de openapi (aún no existe)
-        // await this.denunciasService.uploadsUploadIdConfirmarPost({
-        //     uploadId,
-        //     body: { evidenceIds: [evidenceId] }
+        //TODO: qué hacer con la respuesta?
+        const respuesta = await this.denunciaService.crearDenuncia({ body: datos });
+        // this.logger.logInfo('Denuncia creada exitosamente', {
+        //     id: respuesta.id,
+        //     codigo: respuesta.mensaje
         // });
-        return null as any;
     }
 
-    // TODO: arreglar esto con el método de openapi correcto
-    async currentDenuncia() {
-        return null as any;
-    }
 
 }
