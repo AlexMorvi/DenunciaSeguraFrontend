@@ -6,13 +6,20 @@ import { RegistroUsuarioResponse } from '@/core/api/auth/models/registro-usuario
 import { ROL_ENUM } from '@/core/api/auth/models/rol-enum-array';
 import { ENTIDAD_ENUM } from '@/core/api/auth/models/entidad-enum-array';
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { PublicoService } from '@/core/api/auth/services';
+import { ActualizarAliasRequest, AliasResponse } from '@/core/api/auth/models';
+import { LoggerService } from '@/core/service/logging/logger.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
     private accountService = inject(CuentaService);
     private adminService = inject(AdminService);
-    readonly currentUser = signal<UsuarioPerfilResponse | null>(null);
-    readonly loading = signal<boolean>(false);
+    private publicoService = inject(PublicoService);
+    private readonly logger = inject(LoggerService);
+    private readonly _currentUser = signal<UsuarioPerfilResponse | null>(null);
+    public readonly currentUser = this._currentUser.asReadonly();
+    private _loading = signal(false);
+    readonly loading = this._loading.asReadonly();
 
     // Expose constants for UI consumption
     readonly availableRoles = ROL_ENUM;
@@ -20,14 +27,32 @@ export class AuthFacade {
 
     public defaultPath = computed(() => {
         const user = this.currentUser();
-        if (!user) return '/auth/login'; // O default público
+        if (!user) return '/auth/login';
 
-        // Devuelve la ruta basada en el nombre del rol.
-        // Normalizamos el rol a minúsculas y reemplazamos guiones bajos por guiones.
         const rol = String(user.rol || '').toLowerCase().replace(/_/g, '-');
         return `/${rol}`;
     });
 
+    public updateAuthState(user: UsuarioPerfilResponse | null): void {
+        if (user === null) {
+            this._currentUser.set(null);
+            this.logger.logInfo('AuthFacade', 'Sesión de usuario limpiada');
+            return;
+        }
+
+        if (!this.isValidUser(user)) {
+            this.logger.logError('AuthFacade', 'Intento de actualizar estado con datos corruptos', {
+                receivedData: user
+            });
+        }
+
+        this._currentUser.set(user);
+        this.logger.logInfo('AuthFacade', 'Estado de usuario actualizado', { userId: user.id });
+    }
+
+    private isValidUser(user: any): user is UsuarioPerfilResponse {
+        return user && typeof user.id === 'number' && user.id > 0;
+    }
 
     async getMe(): Promise<void> {
         if (this.currentUser()) {
@@ -35,30 +60,52 @@ export class AuthFacade {
         }
 
         try {
-            this.loading.set(true);
+            this._loading.set(true);
             const user = await this.accountService.getMe();
-            this.currentUser.set(user || null);
+            this._currentUser.set(user || null);
         } catch (err) {
-            this.currentUser.set(null);
+            this._currentUser.set(null);
         } finally {
-            this.loading.set(false);
+            this._loading.set(false);
         }
     }
 
     refreshUser() {
-        this.currentUser.set(null);
+        this._currentUser.set(null);
         return this.getMe();
     }
 
     registerStaff(request: RegistroStaffRequest): Promise<RegistroUsuarioResponse> {
         return this.adminService.registerStaff({ body: request });
     }
+
+    async updateMyAlias(alias: string): Promise<AliasResponse> {
+        const body: ActualizarAliasRequest = { aliasPublico: alias };
+        this._loading.set(true);
+        try {
+            return await this.accountService.updateMyAlias({ body });
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async updateCitizenAlias(alias: string): Promise<AliasResponse> {
+        // TODO: El endpoint real para actualizar el alias de un ciudadano debe ser implementado.
+        const body: ActualizarAliasRequest = { aliasPublico: alias };
+        this._loading.set(true);
+        try {
+            return await this.accountService.updateMyAlias({ body });
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
     // TODO: manejar errores
     async logout(): Promise<void> {
         try {
             await this.accountService.logout();
         } finally {
-            this.currentUser.set(null);
+            this._currentUser.set(null);
         }
     }
 }
