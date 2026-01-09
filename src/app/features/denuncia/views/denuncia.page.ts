@@ -1,5 +1,5 @@
 import { Component, inject, computed, input, effect, untracked } from '@angular/core';
-import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models/denuncia-staff-view-response';
+// import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models/denuncia-staff-view-response';
 import { DenunciaLayoutComponent } from '@/core/layout/denuncia-layout/denuncia-layout.component';
 import { DenunciaDetailsComponent } from '../ui/denuncia-details/denuncia-details.component';
 import { ActionsSupervisorComponent } from '../ui/action-supervisor/actions-supervisor.component';
@@ -56,15 +56,15 @@ export class DenunciaPageComponent {
     isSupervisor = computed(() => {
         // const rol = this.authService.currentUser()?.rol;
         // return this.authService.currentUser()?.rol === ROLES.SUPERVISOR;
-        return true;
-        // return false;
+        // return true;
+        return false;
     });
 
     isOperador = computed(() => {
         // const rol = this.authService.currentUser()?.rol;
         // return [ROLES.OPERADOR_INTERNO, ROLES.OPERADOR_EXTERNO].includes(rol as any);
-        return false;
-        // return true;
+        // return false;
+        return true;
     });
 
     isCiudadano = computed(() => {
