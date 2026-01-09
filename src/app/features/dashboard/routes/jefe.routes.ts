@@ -18,6 +18,11 @@ export const JEFE_ROUTES: Routes = [
                 loadComponent: () => import('@/features/denuncia/views/denuncia.page')
                     .then(m => m.DenunciaPageComponent)
             },
+            {
+                path: 'perfil',
+                loadComponent: () => import('@/features/perfil/perfil.page')
+                    .then(m => m.PerfilPageComponent)
+            },
             // {
             //     path: 'notifications',
             //     loadComponent: () => import('@/features/notification/views/notifications-page/notifications.page')

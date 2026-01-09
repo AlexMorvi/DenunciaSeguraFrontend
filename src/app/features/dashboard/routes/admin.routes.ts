@@ -18,6 +18,11 @@ export const ADMIN_ROUTES: Routes = [
                 path: 'roles',
                 loadComponent: () => import('@/features/roles/staff-manager.page')
                     .then(m => m.StaffManagerPage)
+            },
+            {
+                path: 'perfil',
+                loadComponent: () => import('@/features/perfil/perfil.page')
+                    .then(m => m.PerfilPageComponent)
             }
         ]
     }

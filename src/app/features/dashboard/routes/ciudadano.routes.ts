@@ -28,6 +28,11 @@ export const CITIZEN_ROUTES: Routes = [
                 loadComponent: () => import('@/features/notification/views/notifications-page/notifications.page')
                     .then(m => m.NotificationsPage)
             },
+            {
+                path: 'perfil',
+                loadComponent: () => import('@/features/perfil/perfil.page')
+                    .then(m => m.PerfilPageComponent)
+            },
         ]
     }
 ];

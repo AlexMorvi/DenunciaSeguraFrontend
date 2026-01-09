@@ -1,4 +1,3 @@
-
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from '@/core/layout/main-layout/main-layout.component';
 
@@ -18,6 +17,11 @@ export const SUPERVISOR_ROUTES: Routes = [
                 path: 'denuncias/:id',
                 loadComponent: () => import('@/features/denuncia/views/denuncia.page')
                     .then(m => m.DenunciaPageComponent)
+            },
+            {
+                path: 'perfil',
+                loadComponent: () => import('@/features/perfil/perfil.page')
+                    .then(m => m.PerfilPageComponent)
             },
             // {
             //     path: 'notifications',
