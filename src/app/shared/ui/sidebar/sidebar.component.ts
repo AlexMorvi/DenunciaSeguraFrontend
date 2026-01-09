@@ -7,7 +7,7 @@ import { ROLES } from '@/shared/constants/roles.const';
 import { MENU_ITEMS } from './menu.config';
 import { MenuItem } from './menu.types';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faBell, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-sidebar',
@@ -19,6 +19,7 @@ import { faBell, faUsers } from '@fortawesome/free-solid-svg-icons';
 export class SidebarComponent {
     protected readonly faBell = faBell;
     protected readonly faUsers = faUsers;
+    protected readonly faUser = faUser;
 
     private authFacade = inject(AuthFacade);
     private notificationFacade = inject(NotificacionFacade);
