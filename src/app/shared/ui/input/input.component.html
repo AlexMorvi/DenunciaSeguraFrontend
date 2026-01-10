@@ -8,11 +8,10 @@
     @if (!multiline()) {
 
     <input [id]="id()" [type]="inputType()" [placeholder]="placeholder()" [autocomplete]="autocomplete()"
-        [attr.inputmode]="inputmode() || null" [attr.maxlength]="maxlength()" [attr.autofocus]="autofocus() || null"
-        [value]="value()" [disabled]="disabled()" (input)="onInput($event)" (blur)="onBlur()"
-        class="pr-4 py-2 border rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-        [class]="icon() ? 'pl-10' : 'pl-4'" [class.pr-10]="canToggleVisibility()" [class.border-red-500]="hasError"
-        [class.border-gray-300]="!hasError" />
+        [attr.inputmode]="inputmode() || null" [attr.maxlength]="maxlength()" [value]="value()" [disabled]="disabled()"
+        (input)="onInput($event)" (blur)="onBlur()" class="pr-4 py-2 border rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent
+    transition-colors" [class]="icon() ? 'pl-10' : 'pl-4'" [class.pr-10]="canToggleVisibility()"
+        [class.border-red-500]="hasError" [class.border-gray-300]="!hasError" />
 
     @if (canToggleVisibility()) {
     <button type="button" (click)="togglePasswordVisibility()"
