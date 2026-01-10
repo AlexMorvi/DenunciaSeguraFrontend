@@ -8,11 +8,6 @@
                 <app-input-error [control]="searchControl"
                     [messages]="{ pattern: 'La búsqueda contiene caracteres no permitidos.' }"></app-input-error>
             </div>
-
-            @if (showCreateButton()) {
-            <app-submit-button [variant]="'medium'" (click)="onCreate.emit()" label="Nueva Denuncia" [icon]="faPlus">
-            </app-submit-button>
-            }
         </div>
 
         <div

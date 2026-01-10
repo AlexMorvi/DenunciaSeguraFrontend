@@ -1,28 +1,28 @@
-import { Component, input, output, computed } from '@angular/core';
+import { Component, input, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
-import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { InputErrorComponent } from '@/shared/ui/input-error/input-error.component';
 import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faSearch, faPlus, faChevronDown, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faChevronDown, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-const SEARCH_PATTERN = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-\.\_]*$/;
+const SEARCH_PATTERN = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-._]*$/;
 
 @Component({
     selector: 'app-denuncias-table',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, SubmitButtonComponent, FontAwesomeModule, InputComponent, InputErrorComponent],
+    imports: [FormsModule, ReactiveFormsModule, FontAwesomeModule, InputComponent, InputErrorComponent],
     templateUrl: './denuncias-table.component.html',
 })
 export class DenunciasTableComponent {
+    private router = inject(Router);
+
     protected readonly faSearch = faSearch;
-    protected readonly faPlus = faPlus;
     protected readonly faChevronDown = faChevronDown;
-    // protected readonly faChevronUp = faChevronUp; // Removed unused import
+    // protected readonly faChevronUp = faChevronUp;
     protected readonly faCalendarAlt = faCalendarAlt;
     protected readonly faInfoCircle = faInfoCircle;
     protected readonly faImage = faImage;
@@ -30,11 +30,7 @@ export class DenunciasTableComponent {
 
     denuncias = input.required<Denuncia[]>();
 
-    showCreateButton = input(true);
 
-    onCreate = output<void>();
-
-    // expandedId = signal<number | null>(null); // Removed signal logic
     searchControl = new FormControl('', {
         nonNullable: true,
         validators: [
@@ -63,7 +59,6 @@ export class DenunciasTableComponent {
         );
     });
 
-    constructor(private router: Router) { }
 
     // TODO: Arreglar el tipo del id
     navigateToDenuncia(id?: number | null | undefined) {
