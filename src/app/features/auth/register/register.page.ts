@@ -31,7 +31,7 @@ export class RegisterComponent {
     private readonly fb = inject(FormBuilder);
     private readonly router = inject(Router);
 
-    message = signal<string | null>(null);
+    // message = signal<string | null>(null);
     messageClass = signal<'success' | 'error' | 'info' | null>(null);
     submitting = signal(false);
 

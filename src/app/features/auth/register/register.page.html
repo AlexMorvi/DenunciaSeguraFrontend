@@ -32,34 +32,17 @@
                 [errors]="{ required: 'La contraseña es obligatoria.', minlength: 'Mínimo 8 caracteres.' }" />
         </div>
 
-        @if (message(); as msg) {
-        <div role="alert" class="p-4 rounded-lg border text-sm flex items-start animate-fade-in" [class]="{
-                'bg-green-50 border-green-200 text-green-800': messageClass() === 'success',
-                'bg-red-50 border-red-200 text-red-800': messageClass() === 'error',
-                'bg-blue-50 border-blue-200 text-blue-800': messageClass() === 'info'
-             }">
-
-            <fa-icon [icon]="
-                messageClass() === 'success' ? faCheckCircle : 
-                messageClass() === 'error' ? faExclamationCircle : faInfoCircle
-            " class="mt-0.5 mr-3 flex-shrink-0" aria-hidden="true"></fa-icon>
-
-            <span>{{ msg }}</span>
-        </div>
-        }
-
         <app-submit-button [variant]="'full'" [isLoading]="submitting()" [isDisabled]="!isFormValid"
             label="Crear cuenta" loadingLabel="Creando cuenta..." [icon]="faUserPlus">
         </app-submit-button>
-
-
-        <div class="text-center">
-            <span appText="body-link">¿Ya tienes cuenta?</span>
-            <a routerLink="/auth/login" appText="link">
-                Iniciar sesión
-            </a>
-        </div>
     </form>
+
+    <div class="text-center mt-5">
+        <span appText="body-link">¿Ya tienes cuenta?</span>
+        <a routerLink="/auth/login" appText="link">
+            Iniciar sesión
+        </a>
+    </div>
 
     <p class="mt-7" appText="caption">
         Team List Dashboard — Administración
