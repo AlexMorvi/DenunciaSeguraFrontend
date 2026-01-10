@@ -1,9 +1,8 @@
 import { Component, input, output, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { LoggerService } from '@/core/service/logging/logger.service';
-import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models';
+// import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models';
 import { ESTADO_DENUNCIA_ENUM } from '@/core/api/denuncias/models/estado-denuncia-enum-array';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { InputComponent } from '@/shared/ui/input/input.component';
@@ -23,7 +22,6 @@ import { FileUploadErrorEvent } from '@/core/model/file-upload.event';
 })
 export class ActionsOperadorComponent {
     private fb = inject(FormBuilder);
-    private denunciaFacade = inject(DenunciaFacade);
     private toast = inject(ToastService);
     private logger = inject(LoggerService);
 

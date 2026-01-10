@@ -27,8 +27,8 @@
             </div>
         </div>
         <div class="flex gap-3">
-            <app-submit-button label="Iniciar proceso" [icon]="faPlay" [isLoading]="false" [isDisabled]="isLoading()"
-                btnType="button" (click)="iniciarDenunciaPorOperador()" class="w-full">
+            <app-submit-button label="Iniciar proceso" [icon]="faPlay" [isLoading]="isLoading()"
+                [isDisabled]="isLoading()" btnType="button" (click)="iniciarDenunciaPorOperador()" class="w-full">
             </app-submit-button>
 
             <app-submit-button label="Resolver denuncia" [icon]="faCheck" [isLoading]="isLoading()"
