@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IconDefinition, faSpinner, faCircle } from '@fortawesome/free-solid-svg-icons';
@@ -15,24 +15,24 @@ type ButtonAppearance = 'primary' | 'secondary' | 'danger';
         :host {
             display: block;
         }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SubmitButtonComponent {
     protected readonly faSpinner = faSpinner;
-    protected readonly faDefault: IconDefinition = faCircle;
+    protected readonly faDefault = faCircle;
 
-    @Input() isLoading = false;
-    @Input() isDisabled = false;
-    @Input({ required: true }) label = '';
-    @Input() loadingLabel = 'Cargando...';
-    @Input() icon: IconDefinition | null = null;
-    @Input() btnType: 'submit' | 'button' | 'reset' = 'submit';
-    @Input() variant: ButtonVariant = 'full';
-    @Input() appearance: ButtonAppearance = 'primary';
+    isLoading = input(false);
+    isDisabled = input(false);
+    label = input.required<string>();
+    loadingLabel = input('Cargando...');
+    icon = input<IconDefinition | undefined>(undefined);
+    btnType = input<'submit' | 'button' | 'reset'>('submit');
+    variant = input<ButtonVariant>('full');
+    appearance = input<ButtonAppearance>('primary');
 
-    get rootClasses(): string {
+    rootClasses = computed(() => {
         const base = 'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1';
-
         const disabledState = 'disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none';
 
         const sizes = {
@@ -47,10 +47,10 @@ export class SubmitButtonComponent {
             danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
         };
 
-        return `${base} ${disabledState} ${sizes[this.variant]} ${colors[this.appearance]}`;
-    }
+        return `${base} ${disabledState} ${sizes[this.variant()]} ${colors[this.appearance()]}`;
+    });
 
-    get iconSizeClasses(): string {
-        return this.variant === 'small' ? 'text-xs' : 'text-sm';
-    }
+    iconSizeClasses = computed(() =>
+        this.variant() === 'small' ? 'text-xs' : 'text-sm'
+    );
 }
