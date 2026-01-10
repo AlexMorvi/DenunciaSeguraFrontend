@@ -7,7 +7,14 @@ import { ROL_ENUM } from '@/core/api/auth/models/rol-enum-array';
 import { ENTIDAD_ENUM } from '@/core/api/auth/models/entidad-enum-array';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { PublicoService } from '@/core/api/auth/services';
-import { ActualizarAliasRequest, AliasResponse } from '@/core/api/auth/models';
+import {
+    ActualizarAliasRequest,
+    AliasResponse,
+    AuthResponse,
+    LoginRequest,
+    PasswordResetRequest,
+    RegistroCiudadanoRequest
+} from '@/core/api/auth/models';
 import { LoggerService } from '@/core/service/logging/logger.service';
 
 @Injectable({ providedIn: 'root' })
@@ -54,6 +61,50 @@ export class AuthFacade {
         return user && typeof user.id === 'number' && user.id > 0;
     }
 
+    // =============================================================================
+    // Métodos Públicos (Sin Autenticación)
+    // =============================================================================
+
+    async login(request: LoginRequest): Promise<AuthResponse> {
+        this._loading.set(true);
+        try {
+            return await this.publicoService.login({ body: request });
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async registerCitizen(request: RegistroCiudadanoRequest): Promise<RegistroUsuarioResponse> {
+        this._loading.set(true);
+        try {
+            return await this.publicoService.registerCitizen({ body: request });
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async forgotPassword(request: { email: string }): Promise<void> {
+        this._loading.set(true);
+        try {
+            await this.publicoService.forgotPassword({ body: request });
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async resetPassword(request: PasswordResetRequest): Promise<void> {
+        this._loading.set(true);
+        try {
+            await this.publicoService.resetPassword({ body: request });
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    // =============================================================================
+    // Métodos Privados (Requieren Autenticación)
+    // =============================================================================
+
     async getMe(): Promise<void> {
         if (this.currentUser()) {
             return;
@@ -63,7 +114,7 @@ export class AuthFacade {
             this._loading.set(true);
             const user = await this.accountService.getMe();
             this._currentUser.set(user || null);
-        } catch (err) {
+        } catch (_err) {
             this._currentUser.set(null);
         } finally {
             this._loading.set(false);
