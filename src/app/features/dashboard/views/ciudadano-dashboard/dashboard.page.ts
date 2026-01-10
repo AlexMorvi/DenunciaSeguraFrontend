@@ -29,16 +29,19 @@ export class CiudadanoDashboardPage implements OnInit {
     public denunciaService = inject(DenunciaFacade);
     private router = inject(Router);
     private authFacade = inject(AuthFacade);
-    public isLoading = this.denunciaService.loading;
+
+    public isLoading = computed(() =>
+        this.denunciaService.loading() || this.authFacade.loading()
+    );
+
     protected denuncias = this.denunciaService.denuncias;
     protected readonly faPlus = faPlus;
 
-    userName = computed(() => this.authFacade.currentUser()?.nombre);
+    userName = computed(() => this.authFacade.currentUser()?.nombre || "Usuario");
 
     // TODO: descomentar
     // showCreateButton = computed(() => this.authFacade.currentUser()?.rol === ROLES.CIUDADANO);
     showCreateButton = computed(() => true);
-
 
     ngOnInit(): void {
         this.denunciaService.loadAll();
