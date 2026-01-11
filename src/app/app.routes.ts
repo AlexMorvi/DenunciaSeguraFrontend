@@ -10,33 +10,33 @@ export const routes: Routes = [
     },
     {
         path: 'auth',
-        loadChildren: () => import('./features/dashboard/routes/auth.routes').then(m => m.AUTH_ROUTES)
+        loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
     },
     {
         path: 'ciudadano',
         // 3. Seguridad: canMatch evita que se descargue el código si no tiene permiso
         // canMatch: [authGuard, roleGuard('CIUDADANO')],
-        loadChildren: () => import('./features/dashboard/routes/ciudadano.routes').then(m => m.CITIZEN_ROUTES)
+        loadChildren: () => import('./features/ciudadano/ciudadano.routes').then(m => m.CITIZEN_ROUTES)
     },
     {
         path: 'supervisor',
         // canMatch: [authGuard, roleGuard('ADMIN')],
-        loadChildren: () => import('./features/dashboard/routes/supervisor.routes').then(m => m.SUPERVISOR_ROUTES)
+        loadChildren: () => import('./features/supervisor/supervisor.routes').then(m => m.SUPERVISOR_ROUTES)
     },
     {
         path: 'operador',
         // canMatch: [authGuard, roleGuard('ADMIN')],
-        loadChildren: () => import('./features/dashboard/routes/operador.routes').then(m => m.OPERADOR_ROUTES)
+        loadChildren: () => import('./features/operador/operador.routes').then(m => m.OPERADOR_ROUTES)
     },
     {
         path: 'jefe',
         // canMatch: [authGuard, roleGuard('ADMIN')],
-        loadChildren: () => import('./features/dashboard/routes/jefe.routes').then(m => m.JEFE_ROUTES)
+        loadChildren: () => import('./features/jefe/jefe.routes').then(m => m.JEFE_ROUTES)
     },
     {
         path: 'admin',
         // canMatch: [authGuard, roleGuard('ADMIN')],
-        loadChildren: () => import('./features/dashboard/routes/admin.routes').then(m => m.ADMIN_ROUTES)
+        loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
     },
     {
         path: '**',

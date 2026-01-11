@@ -10,7 +10,7 @@ export const CITIZEN_ROUTES: Routes = [
 
             {
                 path: 'dashboard',
-                loadComponent: () => import('@/features/dashboard/views/ciudadano-dashboard/dashboard.page')
+                loadComponent: () => import('@/features/dashboard/views/dashboard.page')
                     .then(m => m.CiudadanoDashboardPage)
             },
             {
