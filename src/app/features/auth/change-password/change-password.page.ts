@@ -105,10 +105,10 @@
 //         try {
 //             await this.authFacade.resetPassword(payload);
 //             this.toast.showSuccess('Contraseña actualizada con éxito', 'Ahora puedes iniciar sesión.');
-//             this.router.navigate(['/auth/login']);
+//             this.router.navigate(['/login']);
 //         } catch (_error) {
 //             this.toast.showError('El enlace ha expirado o es inválido. Por favor, solicita un nuevo cambio de contraseña.');
-//             this.router.navigate(['/auth/forgot-password']);
+//             this.router.navigate(['/forgot-password']);
 //         }
 //     }
 // }
