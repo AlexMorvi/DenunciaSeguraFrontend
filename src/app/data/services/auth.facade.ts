@@ -74,10 +74,11 @@ export class AuthFacade {
         }
     }
 
-    async registerCitizen(request: RegistroCiudadanoRequest): Promise<RegistroUsuarioResponse> {
+    async registerCitizen(request: RegistroCiudadanoRequest): Promise<void> {
         this._loading.set(true);
         try {
-            return await this.publicoService.registerCitizen({ body: request });
+            const response = await this.publicoService.registerCitizen({ body: request });
+            this.logger.logInfo('RegisterComponent', 'Registro exitoso', { userId: response.id });
         } finally {
             this._loading.set(false);
         }
