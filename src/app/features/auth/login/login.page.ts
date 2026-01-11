@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, input } from '@angular/core';
+import { Component, inject, signal, input } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputComponent } from '@/shared/ui/input/input.component';
@@ -35,19 +35,19 @@ export class LoginComponent {
     passwordChanged = input<string>();
     logout = input<string>();
 
-    loginForm = this.fb.nonNullable.group({
+    form = this.fb.nonNullable.group({
         email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
         password: ['', [Validators.required, Validators.minLength(12), Validators.maxLength(128)]]
     });
 
     onSubmit(): void {
-        if (this.loginForm.invalid || this.submitting()) return;
+        if (this.form.invalid || this.submitting()) return;
 
         this.submitting.set(true);
 
-        const rawEmail = this.loginForm.getRawValue().email;
+        const rawEmail = this.form.getRawValue().email;
         const emailPayload = rawEmail.trim().toLowerCase();
-        const passwordPayload = this.loginForm.getRawValue().password;
+        const passwordPayload = this.form.getRawValue().password;
 
         setTimeout(() => {
             this.submitting.set(false);
@@ -55,8 +55,8 @@ export class LoginComponent {
         }, 1000);
     }
 
-    get emailControl() { return this.loginForm.controls.email; }
-    get passwordControl() { return this.loginForm.controls.password; }
+    get emailControl() { return this.form.controls.email; }
+    get passwordControl() { return this.form.controls.password; }
 
     goToForgotPassword() { this.router.navigate(['/forgot-password']); }
     goToRegister() { this.router.navigate(['/crear-cuenta']); }

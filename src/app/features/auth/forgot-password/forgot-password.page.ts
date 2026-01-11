@@ -51,7 +51,6 @@ export class ForgotPasswordComponent {
         this.isLoading.set(true);
         this.errorMessage.set(null);
 
-        const { email } = this.forgotPasswordForm.getRawValue();
     }
 
     goBackToLogin(): void {

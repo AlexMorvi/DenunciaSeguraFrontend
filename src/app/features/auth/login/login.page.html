@@ -35,24 +35,23 @@
     </div>
     }
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5" novalidate>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5" novalidate>
 
         <div>
             <label appText="label" for="login-email">Correo electrónico</label>
             <app-input id="login-email" formControlName="email" type="email" inputmode="email" autocomplete="username"
                 placeholder="ejemplo@email.com" [icon]="faEnvelope" [maxlength]="254" [autofocus]="true"
-                [control]="emailControl"
                 [errors]="{ required: 'El correo es requerido', email: 'Ingresa un correo válido' }" />
         </div>
 
         <div>
             <label appText="label" for="login-password">Contraseña</label>
             <app-input id="login-password" formControlName="password" type="password" autocomplete="current-password"
-                placeholder="••••••••••••••" [icon]="faLock" [maxlength]="128" [control]="passwordControl"
+                placeholder="••••••••••••••" [icon]="faLock" [maxlength]="128"
                 [errors]="{ required: 'La contraseña es requerida', minlength: 'Mínimo 12 caracteres' }" />
         </div>
 
-        <app-submit-button [variant]="'full'" [isLoading]="submitting()" [isDisabled]="loginForm.invalid"
+        <app-submit-button [variant]="'full'" [isLoading]="submitting()" [isDisabled]="form.invalid"
             label="Iniciar sesión" loadingLabel="Iniciando..." [icon]="faArrowRight">
         </app-submit-button>
     </form>
