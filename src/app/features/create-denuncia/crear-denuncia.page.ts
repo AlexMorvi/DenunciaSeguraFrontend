@@ -75,7 +75,6 @@ export class CrearDenunciaComponent implements OnDestroy {
     readonly imagePreview = signal<string | null>(null);
     readonly selectedFile = signal<File | null>(null);
     readonly currentCoords = signal<{ lat: number; lng: number } | null>(null);
-    readonly localError = signal<string | null>(null);
 
     readonly listadoCategorias = CATEGORIA_ENUM;
     readonly listadoAnonimato = NIVEL_ANONIMATO_ENUM;
@@ -97,38 +96,29 @@ export class CrearDenunciaComponent implements OnDestroy {
 
 
     async guardarDenuncia() {
-        this.localError.set(null);
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
+            return;
+        }
+
+        const rawData = this.form.getRawValue();
+
+        const request: CrearDenunciaRequest = {
+            titulo: rawData.titulo!.trim(),
+            descripcion: rawData.descripcion!.trim(),
+            categoria: rawData.categoria!,
+            nivelAnonimato: rawData.nivelAnonimato!,
+            latitud: rawData.latitud!,
+            longitud: rawData.longitud!,
+        };
 
         try {
-            if (this.form.invalid) {
-                this.form.markAllAsTouched();
-                const invalidFields = Object.keys(this.form.controls).filter(key => this.form.get(key)?.invalid);
-                throw new FormValidationError('Por favor, complete todos los campos obligatorios correctamente.', invalidFields);
-            }
-
-            const rawData = this.form.getRawValue();
-
-            const request: CrearDenunciaRequest = {
-                titulo: rawData.titulo!.trim(),
-                descripcion: rawData.descripcion!.trim(),
-                categoria: rawData.categoria!,
-                nivelAnonimato: rawData.nivelAnonimato!,
-                latitud: rawData.latitud!,
-                longitud: rawData.longitud!,
-            };
-
             await this.facade.crearDenuncia(request, this.evidencias());
-            this.toast.showSuccess('Denuncia enviada', 'Su denuncia ha sido registrada correctamente.');
 
+            this.toast.showSuccess('Denuncia enviada', 'Su denuncia ha sido registrada correctamente.');
             await this.router.navigate(['/ciudadano/dashboard']);
         } catch (error) {
-            if (error instanceof EvidenceUploadError) {
-                this.toast.showError(error.message);
-                this.logger.logWarn('Flujo detenido por error controlado', { reason: error.message });
-            } else {
-                this.toast.showError("No pudimos procesar su solicitud. Por favor, intente nuevamente más tarde.");
-                this.logger.logError('CRASH NO CONTROLADO en Smart Component', error);
-            }
+            this.toast.showError("No pudimos procesar su solicitud. Por favor, intente nuevamente más tarde.");
         }
     }
 
@@ -170,14 +160,13 @@ export class CrearDenunciaComponent implements OnDestroy {
             });
 
         } catch (error) {
-            const mapError = new MapInitializationError('No se pudo cargar el mapa interactivo.', error);
-            this.localError.set(mapError.message);
+            this.toast.showError("No se pudo cargar el mapa interactivo.");
         }
     }
 
     private localizarUsuario(): void {
         if (!navigator.geolocation) {
-            this.localError.set('Su navegador no soporta geolocalización.');
+            this.toast.showError('Su navegador no soporta geolocalización.');
             return;
         }
 
@@ -188,7 +177,7 @@ export class CrearDenunciaComponent implements OnDestroy {
                 this.actualizarMarcador(latitude, longitude);
             },
             (err) => {
-                const geoError = new GeolocationError('Permiso de ubicación denegado o error de GPS.', err.code, err);
+                this.toast.showWarning('Puede seleccionar la ubicación manualmente en el mapa.');
             }
         );
     }
@@ -222,92 +211,9 @@ export class CrearDenunciaComponent implements OnDestroy {
         this.form.get('latitud')?.markAsTouched();
     }
 
+    // TODO: enviar el logger correctamente
     handleUploadError(event: FileUploadErrorEvent) {
         this.toast.showWarning(event.userMessage);
-
-        if (event.severity === 'WARNING') {
-            this.logger.logWarn(event.technicalMessage, event.logData);
-        } else {
-            this.logger.logError(event.technicalMessage, event.logData);
-        }
+        this.logger.logError('Upload error in actions panel', { ...event.logData, code: 'UPLOAD_ERROR', timestamp: new Date().toISOString() });
     }
-
-    /*     // =================================================================
-        // MANEJO DE ARCHIVOS (OWASP: Validación estricta)
-        // =================================================================
-    
-        onFileSelected(event: Event): void {
-            this.localError.set(null); // Limpiar errores previos
-            const input = event.target as HTMLInputElement;
-    
-            if (!input.files || input.files.length === 0) return;
-    
-            const file = input.files[0];
-    
-            try {
-                this.validarArchivo(file);
-                this.procesarPrevisualizacion(file);
-                this.selectedFile.set(file);
-            } catch (error) {
-                // Limpiamos el input para que el usuario pueda seleccionar otro
-                input.value = '';
-                this.selectedFile.set(null);
-                this.imagePreview.set(null);
-    
-                if (error instanceof FileTooLargeError || error instanceof UnsupportedFileTypeError) {
-                    this.localError.set(error.message);
-                } else {
-                    this.localError.set('Error al procesar el archivo.');
-                }
-            }
-        }
-    
-        private validarArchivo(file: File): void {
-            // 1. Validación de Tamaño
-            if (file.size > MAX_FILE_SIZE_BYTES) {
-                throw new FileTooLargeError(
-                    `El archivo excede el tamaño máximo permitido de ${MAX_FILE_SIZE_BYTES / 1024 / 1024}MB.`,
-                    MAX_FILE_SIZE_BYTES,
-                    file.size
-                );
-            }
-    
-            // 2. Validación de Tipo (MIME Type)
-            if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-                throw new UnsupportedFileTypeError(
-                    `Formato de archivo no soportado. Tipos permitidos: ${ALLOWED_MIME_TYPES.join(', ')}`,
-                    ALLOWED_MIME_TYPES,
-                    file.type
-                );
-            }
-        }
-    
-        private procesarPrevisualizacion(file: File): void {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                // Sanitización básica: confiamos en que Angular sanitiza el src en el template,
-                // pero validamos que sea un string
-                const result = e.target?.result;
-                if (typeof result === 'string') {
-                    this.imagePreview.set(result);
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    
-        // Limpia la imagen seleccionada actualmente (usado por la plantilla)
-        removeSelectedImage(): void {
-            this.selectedFile.set(null);
-            this.imagePreview.set(null);
-            this.localError.set(null);
-        }
-    
-        // Exponer tamaño máximo de archivo a la plantilla en MB
-        get maxFileSizeMB(): number {
-            return Math.round(MAX_FILE_SIZE_BYTES / 1024 / 1024);
-        }
-     */
-    // =================================================================
-    // ENVÍO DEL FORMULARIO
-    // =================================================================
 }

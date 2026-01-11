@@ -7,6 +7,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope, faLock, faArrowRight, faUsers, faKey, faCheckCircle, faInfoCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
+import { ToastService } from '@/core/service/toast/toast.service';
+import { AuthFacade } from '@/data/services/auth.facade';
 
 @Component({
     selector: 'app-login',
@@ -26,37 +28,36 @@ export class LoginComponent {
     protected readonly faExclamationCircle: IconDefinition = faExclamationCircle;
 
     private fb = inject(FormBuilder);
+    private toast = inject(ToastService);
     private router = inject(Router);
+    private readonly authFacade = inject(AuthFacade);
+
+    protected readonly isLoading = this.authFacade.loading;
 
     mensaje = signal('Tu contraseña ha sido cambiada exitosamente.');
-    error = signal(false);
-    submitting = signal(false);
-
-    passwordChanged = input<string>();
-    logout = input<string>();
 
     form = this.fb.nonNullable.group({
         email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
-        password: ['', [Validators.required, Validators.minLength(12), Validators.maxLength(128)]]
+        password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(128)]]
     });
 
-    onSubmit(): void {
-        if (this.form.invalid || this.submitting()) return;
+    async login(): Promise<void> {
+        if (this.form.invalid || this.isLoading()) return;
 
-        this.submitting.set(true);
+        const { email, password } = this.form.getRawValue();
 
-        const rawEmail = this.form.getRawValue().email;
-        const emailPayload = rawEmail.trim().toLowerCase();
-        const passwordPayload = this.form.getRawValue().password;
+        try {
+            await this.authFacade.login({
+                email: email.trim().toLowerCase(),
+                password: password
+            });
 
-        setTimeout(() => {
-            this.submitting.set(false);
-            this.error.set(true);
-        }, 1000);
+            this.router.navigate(['/ciudadano/dashboard']);
+            this.toast.showSuccess('¡Bienvenido!', 'Inicio de sesión exitoso');
+        } catch {
+            this.toast.showError('Credenciales incorrectas. Por favor, verifica tu email y contraseña.');
+        }
     }
-
-    get emailControl() { return this.form.controls.email; }
-    get passwordControl() { return this.form.controls.password; }
 
     goToForgotPassword() { this.router.navigate(['/forgot-password']); }
     goToRegister() { this.router.navigate(['/crear-cuenta']); }

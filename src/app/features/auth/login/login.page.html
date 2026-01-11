@@ -10,48 +10,21 @@
         <p appText="light-body">Inicia sesión en tu cuenta</p>
     </div>
 
-    @if (passwordChanged()) {
-    <div role="alert" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start animate-fade-in">
-        <fa-icon [icon]="faCheckCircle" class="text-green-600 mt-0.5 mr-3 flex-shrink-0" aria-hidden="true"></fa-icon>
-        <div>
-            <p class="text-sm text-green-800 font-semibold">Contraseña actualizada</p>
-            <p class="text-xs text-green-700 mt-1">{{ mensaje() }}</p>
-        </div>
-    </div>
-    }
-
-    @if (logout()) {
-    <div role="alert" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start animate-fade-in">
-        <fa-icon [icon]="faInfoCircle" class="text-blue-600 mt-0.5 mr-3 flex-shrink-0" aria-hidden="true"></fa-icon>
-        <p class="text-sm text-blue-800 font-medium">Has cerrado sesión correctamente.</p>
-    </div>
-    }
-
-    @if (error()) {
-    <div role="alert" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start animate-fade-in">
-        <fa-icon [icon]="faExclamationCircle" class="text-red-600 mt-0.5 mr-3 flex-shrink-0"
-            aria-hidden="true"></fa-icon>
-        <p class="text-sm text-red-800 font-medium">Usuario o contraseña incorrectos.</p>
-    </div>
-    }
-
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5" novalidate>
+    <form [formGroup]="form" (ngSubmit)="login()" class="space-y-5" novalidate>
 
         <div>
             <label appText="label" for="login-email">Correo electrónico</label>
             <app-input id="login-email" formControlName="email" type="email" inputmode="email" autocomplete="username"
-                placeholder="ejemplo@email.com" [icon]="faEnvelope" [maxlength]="254" [autofocus]="true"
-                [errors]="{ required: 'El correo es requerido', email: 'Ingresa un correo válido' }" />
+                placeholder="ejemplo@email.com" [icon]="faEnvelope" [maxlength]="254" [autofocus]="true" />
         </div>
 
         <div>
             <label appText="label" for="login-password">Contraseña</label>
             <app-input id="login-password" formControlName="password" type="password" autocomplete="current-password"
-                placeholder="••••••••••••••" [icon]="faLock" [maxlength]="128"
-                [errors]="{ required: 'La contraseña es requerida', minlength: 'Mínimo 12 caracteres' }" />
+                placeholder="••••••••••••••" [icon]="faLock" [maxlength]="128" />
         </div>
 
-        <app-submit-button [variant]="'full'" [isLoading]="submitting()" [isDisabled]="form.invalid"
+        <app-submit-button [variant]="'full'" [isLoading]="isLoading()" [isDisabled]="form.invalid"
             label="Iniciar sesión" loadingLabel="Iniciando..." [icon]="faArrowRight">
         </app-submit-button>
     </form>

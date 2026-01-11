@@ -51,7 +51,7 @@
                 placeholder="••••••••••••••" [icon]="faLock" />
         </div>
 
-        <app-submit-button [variant]="'full'" [isLoading]="submitting()" [isDisabled]="!isFormValid"
+        <app-submit-button [variant]="'full'" [isLoading]="submitting()" [isDisabled]="form.invalid"
             label="Crear cuenta" loadingLabel="Creando cuenta..." [icon]="faUserPlus">
         </app-submit-button>
     </form>

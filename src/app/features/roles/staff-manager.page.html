@@ -10,12 +10,10 @@
             <!-- Row 1: Nombre y Email -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <app-input id="nombre" formControlName="nombre" [label]="'Nombre Completo (Privado)'"
-                    placeholder="Ej: Juan Pérez"
-                    [errors]="{ required: 'El nombre es obligatorio', minlength: 'Mínimo 3 caracteres' }"></app-input>
+                    placeholder="Ej: Juan Pérez"></app-input>
 
                 <app-input id="email" type="email" formControlName="email" [label]="'Correo Electrónico'"
-                    placeholder="funcionario@institucion.gob.ec"
-                    [errors]="{ required: 'El correo es obligatorio', email: 'Correo inválido' }"></app-input>
+                    placeholder="funcionario@institucion.gob.ec"></app-input>
             </div>
 
             <!-- Row 2: Rol y Entidad -->

@@ -65,11 +65,6 @@ export class RegisterComponent {
         password: ['', [Validators.required, Validators.minLength(8)]]
     });
 
-    get isFormValid(): boolean {
-        return this.form.valid;
-    }
-
-
     async onSubmit(): Promise<void> {
         if (this.form.invalid) {
             this.form.markAllAsTouched();

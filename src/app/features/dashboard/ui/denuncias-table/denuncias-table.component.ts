@@ -2,7 +2,6 @@ import { Component, input, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { InputComponent } from '@/shared/ui/input/input.component';
-import { InputErrorComponent } from '@/shared/ui/input-error/input-error.component';
 import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSearch, faChevronDown, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +13,7 @@ const SEARCH_PATTERN = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-._]*$/;
 @Component({
     selector: 'app-denuncias-table',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FontAwesomeModule, InputComponent, InputErrorComponent],
+    imports: [FormsModule, ReactiveFormsModule, FontAwesomeModule, InputComponent],
     templateUrl: './denuncias-table.component.html',
 })
 export class DenunciasTableComponent {
