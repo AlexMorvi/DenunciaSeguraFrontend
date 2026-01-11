@@ -13,7 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { AuthFacade } from '@/data/services/auth.facade';
-import { StatCard } from '../../interfaz/stat.model';
+import { StatCard } from '../interfaz/stat.model';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
