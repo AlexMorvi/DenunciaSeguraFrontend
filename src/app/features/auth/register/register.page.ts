@@ -85,7 +85,7 @@ export class RegisterComponent {
             this.toast.showSuccess('¡Registro exitoso!', 'Por favor inicia sesión con tus credenciales.');
 
             this.form.reset();
-            this.router.navigate(['/auth/login']);
+            this.router.navigate(['/login']);
         } catch (error) {
 
         } finally {

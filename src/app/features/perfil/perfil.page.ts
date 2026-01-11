@@ -107,6 +107,6 @@ export class PerfilPageComponent {
     private async handleUpdateSuccess(): Promise<void> {
         this.initializeForm();
         this.toast.showSuccess('Perfil actualizado', 'Tu alias ha sido modificado correctamente.');
-        await this.router.navigate(['/ciudadano/dashboard']);
+        await this.router.navigate(['/dashboard']);
     }
 }

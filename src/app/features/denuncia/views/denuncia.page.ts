@@ -107,7 +107,7 @@ export class DenunciaPageComponent {
             );
             this.toast.showSuccess('Éxito', 'Denuncia resuelta correctamente');
             // TODO: Cambiar ruta al operador
-            await this.router.navigate(['/ciudadano/dashboard']);
+            await this.router.navigate(['/dashboard']);
         } catch (error: any) {
             this.toast.showError(error.message || 'No se pudo resolver la denuncia. Intente nuevamente.');
         }
@@ -120,7 +120,7 @@ export class DenunciaPageComponent {
                 payload.idDenuncia
             );
             this.toast.showSuccess('Éxito', 'Denuncia iniciada correctamente');
-            await this.router.navigate(['/ciudadano/dashboard']);
+            await this.router.navigate(['/dashboard']);
         } catch (error: any) {
             this.toast.showError(error.message || 'No se pudo iniciar la denuncia. Intente nuevamente.');
         }
@@ -135,7 +135,7 @@ export class DenunciaPageComponent {
 
             );
             this.toast.showSuccess('Éxito', 'Denuncia iniciada correctamente');
-            await this.router.navigate(['/ciudadano/dashboard']);
+            await this.router.navigate(['/dashboard']);
         } catch (error: any) {
             this.toast.showError(error.message || 'No se pudo asignar el operador. Intente nuevamente.');
         }
@@ -149,7 +149,7 @@ export class DenunciaPageComponent {
                 payload.entidadId
             );
 
-            await this.router.navigate(['/ciudadano/dashboard']);
+            await this.router.navigate(['/dashboard']);
             this.toast.showSuccess('Éxito', 'Denuncia asignada a entidad correctamente');
         } catch (error: any) {
             this.toast.showError(error.message || 'No se pudo asignar la entidad. Intente nuevamente.');

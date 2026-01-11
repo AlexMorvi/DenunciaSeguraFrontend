@@ -34,7 +34,7 @@ export class AuthFacade {
 
     public defaultPath = computed(() => {
         const user = this.currentUser();
-        if (!user) return '/auth/login';
+        if (!user) return '/login';
 
         const rol = String(user.rol || '').toLowerCase().replace(/_/g, '-');
         return `/${rol}`;

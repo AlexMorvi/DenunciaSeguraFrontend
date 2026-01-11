@@ -48,7 +48,7 @@ export class CiudadanoDashboardPage implements OnInit {
     }
 
     goToCreate(): void {
-        this.router.navigate(['/ciudadano', 'denuncias', 'nueva']);
+        this.router.navigate(['denuncias', 'nueva']);
     }
 
     public stats = computed<StatCard[]>(() => {

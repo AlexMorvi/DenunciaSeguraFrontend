@@ -116,7 +116,7 @@ export class CrearDenunciaComponent implements OnDestroy {
             await this.facade.crearDenuncia(request, this.evidencias());
 
             this.toast.showSuccess('Denuncia enviada', 'Su denuncia ha sido registrada correctamente.');
-            await this.router.navigate(['/ciudadano/dashboard']);
+            await this.router.navigate(['/dashboard']);
         } catch (error) {
             this.toast.showError("No pudimos procesar su solicitud. Por favor, intente nuevamente más tarde.");
         }

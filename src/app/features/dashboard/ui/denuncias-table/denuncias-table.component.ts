@@ -62,7 +62,7 @@ export class DenunciasTableComponent {
     // TODO: Arreglar el tipo del id
     navigateToDenuncia(id?: number | null | undefined) {
         if (typeof id !== 'number' || !Number.isFinite(id) || id <= 0) return;
-        this.router.navigate(['/ciudadano/denuncias', id]);
+        this.router.navigate(['/denuncias', id]);
     }
 
     getStatusClasses(estado?: EstadoDenunciaEnum | string | null): string {
