@@ -1,35 +1,40 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from '@/core/layout/main-layout/main-layout.component';
+import { APP_ROUTES } from '@/core/config/app-routes.config';
 
 export const CITIZEN_ROUTES: Routes = [
     {
         path: '',
         component: MainLayoutComponent,
         children: [
-            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-
             {
-                path: 'dashboard',
+                path: APP_ROUTES.DASHBOARD,
                 loadComponent: () => import('@/features/dashboard/views/dashboard.page')
                     .then(m => m.CiudadanoDashboardPage)
             },
             {
-                path: 'denuncias/nueva',
-                loadComponent: () => import('@/features/create-denuncia/crear-denuncia.page')
-                    .then(m => m.CrearDenunciaComponent)
+                path: APP_ROUTES.DENUNCIAS,
+                children: [
+                    {
+                        path: '',
+                        loadComponent: () => import('@/features/create-denuncia/crear-denuncia.page')
+                            .then(m => m.CrearDenunciaComponent)
+                    },
+
+                    {
+                        path: ':id',
+                        loadComponent: () => import('@/features/denuncia/views/denuncia.page')
+                            .then(m => m.DenunciaPageComponent)
+                    },
+                ]
             },
             {
-                path: 'denuncias/:id',
-                loadComponent: () => import('@/features/denuncia/views/denuncia.page')
-                    .then(m => m.DenunciaPageComponent)
-            },
-            {
-                path: 'notifications',
+                path: APP_ROUTES.NOTIFICACIONES,
                 loadComponent: () => import('@/features/notification/views/notifications-page/notifications.page')
                     .then(m => m.NotificationsPage)
             },
             {
-                path: 'perfil',
+                path: APP_ROUTES.PERFIL,
                 loadComponent: () => import('@/features/perfil/perfil.page')
                     .then(m => m.PerfilPageComponent)
             },
