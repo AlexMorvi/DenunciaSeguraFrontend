@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { FileUploadService } from '@/core/service/file-upload.service';
 import { SkeletonLoaderComponent } from '@/shared/components/skeleton-loader/skeleton-loader';
+import { EvidenceFacade } from '@/data/services/evidence.facade';
 
 @Component({
     selector: 'app-denuncia-page',
@@ -20,6 +21,7 @@ import { SkeletonLoaderComponent } from '@/shared/components/skeleton-loader/ske
 })
 export class DenunciaPageComponent {
     denunciaService = inject(DenunciaFacade);
+    evidenciaService = inject(EvidenceFacade);
     authService = inject(AuthFacade);
     private toast = inject(ToastService);
     private fileService = inject(FileUploadService);
@@ -41,6 +43,9 @@ export class DenunciaPageComponent {
             }
         });
     }
+
+
+
     // TODO: utilizar este signal para la denuncia actual
     // denuncia = this.denunciaService.currentDenuncia;
     // currentUser = this.authService.currentUser;
@@ -73,6 +78,16 @@ export class DenunciaPageComponent {
         return false;
         // return true;
     });
+
+    public readonly resolveUrlFn = async (evidenceId: string): Promise<string | undefined> => {
+        try {
+            const response = await this.evidenciaService.getSignedUrl(evidenceId);
+            return response.url;
+        } catch (error) {
+            this.toast.showError('No se pudo cargar la evidencia.');
+            return undefined;
+        }
+    };
 
     showActionsPanel = computed(() => {
         return this.isJefe() || this.isSupervisor() || this.isOperador();
