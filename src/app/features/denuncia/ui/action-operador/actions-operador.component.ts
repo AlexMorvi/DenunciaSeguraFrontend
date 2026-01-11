@@ -10,13 +10,12 @@ import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.compone
 import { ENTIDAD_ENUM } from '@/core/api/auth/models/entidad-enum-array';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { faSave, faComment, faPlay, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { InputErrorComponent } from '@/shared/ui/input-error/input-error.component';
 import { FileUploadErrorEvent } from '@/core/model/file-upload.event';
 
 @Component({
     selector: 'app-actions-operador',
     standalone: true,
-    imports: [ReactiveFormsModule, UiStyleDirective, SubmitButtonComponent, FileUploadComponent, InputErrorComponent, InputComponent],
+    imports: [ReactiveFormsModule, UiStyleDirective, SubmitButtonComponent, FileUploadComponent, InputComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './actions-operador.component.html'
 })

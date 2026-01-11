@@ -5,7 +5,6 @@ import { ROLES } from '@/shared/constants/roles.const';
 import { CommonModule } from '@angular/common';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
-import { InputErrorComponent } from '@/shared/ui/input-error/input-error.component';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { UsuarioPerfilResponse } from '@/core/api/auth/models';
 import { Router } from '@angular/router';
@@ -18,7 +17,6 @@ import { Router } from '@angular/router';
         ReactiveFormsModule,
         InputComponent,
         SubmitButtonComponent,
-        InputErrorComponent,
     ],
     templateUrl: './perfil.page.html',
     changeDetection: ChangeDetectionStrategy.OnPush,

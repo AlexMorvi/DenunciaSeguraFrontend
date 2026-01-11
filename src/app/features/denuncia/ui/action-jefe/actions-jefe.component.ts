@@ -1,11 +1,9 @@
 // components/actions-panel/actions-panel.component.ts
-import { Component, input, output, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { Component, input, output, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { SelectComponent } from '@/shared/ui/select/select.component';
-import { InputErrorComponent } from '@/shared/ui/input-error/input-error.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { faCheckCircle, faComment, faUsers, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { ToastService } from '@/core/service/toast/toast.service';
@@ -14,7 +12,7 @@ import { InputComponent } from '@/shared/ui/input/input.component';
 @Component({
     selector: 'app-actions-jefe',
     standalone: true,
-    imports: [ReactiveFormsModule, UiStyleDirective, SelectComponent, SubmitButtonComponent, InputErrorComponent, InputComponent],
+    imports: [ReactiveFormsModule, UiStyleDirective, SelectComponent, SubmitButtonComponent, InputComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './actions-jefe.component.html'
 })
@@ -34,7 +32,7 @@ export class ActionsJefeComponent {
 
     // TODO: Eliminar el signal true y utilizar el dinámico
     // isEnValidacion = computed(() => this.currentDenuncia().estado === 'EN_VALIDACION');
-    isEnValidacion = signal(true);
+    isEnValidacion = signal(false);
 
     // TODO: Cargar lista real de operadores desde un servicio
     // Ahora `operadores` es un arreglo de objetos con `id` y `label`.

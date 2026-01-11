@@ -25,7 +25,6 @@ import { LoggerService } from '@/core/service/logging/logger.service';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { InputErrorComponent } from "@/shared/ui/input-error/input-error.component";
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { FileUploadService } from '@/core/service/file-upload.service';
 
@@ -46,7 +45,7 @@ const ICON_RED_CONFIG = L.icon({
 @Component({
     selector: 'app-crear-denuncia',
     standalone: true,
-    imports: [ReactiveFormsModule, CommonModule, SubmitButtonComponent, FileUploadComponent, CategorySelectorComponent, SelectComponent, FontAwesomeModule, InputErrorComponent, InputComponent],
+    imports: [ReactiveFormsModule, CommonModule, SubmitButtonComponent, FileUploadComponent, CategorySelectorComponent, SelectComponent, FontAwesomeModule, InputComponent],
     templateUrl: './crear-denuncia.page.html',
     styleUrls: ['./crear-denuncia.page.scss'],
     encapsulation: ViewEncapsulation.None

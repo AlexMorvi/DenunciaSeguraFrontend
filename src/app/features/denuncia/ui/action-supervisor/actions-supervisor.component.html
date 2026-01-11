@@ -7,25 +7,7 @@
             <app-select id="entidad" label="Asignar entidad responsable" placeholder="Seleccione una entidad..."
                 [options]="entidadesOptions()" formControlName="entidadId">
             </app-select>
-
-            @if (form.controls.entidadId.invalid && form.controls.entidadId.touched) {
-            <p class="text-xs text-red-500 mt-1">Debes seleccionar una entidad.</p>
-            }
         </div>
-
-        <!-- <div>
-            <label appText="label" for="comentarios">Comentarios del Operador</label>
-            <app-input id="comentarios" placeholder="Justifique el cambio de estado..."
-                [formControl]="form.controls.comentarios" [multiline]="true" [rows]="3" [icon]="faComment"
-                [maxlength]="1000">
-            </app-input>
-            <app-input-error [control]="form.get('comentarios')"></app-input-error>
-            <div class="mt-1 text-xs text-gray-500 flex items-center justify-between">
-                <div id="comentarios">Requerido. 10–1000 caracteres.</div>
-                <div class="text-gray-400">{{ (form.get('comentarios')?.value?.length || 0) }}/1000
-                </div>
-            </div>
-        </div> -->
 
         <app-submit-button label="Guardar Asignación" [icon]="faSave" btnType="submit" [isDisabled]="form.invalid"
             class="mt-2 block w-full">

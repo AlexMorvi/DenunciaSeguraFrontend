@@ -23,7 +23,6 @@
                 <app-input id="titulo" formControlName="titulo" type="text"
                     placeholder="Ej: Semáforo dañado en la Av. Amazonas" [maxlength]="100">
                 </app-input>
-                <app-input-error [control]="form.get('titulo')"></app-input-error>
 
                 <div class="mt-1 text-xs text-gray-500 flex items-center justify-between">
                     <div id="titulo-help">Requerido. 5–100 caracteres.</div>
@@ -36,7 +35,6 @@
                 <app-input id="descripcion" formControlName="descripcion" [multiline]="true" [rows]="6"
                     placeholder="Describe detalladamente lo que está ocurriendo..." [maxlength]="1000">
                 </app-input>
-                <app-input-error [control]="form.get('descripcion')"></app-input-error>
 
                 <div class="mt-1 text-xs text-gray-500 flex items-center justify-between">
                     <div id="descripcion-help">Requerido. 10–1000 caracteres.</div>
@@ -62,10 +60,10 @@
             </div>
 
             <div>
-                <label class="flex items-center text-sm font-semibold text-slate-700 mb-2 gap-2">
+                <span class="flex items-center text-sm font-semibold text-slate-700 mb-2 gap-2">
                     <fa-icon [icon]="faMapMarkerAlt" class="text-blue-600"></fa-icon>
                     Ubicación del incidente
-                </label>
+                </span>
 
                 <div class="map-container relative w-full h-[350px] rounded-lg overflow-hidden border border-gray-200 shadow-inner"
                     #mapContainer></div>
@@ -75,10 +73,6 @@
                 </p>
             </div>
 
-
-            <!-- <app-file-upload (filesChange)="evidencias.set($event)"
-                (uploadError)="handleUploadError($event)"></app-file-upload> -->
-            <!-- crear-denuncia.page.html -->
             @defer (on viewport) {
             <app-file-upload (filesChange)="evidencias.set($event)" [uploadFn]="uploadEvidenceStrategy"
                 (uploadError)=" handleUploadError($event)"></app-file-upload>
@@ -95,8 +89,6 @@
                     [isDisabled]="form.invalid" label="Enviar denuncia" [icon]="faPaperPlane">
                 </app-submit-button>
             </div>
-
         </form>
     </div>
-
 </div>
