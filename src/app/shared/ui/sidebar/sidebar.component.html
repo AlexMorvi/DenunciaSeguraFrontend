@@ -8,56 +8,33 @@
 
     <nav class="flex flex-col gap-4 items-center w-full">
 
-        <a [routerLink]="['/ciudadano', 'perfil']"
+        @for (item of menuItems(); track item.path) {
+
+        <a [routerLink]="item.path"
             routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-200 ring-2 ring-blue-50 scale-105"
-            #rlaProfile="routerLinkActive" [class.bg-slate-800]="!rlaProfile.isActive"
-            [class.text-slate-400]="!rlaProfile.isActive" [class.hover:bg-slate-700]="!rlaProfile.isActive"
-            [class.hover:text-blue-400]="!rlaProfile.isActive"
+            #rla="routerLinkActive" [class.bg-slate-800]="!rla.isActive" [class.text-slate-400]="!rla.isActive"
+            [class.hover:bg-slate-700]="!rla.isActive" [class.hover:text-blue-400]="!rla.isActive"
             class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 ease-out focus:outline-none focus:ring-4 active:scale-95 cursor-pointer"
-            aria-label="Ir al perfil de usuario">
+            [attr.aria-label]="item.label">
 
-            <fa-icon [icon]="faUser" class="text-sm transition-transform duration-300"
-                [class.group-hover:-translate-y-0.5]="!rlaProfile.isActive"></fa-icon>
-        </a>
+            <fa-icon [icon]="item.icon" class="text-sm transition-transform duration-300" [class]="{
+                            'group-hover:rotate-12': !rla.isActive && item.path === 'notificaciones',
+                            'group-hover:-translate-y-0.5': !rla.isActive && item.path !== 'notificaciones'
+                         }">
+            </fa-icon>
 
-        <a [routerLink]="dashboardLink()"
-            routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-200 ring-2 ring-blue-50 scale-105"
-            #rlaMain="routerLinkActive" [class.bg-slate-800]="!rlaMain.isActive"
-            [class.text-slate-400]="!rlaMain.isActive" [class.hover:bg-slate-700]="!rlaMain.isActive"
-            [class.hover:text-blue-400]="!rlaMain.isActive"
-            class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 ease-out focus:outline-none focus:ring-4 active:scale-95 cursor-pointer"
-            aria-label="Ir al panel de usuarios">
-
-            <fa-icon [icon]="faUsers" class="text-sm transition-transform duration-300"
-                [class.group-hover:-translate-y-0.5]="!rlaMain.isActive"></fa-icon>
-        </a>
-
-
-        <!-- <a [routerLink]="notificationsLink()" -->
-        <!-- TODO: utilizar notificationsLink() cuando la autenticación esté lista -->
-        <a [routerLink]="['/ciudadano', 'notifications']"
-            routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-200 ring-2 ring-blue-50 scale-105"
-            #rlaNotif="routerLinkActive" [class.bg-slate-800]="!rlaNotif.isActive"
-            [class.text-slate-400]="!rlaNotif.isActive" [class.hover:bg-slate-700]="!rlaNotif.isActive"
-            [class.hover:text-blue-400]="!rlaNotif.isActive"
-            class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 ease-out focus:outline-none focus:ring-4 active:scale-95 cursor-pointer"
-            aria-label="Ver notificaciones">
-
-            <fa-icon [icon]="faBell" class="text-sm transition-transform duration-300"
-                [class.group-hover:rotate-12]="!rlaNotif.isActive"></fa-icon>
-
-            @if (noLeidasCount() > 0) {
+            @if (item.showBadge && noLeidasCount() > 0) {
             <span
                 class="absolute -top-1 -right-1 flex h-5 min-w-[1.25rem] px-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white animate-in zoom-in duration-300">
                 {{ badgeLabel() }}
             </span>
             }
         </a>
+        }
 
     </nav>
 
     <div class="mt-auto pb-4">
         <ng-content></ng-content>
     </div>
-
 </aside>

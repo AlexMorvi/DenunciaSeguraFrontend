@@ -1,11 +1,11 @@
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
-export type UserRole = 'ADMIN' | 'OPERADOR' | 'CIUDADANO' | 'SUPERVISOR'; // Tus roles
+export type UserRole = 'ADMIN_PLATAFORMA' | 'OPERADOR_INTERNO' | 'CIUDADANO' | 'SUPERVISOR_DENUNCIAS' | 'JEFE_INTERNO';
 
 export interface MenuItem {
-    label: string; // Para accesibilidad (aria-label)
+    label: string;
     icon: IconDefinition;
-    pathFragment: string; // La parte final de la URL ('dashboard', 'notificaciones')
-    allowedRoles: string[]; // Qué roles pueden ver esto
-    showBadge?: boolean; // Si debe mostrar el contador de notificaciones
+    path: string;
+    allowedRoles: string[];
+    showBadge?: boolean;
 }

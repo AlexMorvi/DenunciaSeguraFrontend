@@ -37,15 +37,21 @@ export class SidebarComponent {
         const base = this.basePath();
 
         if (!user) return [];
-        const userRol = user.rol;
+
+        // TODO: Reemplazar esta línea por la obtención real del rol
+        // const userRol = user.rol;
+        const userRol = "ADMIN_PLATAFORMA";
+        // const userRol = "CIUDADANO";
+        // const userRol = "SUPERVISOR_DENUNCIAS";
+        // const userRol = "JEFE_INTERNO";
+        // const userRol = "OPERADOR_INTERNO";
         if (!userRol) return [];
 
         return MENU_ITEMS
-            .filter((item: MenuItem) => item.allowedRoles.includes(userRol)) // 1. Filtrado por Rol
+            .filter((item: MenuItem) => item.allowedRoles.includes(userRol))
             .map((item: MenuItem) => ({
                 ...item,
-                // 2. Construcción de Ruta Dinámica: ['/supervisor', 'dashboard']
-                fullPath: [base, item.pathFragment]
+                fullPath: [base, item.path]
             }));
     });
 
