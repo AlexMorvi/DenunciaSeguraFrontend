@@ -30,12 +30,5 @@
     </textarea>
     }
 
-    @if (hasError) {
-    <div class="text-red-500 text-xs mt-1">
-        @for (message of errorMessages; track message) {
-        <span class="block">{{ message }}</span>
-        }
-    </div>
-    }
-
+    <app-input-error [control]="ngControl?.control ?? null" />
 </div>
