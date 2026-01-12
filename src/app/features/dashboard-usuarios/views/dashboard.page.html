@@ -1,0 +1,75 @@
+<div class="overflow-y-auto mb-6 ">
+    @if (isLoading()) {
+    <div class="animate-pulse w-full">
+
+
+        <div class="space-y-3 mt-7">
+            @for (item of [1, 2, 3]; track $index) {
+            <app-skeleton-loader customClass="h-[60px] w-[90%] rounded-lg block" />
+            }
+        </div>
+
+    </div>
+    } @else {
+    @if (denuncias(); as denuncias) {
+
+    <section class="flex flex-col gap-2 mx-6 my-2">
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="flex items-baseline gap-x-4">
+                <h1 appText="h1" class="mt-2">Dashboard</h1>
+                <p class="text-slate-500 text-sm md:text-base">
+                    Bienvenido de nuevo, <span class="font-semibold text-slate-700">{{ userName() }}</span>.
+                </p>
+            </div>
+
+            @if (showCreateButton()) {
+            <div class="shrink-0">
+                <app-submit-button [variant]="'full'" label="Nueva Denuncia" [icon]="faPlus" btnType="button"
+                    (click)="goToCreate()">
+                </app-submit-button>
+            </div>
+            }
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @for (stat of stats(); track stat.label) {
+            <div
+                class="relative bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+
+                <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs font-bold tracking-wider text-slate-500 uppercase">
+                            {{ stat.label }}
+                        </span>
+
+                        <span class="text-4xl font-extrabold text-slate-900 mt-2">
+                            {{ stat.value }}
+                        </span>
+
+                        <span class="text-xs mt-2" [class]="stat.subtextClass">
+                            {{ stat.subtext }}
+                        </span>
+                    </div>
+
+                    <div class="flex items-center justify-center w-12 h-12 rounded-xl" [class]="stat.iconBgClass">
+                        <fa-icon [icon]="stat.icon" class="text-2xl" [class]="stat.iconColorClass"></fa-icon>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </section>
+
+
+
+    <app-denuncias-table [denuncias]="denuncias" (onCreate)="goToCreate()">
+    </app-denuncias-table>
+
+    } @else {
+    <p>Cargando...</p>
+    }
+    <!-- <app-denuncias-table [denuncias]="denuncias()" [showCreateButton]="true" (onCreate)="goToCreate()">
+    </app-denuncias-table> -->
+    }
+</div>
