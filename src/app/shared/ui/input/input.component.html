@@ -1,34 +1,40 @@
-<div class="relative">
+<div class="w-full">
 
-    @if (icon(); as iconValue) {
-    <fa-icon [icon]="iconValue" [class]="iconClasses()">
-    </fa-icon>
-    }
+    <div class="relative">
 
-    @if (!multiline()) {
+        @if (icon(); as iconValue) {
+        <div [class]="iconClasses()" [class.text-red-500]="hasError" [class.text-gray-400]="!hasError">
+            <fa-icon [icon]="iconValue"></fa-icon>
+        </div>
+        }
 
-    <input [id]="id()" [type]="inputType()" [placeholder]="placeholder()" [autocomplete]="autocomplete()"
-        [attr.inputmode]="inputmode() || null" [attr.maxlength]="maxlength()" [value]="value()" [disabled]="disabled()"
-        (input)="onInput($event)" (blur)="onBlur()" class="pr-4 py-2 border rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent
-    transition-colors" [class]="icon() ? 'pl-10' : 'pl-4'" [class.pr-10]="canToggleVisibility()"
-        [class.border-red-500]="hasError" [class.border-gray-300]="!hasError" />
+        @if (!multiline()) {
+        <input [id]="id()" [type]="inputType()" [placeholder]="placeholder()" [autocomplete]="autocomplete()"
+            [attr.inputmode]="inputmode() || null" [attr.maxlength]="maxlength()" [value]="value()"
+            [disabled]="disabled()" (input)="onInput($event)" (blur)="onBlur()"
+            class="w-full py-2 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
+            [class]="inputClasses()" [class.border-red-500]="hasError" [class.focus:ring-red-200]="hasError"
+            [class.border-gray-300]="!hasError" [class.focus:ring-blue-500]="!hasError"
+            [class.focus:border-transparent]="!hasError" />
 
-    @if (canToggleVisibility()) {
-    <button type="button" (click)="togglePasswordVisibility()"
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-        [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'" tabindex="-1">
-        <fa-icon [icon]="showPassword() ? faEyeSlash : faEye" class="text-base"></fa-icon>
-    </button>
-    }
+        @if (canToggleVisibility()) {
+        <button type="button" (click)="togglePasswordVisibility()"
+            class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
+            [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'" tabindex="-1">
+            <fa-icon [icon]="showPassword() ? faEyeSlash : faEye"></fa-icon>
+        </button>
+        }
 
-    } @else {
-
-    <textarea [id]="id()" [placeholder]="placeholder()" [attr.rows]="rows()" [attr.maxlength]="maxlength()"
-        [value]="value()" [disabled]="disabled()" (input)="onInput($event)" (blur)="onBlur()"
-        class="block w-full rounded-lg bg-gray-50 border py-3 px-4 text-sm resize-none placeholder-gray-400 transition-shadow"
-        [class]="icon() ? 'pl-10' : 'pl-4'" [class.border-red-500]="hasError" [class.border-gray-200]="!hasError">
-    </textarea>
-    }
+        } @else {
+        <textarea [id]="id()" [placeholder]="placeholder()" [attr.rows]="rows()" [attr.maxlength]="maxlength()"
+            [value]="value()" [disabled]="disabled()" (input)="onInput($event)" (blur)="onBlur()"
+            class="block w-full rounded-lg bg-gray-50 border py-3 px-4 text-sm resize-none placeholder-gray-400 transition-shadow focus:outline-none focus:ring-2"
+            [class]="icon() ? 'pl-10' : 'pl-4'" [class.border-red-500]="hasError" [class.focus:ring-red-200]="hasError"
+            [class.border-gray-200]="!hasError" [class.focus:ring-blue-500]="!hasError">
+      </textarea>
+        }
+    </div>
 
     <app-input-error [control]="ngControl?.control ?? null" />
+
 </div>

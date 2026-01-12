@@ -63,6 +63,14 @@ export class InputComponent implements ControlValueAccessor {
         return this.type();
     });
 
+    inputClasses = computed(() => {
+        const base = 'pr-4'; // Padding derecho base
+        const paddingLeft = this.icon() ? 'pl-10' : 'pl-4';
+        const paddingRight = this.canToggleVisibility() ? 'pr-10' : 'pr-4';
+
+        return `${base} ${paddingLeft} ${paddingRight}`;
+    });
+
     onInput(event: Event): void {
         const target = event.target as HTMLInputElement | HTMLTextAreaElement;
         this.value.set(target.value);
