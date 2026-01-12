@@ -62,7 +62,7 @@ export class SidebarComponent {
     });
 
     public settingsLink = computed(() => {
-        if (this.currentUser()?.rol === ROLES.ADMIN) {
+        if (this.currentUser()?.rol === ROLES.ADMIN_PLATAFORMA) {
             return ['/admin', 'configuracion-avanzada'];
         }
 

@@ -44,7 +44,7 @@ export const routes: Routes = [
     },
     {
         path: '',
-        canMatch: [authGuard, roleMatchGuard(ROLES.ADMIN)],
+        canMatch: [authGuard, roleMatchGuard(ROLES.ADMIN_PLATAFORMA)],
         loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
     },
     {

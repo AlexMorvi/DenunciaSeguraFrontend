@@ -1,7 +1,7 @@
 import { RolEnum } from '@/core/api/auth/models/rol-enum';
 
 export const ROLES = {
-    ADMIN: 'ADMIN_PLATAFORMA' as RolEnum,
+    ADMIN_PLATAFORMA: 'ADMIN_PLATAFORMA' as RolEnum,
     SUPERVISOR: 'SUPERVISOR_DENUNCIAS' as RolEnum,
     JEFE_INTERNO: 'JEFE_INTERNO' as RolEnum,
     JEFE_EXTERNO: 'JEFE_EXTERNO' as RolEnum,
