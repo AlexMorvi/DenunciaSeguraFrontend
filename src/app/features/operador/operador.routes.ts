@@ -9,7 +9,7 @@ export const OPERADOR_ROUTES: Routes = [
         children: [
             {
                 path: APP_ROUTES.DASHBOARD,
-                loadComponent: () => import('@/features/dashboard-denuncias/views/dashboard.page')
+                loadComponent: () => import('@/features/dashboard/views/dashboard.page')
                     .then(m => m.CiudadanoDashboardPage)
             },
             {
