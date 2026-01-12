@@ -37,14 +37,7 @@ export class SidebarComponent {
         const base = this.basePath();
 
         if (!user) return [];
-
-        // TODO: Reemplazar esta línea por la obtención real del rol
-        // const userRol = user.rol;
-        const userRol = "ADMIN_PLATAFORMA";
-        // const userRol = "CIUDADANO";
-        // const userRol = "SUPERVISOR_DENUNCIAS";
-        // const userRol = "JEFE_INTERNO";
-        // const userRol = "OPERADOR_INTERNO";
+        const userRol = user.rol;
         if (!userRol) return [];
 
         return MENU_ITEMS
