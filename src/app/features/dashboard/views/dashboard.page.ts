@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { DenunciasTableComponent } from '@/features/dashboard/ui/denuncias-table/denuncias-table.component';
 import { SkeletonLoaderComponent } from '@/shared/components/skeleton-loader/skeleton-loader';
+import { EstadisticasComponent } from '../ui/estadisticas/estadisticas.component';
 import {
     faFolderOpen,
     faClipboardList,
@@ -20,7 +21,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 @Component({
     selector: 'app-ciudadano-dashboard',
     standalone: true,
-    imports: [CommonModule, FormsModule, DenunciasTableComponent, SkeletonLoaderComponent, SubmitButtonComponent, FontAwesomeModule, UiStyleDirective],
+    imports: [CommonModule, FormsModule, DenunciasTableComponent, SkeletonLoaderComponent, SubmitButtonComponent, FontAwesomeModule, UiStyleDirective, EstadisticasComponent],
     templateUrl: './dashboard.page.html',
     styleUrls: ['./dashboard.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
