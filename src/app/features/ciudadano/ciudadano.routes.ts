@@ -16,7 +16,7 @@ export const CITIZEN_ROUTES: Routes = [
                 path: APP_ROUTES.DENUNCIAS,
                 children: [
                     {
-                        path: '',
+                        path: APP_ROUTES.NUEVA,
                         loadComponent: () => import('@/features/create-denuncia/crear-denuncia.page')
                             .then(m => m.CrearDenunciaComponent)
                     },
