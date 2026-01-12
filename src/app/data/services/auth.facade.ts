@@ -9,7 +9,6 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { PublicoService } from '@/core/api/auth/services';
 import {
     ActualizarAliasRequest,
-    AliasResponse,
     AuthResponse,
     LoginRequest,
     PasswordResetRequest,
@@ -131,22 +130,38 @@ export class AuthFacade {
         return this.adminService.registerStaff({ body: request });
     }
 
-    async updateMyAlias(alias: string): Promise<AliasResponse> {
+    async updateMyAlias(alias: string): Promise<void> {
         const body: ActualizarAliasRequest = { aliasPublico: alias };
         this._loading.set(true);
+
         try {
-            return await this.accountService.updateMyAlias({ body });
+            await this.accountService.updateMyAlias({ body });
+            this._currentUser.update(currentUser => {
+                if (!currentUser) return null;
+                return {
+                    ...currentUser,
+                    aliasPublico: alias
+                };
+            });
+
         } finally {
             this._loading.set(false);
         }
     }
-
-    async updateCitizenAlias(alias: string): Promise<AliasResponse> {
-        // TODO: El endpoint real para actualizar el alias de un ciudadano debe ser implementado.
+    async updateCitizenAlias(alias: string): Promise<void> {
         const body: ActualizarAliasRequest = { aliasPublico: alias };
         this._loading.set(true);
+
         try {
-            return await this.accountService.updateMyAlias({ body });
+            await this.accountService.updateMyAlias({ body });
+            this._currentUser.update(currentUser => {
+                if (!currentUser) return null;
+                return {
+                    ...currentUser,
+                    publicCitizenId: alias
+                };
+            });
+
         } finally {
             this._loading.set(false);
         }

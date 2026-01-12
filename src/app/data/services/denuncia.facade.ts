@@ -23,9 +23,9 @@ export class DenunciaFacade {
     readonly error = this._error.asReadonly();
 
     private _denuncias = signal<DenunciaView[]>([]);
-    private _currentDenuncia = signal<DenunciaView | null>(null);
-
     public denuncias = this._denuncias.asReadonly();
+
+    private _currentDenuncia = signal<DenunciaView | null>(null);
     public currentDenuncia = this._currentDenuncia.asReadonly();
 
     async loadAll(): Promise<void> {
