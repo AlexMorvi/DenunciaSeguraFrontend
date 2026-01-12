@@ -1,4 +1,4 @@
-import { Component, input, computed, signal, effect, untracked, output } from '@angular/core';
+import { Component, input, computed, signal, effect, untracked, output, ChangeDetectionStrategy } from '@angular/core';
 import { NgOptimizedImage, CommonModule } from '@angular/common';
 import { ImgEvent } from '@/core/model/app.event';
 
@@ -9,6 +9,7 @@ const ALLOWED_DOMAINS = ['tu-bucket.s3.amazonaws.com', 'api.tudominio.com', 'sto
     standalone: true,
     imports: [CommonModule, NgOptimizedImage],
     templateUrl: './img.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SecureImageComponent {
     src = input.required<string>();

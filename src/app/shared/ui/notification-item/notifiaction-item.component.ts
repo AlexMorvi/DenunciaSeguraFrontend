@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBell, faChevronRight } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +10,7 @@ import { NotificacionResponse } from '@/core/api/notificaciones/models/notificac
     standalone: true,
     imports: [CommonModule, FontAwesomeModule],
     templateUrl: './notification-item.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotificationItemComponent {
     notification = input.required<NotificacionResponse>();

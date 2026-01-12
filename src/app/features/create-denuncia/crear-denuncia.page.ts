@@ -8,13 +8,6 @@ import { CATEGORIA_ENUM } from '@/core/api/denuncias/models/categoria-enum-array
 import { CrearDenunciaRequest } from '@/core/api/denuncias/models/crear-denuncia-request';
 import { NivelAnonimatoEnum } from '@/core/api/denuncias/models/nivel-anonimato-enum';
 import { NIVEL_ANONIMATO_ENUM } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
-import {
-    DenunciaSubmissionError,
-    EvidenceUploadError,
-    FormValidationError,
-    GeolocationError,
-    MapInitializationError,
-} from '@/core/errors/create-denuncia.errors';
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { CategorySelectorComponent } from '@/shared/ui/category-selector/category-selector.component';
 import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.component';

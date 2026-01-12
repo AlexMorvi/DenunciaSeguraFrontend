@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { Router, RouterLink } from '@angular/router';
@@ -15,6 +15,7 @@ import { ToastService } from '@/core/service/toast/toast.service';
     imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent, FontAwesomeModule, UiStyleDirective],
     templateUrl: './forgot-password.page.html',
     styleUrls: ['./forgot-password.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ForgotPasswordComponent {
     protected readonly faKey = faKey;

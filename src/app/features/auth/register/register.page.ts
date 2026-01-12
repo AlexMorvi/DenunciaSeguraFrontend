@@ -18,7 +18,6 @@ import {
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { RegistroCiudadanoRequest } from '@/core/api/auth/models';
-import { InputErrorComponent } from '@/shared/ui/input-error/input-error.component';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { numericValidator } from '@/shared/validators/numeric.validator';
 

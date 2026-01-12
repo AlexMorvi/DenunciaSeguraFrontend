@@ -1,4 +1,4 @@
-import { Component, input, signal, computed, inject } from '@angular/core';
+import { Component, input, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, ReactiveFormsModule, NgControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -12,6 +12,7 @@ import { InputErrorComponent } from '../input-error/input-error.component';
     imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, InputErrorComponent],
     templateUrl: './input.component.html',
     styleUrls: ['./input.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputComponent implements ControlValueAccessor {
     public ngControl = inject(NgControl, { optional: true, self: true });

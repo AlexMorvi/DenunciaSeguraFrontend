@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, signal } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import type { CategoriaEnum } from '@/core/api/denuncias/models/categoria-enum';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -23,7 +23,8 @@ interface CategoryOption {
             useExisting: forwardRef(() => CategorySelectorComponent),
             multi: true
         }
-    ]
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CategorySelectorComponent implements ControlValueAccessor {
     selectedCategory = signal<CategoriaEnum | null>(null);

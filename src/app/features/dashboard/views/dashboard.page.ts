@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, computed } from '@angular/core';
+import { Component, inject, OnInit, computed, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +22,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     standalone: true,
     imports: [CommonModule, FormsModule, DenunciasTableComponent, SkeletonLoaderComponent, SubmitButtonComponent, FontAwesomeModule, UiStyleDirective],
     templateUrl: './dashboard.page.html',
-    styleUrls: ['./dashboard.page.scss']
+    styleUrls: ['./dashboard.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class CiudadanoDashboardPage implements OnInit {

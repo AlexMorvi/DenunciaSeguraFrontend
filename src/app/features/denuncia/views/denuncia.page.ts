@@ -1,4 +1,4 @@
-import { Component, inject, computed, input, effect, untracked } from '@angular/core';
+import { Component, inject, computed, input, effect, untracked, ChangeDetectionStrategy } from '@angular/core';
 // import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models/denuncia-staff-view-response';
 import { DenunciaLayoutComponent } from '@/core/layout/denuncia-layout/denuncia-layout.component';
 import { DenunciaDetailsComponent } from '../ui/denuncia-details/denuncia-details.component';
@@ -18,6 +18,7 @@ import { EvidenceFacade } from '@/data/services/evidence.facade';
     standalone: true,
     imports: [DenunciaLayoutComponent, SkeletonLoaderComponent, DenunciaDetailsComponent, ActionsSupervisorComponent, ActionsJefeComponent, ActionsOperadorComponent],
     templateUrl: './denuncia.page.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DenunciaPageComponent {
     denunciaService = inject(DenunciaFacade);

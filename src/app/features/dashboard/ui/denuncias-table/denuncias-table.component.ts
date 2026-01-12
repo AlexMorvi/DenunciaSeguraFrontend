@@ -1,4 +1,4 @@
-import { Component, input, computed, inject } from '@angular/core';
+import { Component, input, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { InputComponent } from '@/shared/ui/input/input.component';
@@ -15,6 +15,7 @@ const SEARCH_PATTERN = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-._]*$/;
     standalone: true,
     imports: [FormsModule, ReactiveFormsModule, FontAwesomeModule, InputComponent],
     templateUrl: './denuncias-table.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DenunciasTableComponent {
     private router = inject(Router);

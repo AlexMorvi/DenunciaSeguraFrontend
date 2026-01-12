@@ -1,4 +1,4 @@
-import { Component, inject, signal, input } from '@angular/core';
+import { Component, inject, signal, input, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputComponent } from '@/shared/ui/input/input.component';
@@ -15,7 +15,8 @@ import { AuthFacade } from '@/data/services/auth.facade';
     templateUrl: './login.page.html',
     styleUrls: ['./login.page.scss'],
     standalone: true,
-    imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent, FontAwesomeModule, UiStyleDirective]
+    imports: [ReactiveFormsModule, RouterLink, InputComponent, SubmitButtonComponent, FontAwesomeModule, UiStyleDirective],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
     protected readonly faEnvelope: IconDefinition = faEnvelope;

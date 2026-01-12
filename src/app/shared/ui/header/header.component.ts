@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBell, faEnvelope, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
@@ -11,6 +11,7 @@ import { AuthFacade } from '@/data/services/auth.facade';
     standalone: true,
     imports: [CommonModule, FontAwesomeModule],
     templateUrl: './header.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
     private router = inject(Router);

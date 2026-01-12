@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationsListComponent } from '@/features/notification/ui/notifications-list/notifications-list.component';
 import { NotificacionFacade } from '@/data/services/notificacion.facade';
@@ -8,6 +8,7 @@ import { NotificacionFacade } from '@/data/services/notificacion.facade';
     standalone: true,
     imports: [CommonModule, NotificationsListComponent],
     templateUrl: 'notifications.page.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class NotificationsPage {

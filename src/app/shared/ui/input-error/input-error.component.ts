@@ -1,10 +1,11 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 @Component({
     selector: 'app-input-error',
     standalone: true,
-    templateUrl: './input-error.component.html'
+    templateUrl: './input-error.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputErrorComponent {
     control = input<AbstractControl | null>(null);
