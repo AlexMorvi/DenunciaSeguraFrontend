@@ -6,6 +6,26 @@
                     [icon]="faSearch">
                 </app-input>
             </div>
+            <div class="flex items-center gap-2">
+                @for (option of filterOptions; track option.label) {
+                <button (click)="setFilter(option.value)"
+                    class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 border"
+                    [class.bg-gray-900]="isFilterActive(option.value)" [class.text-white]="isFilterActive(option.value)"
+                    [class.border-gray-900]="isFilterActive(option.value)"
+                    [class.hover:bg-gray-700]="isFilterActive(option.value)"
+                    [class.bg-gray-50]="!isFilterActive(option.value)"
+                    [class.text-gray-600]="!isFilterActive(option.value)"
+                    [class.border-transparent]="!isFilterActive(option.value)"
+                    [class.hover:bg-gray-200]="!isFilterActive(option.value)">
+
+                    @if (option.dotColor) {
+                    <span class="w-2 h-2 rounded-full" [class]="option.dotColor"></span>
+                    }
+
+                    {{ option.label }}
+                </button>
+                }
+            </div>
         </div>
 
         <div

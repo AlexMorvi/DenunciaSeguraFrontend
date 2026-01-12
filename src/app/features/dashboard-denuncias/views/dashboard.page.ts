@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
-import { DenunciasTableComponent } from '@/features/dashboard/ui/denuncias-table/denuncias-table.component';
+import { DenunciasTableComponent } from '@/features/dashboard-denuncias/ui/denuncias-table/denuncias-table.component';
 import { SkeletonLoaderComponent } from '@/shared/components/skeleton-loader/skeleton-loader';
 import {
     faFolderOpen,

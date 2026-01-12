@@ -1,8 +1,10 @@
-import { Component, input, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, computed, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
+import { ESTADO_DENUNCIA_ENUM } from '@/core/api/denuncias/models/estado-denuncia-enum-array';
+import { ESTADOS_UI_OPTIONS } from '@/shared/constants/estados.const';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSearch, faChevronDown, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -30,6 +32,9 @@ export class DenunciasTableComponent {
 
     denuncias = input.required<Denuncia[]>();
 
+    filterStatus = signal<EstadoDenunciaEnum | EstadoDenunciaEnum[] | null>(null);
+
+    readonly filterOptions = ESTADOS_UI_OPTIONS;
 
     searchControl = new FormControl('', {
         nonNullable: true,
@@ -47,7 +52,7 @@ export class DenunciasTableComponent {
         { initialValue: '' }
     );
 
-    filteredDenuncias = computed(() => {
+    /* filteredDenuncias = computed(() => {
         const term = this.searchText().toLowerCase();
         const list = this.denuncias();
 
@@ -57,9 +62,53 @@ export class DenunciasTableComponent {
             (d.titulo ?? '').toLowerCase().includes(term) ||
             (d.descripcion ?? '').toLowerCase().includes(term)
         );
+    }); */
+    filteredDenuncias = computed(() => {
+        const term = this.searchText().toLowerCase();
+        const status = this.filterStatus();
+        const list = this.denuncias();
+
+        return list.filter(d => {
+            const matchesText = !term ||
+                (d.titulo ?? '').toLowerCase().includes(term) ||
+                (d.descripcion ?? '').toLowerCase().includes(term);
+
+            const matchesStatus = (() => {
+                if (!status) return true;
+                if (Array.isArray(status)) {
+                    // TODO: La validación del estado dentro del filtro puede afectar el rendimiento cuando hay muchas denuncias. Considera validar los estados al cargar los datos en lugar de en cada ejecución del computed, o asumir que los datos de la API son válidos.
+                    const isValidEstado = ESTADO_DENUNCIA_ENUM.includes(d.estado as EstadoDenunciaEnum);
+                    if (!isValidEstado) return false;
+                    return status.includes(d.estado as EstadoDenunciaEnum);
+                }
+                return d.estado === status;
+            })();
+
+            return matchesText && matchesStatus;
+        });
     });
 
+    setFilter(status: EstadoDenunciaEnum | EstadoDenunciaEnum[] | null) {
+        if (this.isFilterActive(status)) {
+            this.filterStatus.set(null);
+        } else {
+            this.filterStatus.set(status);
+        }
+    }
 
+    isFilterActive(optionValue: EstadoDenunciaEnum | EstadoDenunciaEnum[] | null): boolean {
+        const currentStatus = this.filterStatus();
+        if (currentStatus === optionValue) {
+            return true;
+        }
+        if (Array.isArray(currentStatus) && Array.isArray(optionValue)) {
+            if (currentStatus.length !== optionValue.length) {
+                return false;
+            }
+            return currentStatus.every(value => optionValue.includes(value));
+        }
+        return false;
+    }
     // TODO: Arreglar el tipo del id
     navigateToDenuncia(id?: number | null | undefined) {
         if (typeof id !== 'number' || !Number.isFinite(id) || id <= 0) return;
@@ -103,7 +152,7 @@ export class DenunciasTableComponent {
             const d = new Date(val);
             const fmt = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
             return fmt.format(d);
-        } catch (err) {
+        } catch {
             return String(val);
         }
     }

@@ -10,7 +10,12 @@ export const ADMIN_ROUTES: Routes = [
         children: [
             {
                 path: APP_ROUTES.DASHBOARD,
-                loadComponent: () => import('@/features/dashboard/views/dashboard.page')
+                loadComponent: () => import('@/features/dashboard-denuncias/views/dashboard.page')
+                    .then(m => m.CiudadanoDashboardPage)
+            },
+            {
+                path: APP_ROUTES.DASHBOARD_USERS,
+                loadComponent: () => import('@/features/dashboard-usuarios/views/dashboard.page')
                     .then(m => m.CiudadanoDashboardPage)
             },
             {
