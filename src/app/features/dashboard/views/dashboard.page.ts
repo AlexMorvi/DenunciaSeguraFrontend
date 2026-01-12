@@ -1,22 +1,23 @@
-import { Component, inject, OnInit, computed, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { AuthFacade } from '@/data/services/auth.facade';
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { DenunciasTableComponent } from '@/features/dashboard/ui/denuncias-table/denuncias-table.component';
 import { SkeletonLoaderComponent } from '@/shared/components/skeleton-loader/skeleton-loader';
-import { EstadisticasComponent } from '../ui/estadisticas/estadisticas.component';
+import { ROLES } from '@/shared/constants/roles.const';
+import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
+import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
-    faFolderOpen,
-    faClipboardList,
     faCheckCircle,
+    faClipboardList,
+    faFolderOpen,
     faPlus
 } from '@fortawesome/free-solid-svg-icons';
-import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
-import { AuthFacade } from '@/data/services/auth.facade';
 import { StatCard } from '../interfaz/stat.model';
-import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { EstadisticasComponent } from '../ui/estadisticas/estadisticas.component';
 
 @Component({
     selector: 'app-ciudadano-dashboard',
