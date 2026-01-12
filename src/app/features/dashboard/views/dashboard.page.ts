@@ -40,10 +40,7 @@ export class CiudadanoDashboardPage implements OnInit {
     protected readonly faPlus = faPlus;
 
     userName = computed(() => this.authFacade.currentUser()?.nombre || "Usuario");
-
-    // TODO: descomentar
-    // showCreateButton = computed(() => this.authFacade.currentUser()?.rol === ROLES.CIUDADANO);
-    showCreateButton = computed(() => true);
+    showCreateButton = computed(() => this.authFacade.currentUser()?.rol === ROLES.CIUDADANO);
 
     ngOnInit(): void {
         this.denunciaService.loadAll();
