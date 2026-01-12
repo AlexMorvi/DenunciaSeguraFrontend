@@ -1,7 +1,6 @@
 export const APP_ROUTES = {
 
     DASHBOARD: 'dashboard',
-    DASHBOARD_USERS: 'dashboard-users',
     DENUNCIAS: 'denuncias',
     NUEVA: 'nueva',
     PERFIL: 'perfil',

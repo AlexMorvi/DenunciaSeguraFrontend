@@ -14,11 +14,6 @@ export const ADMIN_ROUTES: Routes = [
                     .then(m => m.CiudadanoDashboardPage)
             },
             {
-                path: APP_ROUTES.DASHBOARD_USERS,
-                loadComponent: () => import('@/features/dashboard/views/dashboard.page')
-                    .then(m => m.CiudadanoDashboardPage)
-            },
-            {
                 path: APP_ROUTES.DENUNCIAS,
                 children: [
                     {
