@@ -1,6 +1,6 @@
 import { ROLES } from "@/shared/constants/roles.const";
 import { MenuItem } from "./menu.types";
-import { faBell, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faUser, faUsers, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 
 export const MENU_ITEMS: MenuItem[] = [
     {
@@ -21,5 +21,11 @@ export const MENU_ITEMS: MenuItem[] = [
         path: 'notificaciones',
         allowedRoles: [ROLES.CIUDADANO],
         showBadge: true
+    },
+    {
+        label: 'Crear usuarios',
+        icon: faUserPlus,
+        path: 'roles',
+        allowedRoles: [ROLES.ADMIN_PLATAFORMA],
     },
 ];
