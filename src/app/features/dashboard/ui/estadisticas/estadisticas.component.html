@@ -1,0 +1,27 @@
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    @for (stat of stats() ?? []; track stat.label) {
+    <div
+        class="relative bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+
+        <div class="flex justify-between items-start">
+            <div class="flex flex-col gap-1">
+                <span class="text-xs font-bold tracking-wider text-slate-500 uppercase">
+                    {{ stat.label }}
+                </span>
+
+                <span class="text-4xl font-extrabold text-slate-900 mt-2">
+                    {{ stat.value }}
+                </span>
+
+                <span class="text-xs mt-2" [class]="stat.subtextClass">
+                    {{ stat.subtext }}
+                </span>
+            </div>
+
+            <div class="flex items-center justify-center w-12 h-12 rounded-xl" [class]="stat.iconBgClass">
+                <fa-icon [icon]="stat.icon" class="text-2xl" [class]="stat.iconColorClass"></fa-icon>
+            </div>
+        </div>
+    </div>
+    }
+</div>
