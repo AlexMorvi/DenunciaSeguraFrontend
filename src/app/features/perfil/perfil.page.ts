@@ -1,112 +1,133 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { UsuarioPerfilResponse } from '@/core/api/auth/models';
+import { ToastService } from '@/core/service/toast/toast.service';
 import { AuthFacade } from '@/data/services/auth.facade';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ROLES } from '@/shared/constants/roles.const';
-import { CommonModule } from '@angular/common';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
-import { ToastService } from '@/core/service/toast/toast.service';
-import { UsuarioPerfilResponse } from '@/core/api/auth/models';
+import { DenunciaFacade } from '@/data/services/denuncia.facade';
+import { Component, computed, effect, inject, OnInit } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { IconDefinition, faSave } from '@fortawesome/free-solid-svg-icons';
+import { ESTADOS_DENUNCIA } from '@/shared/constants/estados.const';
+import { EstadoEvidenciaEnum } from '@/core/api/evidencias/models';
+import { EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 
 @Component({
-    selector: 'app-perfil',
+    selector: 'app-perfil-page',
     standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        InputComponent,
-        SubmitButtonComponent,
-    ],
+    imports: [ReactiveFormsModule, SubmitButtonComponent, InputComponent],
     templateUrl: './perfil.page.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PerfilPageComponent {
-    private fb = inject(FormBuilder);
-    private router = inject(Router);
-
-    private readonly authFacade = inject(AuthFacade);
+export class PerfilPageComponent implements OnInit {
+    private readonly fb = inject(FormBuilder);
+    private readonly router = inject(Router);
+    private readonly authService = inject(AuthFacade);
+    private readonly denunciaService = inject(DenunciaFacade);
     private readonly toast = inject(ToastService);
 
-    readonly currentUser = this.authFacade.currentUser;
-    protected readonly isLoading = this.authFacade.loading;
+    // Signals del Facade
+    readonly currentUser = this.authService.currentUser;
+    readonly isLoading = this.authService.loading;
+    readonly save: IconDefinition = faSave;
+    protected readonly denuncias = this.denunciaService.denuncias;
 
+
+    readonly denunciasCount = computed(() => this.denunciaService.denuncias()?.length ?? 0);
+    readonly resolvedCount = computed(() => (this.denunciaService.denuncias() || []).filter(d => d.estado === ESTADOS_DENUNCIA.RESUELTA).length);
+    readonly inProgressCount = computed(() => {
+        const list = this.denunciaService.denuncias() || [];
+        const inProgressStates = [
+            ESTADOS_DENUNCIA.ASIGNADA,
+            ESTADOS_DENUNCIA.EN_PROCESO,
+            ESTADOS_DENUNCIA.EN_VALIDACION
+        ];
+        return list.filter(d => inProgressStates.includes(d.estado as EstadoDenunciaEnum)).length;
+    });
+
+    // Computados para lógica de vista
     readonly isCitizen = computed(() => this.currentUser()?.rol === ROLES.CIUDADANO);
     readonly isStaff = computed(() => this.currentUser()?.rol !== ROLES.CIUDADANO);
+
+
+    ngOnInit(): void {
+        // TODO: Es muy ineficiente cargar todas las denuncias solo para contarlas, considerar un endpoint dedicado
+        this.denunciaService.loadAll();
+    }
 
     form = this.fb.nonNullable.group({
         alias: ['', [
             Validators.required,
             Validators.minLength(3),
             Validators.maxLength(50),
+            Validators.pattern(/^[a-zA-Z0-9\s\-_]+$/)
         ]],
     });
 
     constructor() {
-        this.initializeForm();
-    }
-
-    private initializeForm(): void {
-        const user = this.currentUser();
-        if (!user) return;
-
-        const alias = this.isCitizen()
-            ? user.publicCitizenId
-            : user.aliasPublico;
-        this.form.setValue({ alias: alias || '' });
+        effect(() => {
+            const user = this.currentUser();
+            if (user) {
+                this.resetFormValues(user);
+            }
+        });
     }
 
     async updateAlias(): Promise<void> {
-        // 1. Guard Clause: Validación inicial separada
-        if (!this.isValidSubmission()) {
-            return;
-        }
+        if (!this.isValidSubmission()) return;
 
         const { alias: newAlias } = this.form.getRawValue();
 
         try {
-            // 2. Ejecución: Delegar la lógica de negocio a un método específico
-            const updatedUser = await this.performAliasUpdate(newAlias);
+            await this.performAliasUpdate(newAlias.trim());
+            this.handleUpdateSuccess(newAlias);
 
-            // 3. Sincronización: Manejar la actualización del estado
-            await this.syncUserState(updatedUser);
-
-            // 4. Finalización: Feedback y navegación
-            await this.handleUpdateSuccess();
-
-        } catch (error: unknown) {
-            this.toast.showError("No se pudo actualizar el alias. Intente nuevamente.");
+        } catch (error) {
+            this.toast.showError("No se pudo actualizar el perfil. Verifique su conexión.");
         }
     }
 
-    // --- Métodos privados (Helpers) ---
+    cancel(): void {
+        const user = this.currentUser();
+        if (user) this.resetFormValues(user);
+    }
+
+    // --- Métodos Privados (Helpers & Business Logic) ---
+
+    private resetFormValues(user: UsuarioPerfilResponse): void {
+        const currentAlias = this.isCitizen()
+            ? user.publicCitizenId
+            : user.aliasPublico;
+
+        this.form.controls.alias.setValue(currentAlias || '');
+        this.form.markAsPristine();
+    }
 
     private isValidSubmission(): boolean {
-        if (this.form.invalid || !this.form.value?.alias) {
-            this.form.markAsTouched();
-            this.toast.showError('El alias no cumple con el formato requerido (min 3 caracteres, sin símbolos).');
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
+            return false;
+        }
+        if (!this.form.value.alias?.trim()) {
+            this.toast.showError('El alias no puede estar vacío.');
             return false;
         }
         return true;
     }
 
-    private async performAliasUpdate(alias: string): Promise<UsuarioPerfilResponse | undefined> {
+    private async performAliasUpdate(alias: string): Promise<void> {
         return this.isCitizen()
-            ? await this.authFacade.updateCitizenAlias(alias)
-            : await this.authFacade.updateMyAlias(alias);
+            ? await this.authService.updateCitizenAlias(alias)
+            : await this.authService.updateMyAlias(alias);
     }
 
-    private async syncUserState(user: UsuarioPerfilResponse | undefined): Promise<void> {
-        if (user) {
-            this.authFacade.updateAuthState(user);
-        } else {
-            await this.authFacade.refreshUser();
-        }
-    }
+    private handleUpdateSuccess(newAlias: string): void {
+        this.toast.showSuccess(
+            'Perfil actualizado',
+            this.isCitizen() ? 'Tu ID público ha sido modificado.' : 'Tu alias público ha sido modificado.'
+        );
 
-    private async handleUpdateSuccess(): Promise<void> {
-        this.initializeForm();
-        this.toast.showSuccess('Perfil actualizado', 'Tu alias ha sido modificado correctamente.');
-        await this.router.navigate(['/dashboard']);
+        this.form.controls.alias.setValue(newAlias);
+        this.form.markAsPristine();
     }
 }
