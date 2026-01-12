@@ -1,5 +1,7 @@
 export const APP_ROUTES = {
+
     DASHBOARD: 'dashboard',
+    DASHBOARD_USERS: 'dashboard-users',
     DENUNCIAS: 'denuncias',
     NUEVA: 'nueva',
     PERFIL: 'perfil',
@@ -9,7 +11,6 @@ export const APP_ROUTES = {
     REGISTER: 'register',
     FORGOT_PASSWORD: 'forgot-password',
     CHANGE_PASSWORD: 'change-password',
-
 
     absolute: {
         toDetalleUsuario: (id: string) => ['/', 'usuarios', id],
