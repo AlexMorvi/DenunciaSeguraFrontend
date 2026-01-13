@@ -22,19 +22,7 @@ export class AuthFacade {
     private adminService = inject(AdminService);
     private publicoService = inject(PublicoService);
     private readonly logger = inject(LoggerService);
-    // TODO: Temporal hardcoded user until backend endpoint is available
-    private readonly _currentUser = signal<UsuarioPerfilResponse | null>({
-        id: 1,
-        nombre: 'Usuario Temporal',
-        email: 'temporal@example.com',
-        // rol: 'CIUDADANO',
-        rol: 'ADMIN_PLATAFORMA',
-        // rol: 'SUPERVISOR_DENUNCIAS',
-        // rol: 'JEFE_INTERNO',
-        // rol: 'OPERADOR_INTERNO',
-        aliasPublico: null,
-        publicCitizenId: 'temp-0001'
-    });
+    private readonly _currentUser = signal<UsuarioPerfilResponse | null>(null);
     public readonly currentUser = this._currentUser.asReadonly();
     private _loading = signal(false);
     readonly loading = this._loading.asReadonly();
