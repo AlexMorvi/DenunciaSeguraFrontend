@@ -7,12 +7,12 @@
             <label class="block text-xs text-slate-500 font-medium text-left mb-3" for="comentarios">Comentarios
                 (opcional)</label>
             <app-input id="comentarios" placeholder="Comentarios acerca de la validación o rechazo..."
-                [formControl]="form.controls.comentarios" [multiline]="true" [rows]="3" [icon]="faComment"
+                [formControl]="form.controls.comentarioObservacion" [multiline]="true" [rows]="3" [icon]="faComment"
                 [maxlength]="1000">
             </app-input>
             <div class="mt-1 text-xs text-gray-500 flex items-center justify-between">
                 <div id="comentarios">Requerido. 10–1000 caracteres.</div>
-                <div class="text-gray-400">{{ (form.get('comentarios')?.value?.length || 0) }}/1000
+                <div class="text-gray-400">{{ (form.get('comentarioObservacion')?.value?.length || 0) }}/1000
                 </div>
             </div>
         </div>

@@ -26,14 +26,12 @@ export class ActionsJefeComponent {
     protected readonly faTimes = faTimesCircle;
 
     // onAssignmentComplete = output<void>();
-    validar = output<{ idDenuncia: number, aprobada: boolean, comentario?: string }>();
-    rechazar = output<{ idDenuncia: number, aprobada: boolean, comentario?: string }>();
-    asignar = output<{ idDenuncia: number, idOperador: number }>();
+    validar = output<{ aprobada: boolean, comentario?: string }>();
+    asignar = output<{ idOperador: number }>();
 
     // TODO: Eliminar el signal true y utilizar el dinámico
     // isEnValidacion = computed(() => this.currentDenuncia().estado === 'EN_VALIDACION');
-    isEnValidacion = signal(false);
-
+    isEnValidacion = signal(true);
     // TODO: Cargar lista real de operadores desde un servicio
     // Ahora `operadores` es un arreglo de objetos con `id` y `label`.
     operadores = signal<{ id: number; label: string }[]>([
@@ -54,7 +52,7 @@ export class ActionsJefeComponent {
             validators: [Validators.required, Validators.min(1)]
         }),
 
-        comentarios: new FormControl('', {
+        comentarioObservacion: new FormControl('', {
             nonNullable: true,
             validators: [Validators.minLength(10), Validators.maxLength(500)]
         })
@@ -80,12 +78,9 @@ export class ActionsJefeComponent {
     }
 
     async validarDenunciaPorJefe(aprobada = true) {
-        const denuncia = this.currentDenuncia();
-        if (!denuncia?.id) return;
+        if (this.form.invalid) return;
 
-        if (!denuncia?.id || this.form.invalid) return;
-
-        const comentario = this.form.controls['comentarios'].value ?? '';
-        this.validar.emit({ idDenuncia: denuncia.id, aprobada, comentario: comentario });
+        const comentarioObservacion = this.form.controls['comentarioObservacion'].value ?? '';
+        this.validar.emit({ aprobada, comentario: comentarioObservacion });
     }
 }

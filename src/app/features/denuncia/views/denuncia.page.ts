@@ -143,9 +143,9 @@ export class DenunciaPageComponent {
         }
     }
 
-    async validarDenunciaPorJefe(payload: { idDenuncia: number, aprobada: boolean, comentario?: string }) {
+    async validarDenunciaPorJefe(payload: { aprobada: boolean, comentarioObservacion?: string }) {
         try {
-            await this.denunciaService.validarDenunciaPorSupervisor(payload.idDenuncia, payload.aprobada, payload.comentario);
+            await this.denunciaService.validarDenunciaPorSupervisor(payload.aprobada, payload.comentarioObservacion);
             if (payload.aprobada) {
                 this.toast.showSuccess('Éxito', 'Denuncia validada correctamente');
             } else {
