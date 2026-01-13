@@ -19,14 +19,14 @@ export class FileUploadService {
 
     async subirEvidencia(archivo: File): Promise<EvidenceId> {
         let currentStep: UploadPhase = 'INICIO';
-        let sessionData: { uploadUrl: string; uploadId: string; evidenceId: string } | null = null;
+        let sessionData: { uploadUrl: string; uploadId: string; evidenceId: string, contentType: string } | null = null;
 
         try {
             currentStep = 'SESION';
             sessionData = await this.iniciarSesionCarga(archivo);
 
             currentStep = 'CARGA_NUBE';
-            await this.cargarArchivoEnNube(sessionData.uploadUrl, archivo);
+            await this.cargarArchivoEnNube(sessionData, archivo);
 
             currentStep = 'CONFIRMACION';
             await this.confirmarSubida(sessionData.uploadId, sessionData.evidenceId);
@@ -47,15 +47,6 @@ export class FileUploadService {
         }
     }
 
-    private extractErrorMessage(e: unknown): string {
-        try {
-            if (e instanceof Error) return e.message;
-            if (typeof e === 'string') return e;
-            return JSON.stringify(e);
-        } catch {
-            return String(e);
-        }
-    }
     private async iniciarSesionCarga(archivo: File) {
         const payload: CrearUploadRequest = {
             proposito: PROPOSITO_CARGA,
@@ -76,16 +67,17 @@ export class FileUploadService {
         return {
             uploadId: response.uploadId,
             uploadUrl: item.uploadUrl,
-            evidenceId: item.evidenceId
+            evidenceId: item.evidenceId,
+            contentType: archivo.type
         };
     }
 
-    private async cargarArchivoEnNube(url: string, archivo: File): Promise<void> {
+    private async cargarArchivoEnNube(sessionData: { uploadUrl: string; uploadId: string; evidenceId: string, contentType: string }, archivo: File): Promise<void> {
         await firstValueFrom(
-            this.http.put(url, archivo, {
+            this.http.put(sessionData.uploadUrl, archivo, {
                 // TODO: revisar si los headers de http son seguros
                 headers: new HttpHeaders({
-                    'Content-Type': archivo.type
+                    'Content-Type': sessionData.contentType
                 }),
                 context: new HttpContext().set(SKIP_AUTH, true),
                 reportProgress: true,
@@ -95,7 +87,6 @@ export class FileUploadService {
                 timeout(120000)
             )
         );
-
     }
 
     private async confirmarSubida(uploadId: string, evidenceId: string): Promise<void> {
@@ -118,6 +109,16 @@ export class FileUploadService {
 
             default:
                 return new EvidenceUploadError('Error inesperado al procesar la evidencia.');
+        }
+    }
+
+    private extractErrorMessage(e: unknown): string {
+        try {
+            if (e instanceof Error) return e.message;
+            if (typeof e === 'string') return e;
+            return JSON.stringify(e);
+        } catch {
+            return String(e);
         }
     }
 }
