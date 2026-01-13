@@ -1,6 +1,7 @@
 import { Component, inject, computed, input, effect, untracked, ChangeDetectionStrategy } from '@angular/core';
 // import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models/denuncia-staff-view-response';
 import { DenunciaLayoutComponent } from '@/core/layout/denuncia-layout/denuncia-layout.component';
+import { ROLES } from '@/shared/constants/roles.const';
 import { DenunciaDetailsComponent } from '../ui/denuncia-details/denuncia-details.component';
 import { ActionsSupervisorComponent } from '../ui/action-supervisor/actions-supervisor.component';
 import { ActionsOperadorComponent } from '../ui/action-operador/actions-operador.component';
@@ -28,7 +29,8 @@ export class DenunciaPageComponent {
     private fileService = inject(FileUploadService);
     private router = inject(Router);
 
-    denuncia = this.denunciaService.currentDenuncia;
+    public currentUser = this.authService.currentUser;
+    public denuncia = this.denunciaService.currentDenuncia;
     protected readonly isLoading = this.denunciaService.loading;
 
     id = input<number>();
@@ -45,39 +47,23 @@ export class DenunciaPageComponent {
         });
     }
 
-
-
-    // TODO: utilizar este signal para la denuncia actual
-    // denuncia = this.denunciaService.currentDenuncia;
-    // currentUser = this.authService.currentUser;
-
-    // TODO: Lo comentado es la implementación final, por ahora devuelve siempre true
     isJefe = computed(() => {
-        // const rol = this.authService.currentUser()?.rol;
-        // return [ROLES.JEFE_INTERNO, ROLES.JEFE_EXTERNO].includes(rol as any);
-        // return true;
-        return false;
+        const rol = this.currentUser()?.rol;
+        return [ROLES.JEFE_INTERNO, ROLES.JEFE_EXTERNO].includes(rol as any);
     });
 
     isSupervisor = computed(() => {
-        // const rol = this.authService.currentUser()?.rol;
-        // return this.authService.currentUser()?.rol === ROLES.SUPERVISOR;
-        return true;
-        // return false;
+        return this.currentUser()?.rol === ROLES.SUPERVISOR;
     });
 
     isOperador = computed(() => {
-        // const rol = this.authService.currentUser()?.rol;
-        // return [ROLES.OPERADOR_INTERNO, ROLES.OPERADOR_EXTERNO].includes(rol as any);
-        return false;
-        // return true;
+        const rol = this.currentUser()?.rol;
+        return [ROLES.OPERADOR_INTERNO, ROLES.OPERADOR_EXTERNO].includes(rol as any);
     });
 
     isCiudadano = computed(() => {
-        // const rol = this.authService.currentUser()?.rol;
-        // return [ROLES.CIUDADANO].includes(rol as any);
-        return false;
-        // return true;
+        const rol = this.currentUser()?.rol;
+        return [ROLES.CIUDADANO].includes(rol as any);
     });
 
     public readonly resolveUrlFn = async (evidenceId: string): Promise<string | undefined> => {
