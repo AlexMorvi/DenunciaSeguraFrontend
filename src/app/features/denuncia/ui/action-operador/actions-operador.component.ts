@@ -1,5 +1,5 @@
 import { Component, input, output, inject, ChangeDetectionStrategy, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { LoggerService } from '@/core/service/logging/logger.service';
 // import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models';
@@ -39,10 +39,16 @@ export class ActionsOperadorComponent {
     save = output<{ idDenuncia: number, comentario: string, evidenciasIds: string[] }>();
     // onSaveAssignment = output<string>();
 
-
-    form = this.fb.nonNullable.group({
-        evidenciasIds: [[] as string[]],
-        comentarios: ['', [Validators.minLength(10), Validators.maxLength(500)]]
+    readonly form = this.fb.nonNullable.group({
+        evidenciasIds: new FormControl<string[]>([], { nonNullable: true }),
+        comentarioResolucion: new FormControl('', {
+            nonNullable: true,
+            validators: [
+                Validators.required,
+                Validators.minLength(10),
+                Validators.maxLength(500)
+            ]
+        })
     });
 
     entidadesOptions = ENTIDAD_ENUM;
@@ -65,7 +71,7 @@ export class ActionsOperadorComponent {
             return;
         }
 
-        const rawComentario = this.form.controls.comentarios.value || '';
+        const rawComentario = this.form.controls.comentarioResolucion.value || '';
         const comentarioLimpio = rawComentario.trim();
 
         this.save.emit({
