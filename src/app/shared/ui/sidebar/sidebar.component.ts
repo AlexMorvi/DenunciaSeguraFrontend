@@ -26,15 +26,8 @@ export class SidebarComponent {
 
     public noLeidasCount = this.notificationFacade.noLeidasCount;
     public currentUser = this.authFacade.currentUser;
-
-    public basePath = this.authFacade.defaultPath;
-
-    public dashboardLink = computed(() => [this.basePath(), 'dashboard']);
-    public notificationsLink = computed(() => [this.basePath(), 'notificaciones']);
-
     public menuItems = computed<MenuItem[]>(() => {
         const user = this.currentUser();
-        const base = this.basePath();
 
         if (!user) return [];
         const userRol = user.rol;
@@ -44,7 +37,7 @@ export class SidebarComponent {
             .filter((item: MenuItem) => item.allowedRoles.includes(userRol))
             .map((item: MenuItem) => ({
                 ...item,
-                fullPath: [base, item.path]
+                fullPath: [item.path]
             }));
     });
 
@@ -52,13 +45,5 @@ export class SidebarComponent {
         const count = this.noLeidasCount();
 
         return count > 99 ? '99+' : count.toString();
-    });
-
-    public settingsLink = computed(() => {
-        if (this.currentUser()?.rol === ROLES.ADMIN_PLATAFORMA) {
-            return ['/admin', 'configuracion-avanzada'];
-        }
-
-        return [this.basePath(), 'perfil'];
     });
 }
