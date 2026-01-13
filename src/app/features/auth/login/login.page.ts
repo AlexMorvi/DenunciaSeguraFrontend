@@ -54,7 +54,6 @@ export class LoginComponent {
             });
 
             this.router.navigate(['/dashboard']);
-            this.toast.showSuccess('¡Bienvenido!', 'Inicio de sesión exitoso');
         } catch {
             this.toast.showError('Credenciales incorrectas. Por favor, verifica tu email y contraseña.');
         }
