@@ -131,15 +131,16 @@ export class DenunciaFacade {
         }
     }
 
-    async validarDenunciaPorSupervisor(id: number, aprobada: boolean, feedbackSupervisor?: string): Promise<void> {
+    async validarDenunciaPorSupervisor(aprobada: boolean, comentarioObservacion?: string): Promise<void> {
         this._loading.set(true);
         this._error.set(null);
         try {
             await this.gestionInternaService.denunciasIdValidacionPatch({
-                id,
+                // TODO: eliminar el idDenuncia, el front no debe enviarlo
+                id: 1,
                 body: {
                     aprobada,
-                    ...(feedbackSupervisor ? { feedbackSupervisor } : {})
+                    ...(comentarioObservacion ? { comentarioObservacion: comentarioObservacion } : {})
                 }
             });
         } catch (err) {
