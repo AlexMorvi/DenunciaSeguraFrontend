@@ -64,12 +64,13 @@ export class DenunciaFacade {
         }
     }
 
-    async asignarOperadorPorJefe(idDenuncia: number, idOperador: number): Promise<void> {
+    async asignarOperadorPorJefe(idOperador: number): Promise<void> {
         this._loading.set(true);
         this._error.set(null);
         try {
             await this.gestionInternaService.denunciasIdAsignacionPost({
-                id: idDenuncia,
+                // TODO: Eliminar, el front no envía la denuncia
+                id: 1,
                 body: { operadorId: idOperador }
             });
         } catch (err) {

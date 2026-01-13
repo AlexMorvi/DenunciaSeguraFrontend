@@ -113,13 +113,10 @@ export class DenunciaPageComponent {
         }
     }
 
-    async asignarOperadorPorJefe(payload: { idDenuncia: number, idOperador: number }) {
+    async asignarOperadorPorJefe(payload: { idOperador: number }) {
         try {
-            //TODO: Crear método en el facade para iniciar el proceso
             await this.denunciaService.asignarOperadorPorJefe(
-                payload.idDenuncia,
                 payload.idOperador
-
             );
             this.toast.showSuccess('Éxito', 'Denuncia iniciada correctamente');
             await this.router.navigate(['/dashboard']);

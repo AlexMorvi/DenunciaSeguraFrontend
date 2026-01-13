@@ -59,9 +59,6 @@ export class ActionsJefeComponent {
     });
 
     async asignarOperadorPorJefe() {
-        const denuncia = this.currentDenuncia();
-        if (!denuncia || !denuncia.id) return;
-
         if (this.form.invalid) return;
 
         const operadorId = Number(this.form.controls['operadorId'].value);
@@ -72,7 +69,6 @@ export class ActionsJefeComponent {
         }
 
         this.asignar.emit({
-            idDenuncia: denuncia.id,
             idOperador: operadorId
         });
     }
