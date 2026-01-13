@@ -47,9 +47,17 @@ export class ActionsJefeComponent {
     currentDenuncia = input.required<any>();
     public isLoading = input<boolean>(false);
 
-    form = this.fb.nonNullable.group({
-        operadorId: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-        comentarios: ['', [Validators.minLength(10), Validators.maxLength(500)]]
+
+    readonly form = this.fb.nonNullable.group({
+        operadorId: new FormControl(0, {
+            nonNullable: true,
+            validators: [Validators.required, Validators.min(1)]
+        }),
+
+        comentarios: new FormControl('', {
+            nonNullable: true,
+            validators: [Validators.minLength(10), Validators.maxLength(500)]
+        })
     });
 
     async asignarOperadorPorJefe() {
