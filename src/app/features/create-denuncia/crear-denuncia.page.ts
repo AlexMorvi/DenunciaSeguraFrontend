@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { FileUploadErrorEvent } from '@/core/model/file-upload.event';
 import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, viewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as L from 'leaflet';
 import { CategoriaEnum } from '@/core/api/denuncias/models/categoria-enum';
 import { CATEGORIA_ENUM } from '@/core/api/denuncias/models/categoria-enum-array';
 import { CrearDenunciaRequest } from '@/core/api/denuncias/models/crear-denuncia-request';
-import { NivelAnonimatoEnum } from '@/core/api/denuncias/models/nivel-anonimato-enum';
-import { NIVEL_ANONIMATO_ENUM } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
+import { NIVEL_ANONIMATO_ENUM as NIVEL_ANONIMATO_ARRAY } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
+import { NIVEL_ANONIMATO } from '@/shared/constants/nivel-anonimato.const';
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { CategorySelectorComponent } from '@/shared/ui/category-selector/category-selector.component';
 import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.component';
@@ -70,23 +70,36 @@ export class CrearDenunciaComponent implements OnDestroy {
     readonly currentCoords = signal<{ lat: number; lng: number } | null>(null);
 
     readonly listadoCategorias = CATEGORIA_ENUM;
-    readonly listadoAnonimato = NIVEL_ANONIMATO_ENUM;
+    readonly listadoAnonimato = NIVEL_ANONIMATO_ARRAY;
 
     private map: L.Map | undefined;
     private marker: L.Marker | undefined;
 
-    readonly form = this.fb.group({
-        titulo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
-        descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-        // INFO: Para establecer una categoría por defecto
-        // categoria: ['VIALIDAD' as CategoriaEnum, [Validators.required]],
-        categoria: [null as CategoriaEnum | null, [Validators.required]],
-        nivelAnonimato: ['REAL' as NivelAnonimatoEnum, [Validators.required]],
-        latitud: [null as number | null, Validators.required],
-        longitud: [null as number | null, Validators.required],
-        evidenciaIds: []
+    readonly form = this.fb.nonNullable.group({
+        titulo: this.fb.nonNullable.control('', [
+            Validators.required,
+            Validators.minLength(5),
+            Validators.maxLength(100)
+        ]),
+        descripcion: this.fb.nonNullable.control('', [
+            Validators.required,
+            Validators.minLength(10),
+            Validators.maxLength(500)
+        ]),
+        categoriaDenuncia: new FormControl<CategoriaEnum | null>(null, {
+            validators: [Validators.required]
+        }),
+        nivelAnonimato: this.fb.nonNullable.control(NIVEL_ANONIMATO.REAL, [
+            Validators.required
+        ]),
+        latitud: new FormControl<number | null>(null, {
+            validators: [Validators.required]
+        }),
+        longitud: new FormControl<number | null>(null, {
+            validators: [Validators.required]
+        }),
+        evidenciasIds: this.fb.nonNullable.control([], [])
     });
-
 
     async guardarDenuncia() {
         if (this.form.invalid) {
@@ -99,7 +112,7 @@ export class CrearDenunciaComponent implements OnDestroy {
         const request: CrearDenunciaRequest = {
             titulo: rawData.titulo!.trim(),
             descripcion: rawData.descripcion!.trim(),
-            categoria: rawData.categoria!,
+            categoria: rawData.categoriaDenuncia!,
             nivelAnonimato: rawData.nivelAnonimato!,
             latitud: rawData.latitud!,
             longitud: rawData.longitud!,
