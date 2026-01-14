@@ -15,7 +15,7 @@ export class SelectComponent implements ControlValueAccessor {
     public ngControl = inject(NgControl, { self: true, optional: true });
 
     id = input.required<string>();
-    label = input.required<string>();
+    // label = input.required<string>();
     placeholder = input<string>('Seleccione una opción');
     options = input.required<Array<string | Record<string, any>>>();
     customErrors = input<Record<string, string>>({}, { alias: 'errors' });
