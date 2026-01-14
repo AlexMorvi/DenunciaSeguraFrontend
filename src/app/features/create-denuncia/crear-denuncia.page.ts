@@ -4,7 +4,7 @@ import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, view
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as L from 'leaflet';
 import { CategoriaEnum } from '@/core/api/denuncias/models/categoria-enum';
-import { CATEGORIA_ENUM } from '@/core/api/denuncias/models/categoria-enum-array';
+import { IconDefinition, faRoad, faLightbulb, faTrashAlt, faShieldAlt, faTint, faSeedling, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { CrearDenunciaRequest } from '@/core/api/denuncias/models/crear-denuncia-request';
 import { NIVEL_ANONIMATO_ENUM as NIVEL_ANONIMATO_ARRAY } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
 import { NIVEL_ANONIMATO } from '@/shared/constants/nivel-anonimato.const';
@@ -69,7 +69,15 @@ export class CrearDenunciaComponent implements OnDestroy {
     readonly selectedFile = signal<File | null>(null);
     readonly currentCoords = signal<{ lat: number; lng: number } | null>(null);
 
-    readonly listadoCategorias = CATEGORIA_ENUM;
+    readonly listadoCategorias: { value: CategoriaEnum; label: string; icon: IconDefinition; colorClass: string }[] = [
+        { value: 'VIALIDAD' as CategoriaEnum, label: 'Bacheo / Vialidad', icon: faRoad, colorClass: 'text-primary' },
+        { value: 'ILUMINACION' as CategoriaEnum, label: 'Alumbrado', icon: faLightbulb, colorClass: 'text-yellow-500' },
+        { value: 'SANIDAD' as CategoriaEnum, label: 'Basura / Limpieza', icon: faTrashAlt, colorClass: 'text-green-500' },
+        { value: 'SEGURIDAD' as CategoriaEnum, label: 'Seguridad', icon: faShieldAlt, colorClass: 'text-red-500' },
+        { value: 'AGUA' as CategoriaEnum, label: 'Agua', icon: faTint, colorClass: 'text-blue-500' },
+        { value: 'JARDINERIA' as CategoriaEnum, label: 'Jardinería', icon: faSeedling, colorClass: 'text-emerald-500' },
+        { value: 'OTROS' as CategoriaEnum, label: 'Otro', icon: faEllipsisH, colorClass: 'text-purple-500' }
+    ];
     readonly listadoAnonimato = NIVEL_ANONIMATO_ARRAY;
 
     private map: L.Map | undefined;
