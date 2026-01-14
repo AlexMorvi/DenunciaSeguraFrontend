@@ -29,7 +29,14 @@ export class AuthFacade {
 
     // Expose constants for UI consumption
     readonly availableRoles = ROL_ENUM;
-    readonly availableEntities = ENTIDAD_ENUM;
+    // readonly availableEntities = ENTIDAD_ENUM;
+    private readonly _entities = signal(ENTIDAD_ENUM);
+    readonly uiEntities = computed(() => {
+        return this._entities().map(entity => ({
+            code: entity,
+            label: this.formatLabel(entity)
+        }));
+    });
 
     public defaultPath = computed(() => {
         const user = this.currentUser();
@@ -174,5 +181,8 @@ export class AuthFacade {
         } finally {
             this._currentUser.set(null);
         }
+    }
+    private formatLabel(raw: string): string {
+        return raw.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
     }
 }
