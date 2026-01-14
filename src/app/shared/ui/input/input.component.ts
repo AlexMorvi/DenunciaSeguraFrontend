@@ -18,7 +18,6 @@ export class InputComponent implements ControlValueAccessor {
     public ngControl = inject(NgControl, { optional: true, self: true });
 
     id = input.required<string>();
-    label = input<string>('');
     type = input<'text' | 'email' | 'password'>('text');
     placeholder = input<string>('');
     icon = input<IconDefinition | null>(null);
