@@ -13,6 +13,7 @@ import { ToastService } from '@/core/service/toast/toast.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IconDefinition, faUserPlus, faBuilding, faBolt, faTint, faBroom, faShieldAlt } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
+import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
 
 const ENTITY_ICON_MAP: Record<string, IconDefinition> = {
     MUNICIPIO: faBuilding,
@@ -33,7 +34,7 @@ const ENTITY_COLOR_MAP: Record<string, string> = {
 @Component({
     selector: 'app-staff-manager',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, InputComponent, SelectComponent, CategorySelectorComponent, SubmitButtonComponent, FontAwesomeModule],
+    imports: [CommonModule, ReactiveFormsModule, InputComponent, SelectComponent, CategorySelectorComponent, SubmitButtonComponent, FontAwesomeModule, UiStyleDirective],
     templateUrl: './staff-manager.page.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
