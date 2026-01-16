@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     @for (stat of stats() ?? []; track stat.label) {
     <div
-        class="relative bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+        class="relative bg-white rounded-2xl px-6 py-4 border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
 
         <div class="flex justify-between items-start">
             <div class="flex flex-col gap-1">
@@ -9,7 +9,7 @@
                     {{ stat.label }}
                 </span>
 
-                <span class="text-4xl font-extrabold text-slate-900 mt-2">
+                <span class="text-4xl font-extrabold text-slate-900">
                     {{ stat.value }}
                 </span>
 

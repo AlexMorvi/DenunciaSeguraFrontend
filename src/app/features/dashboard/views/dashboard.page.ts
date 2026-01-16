@@ -24,7 +24,6 @@ import { EstadisticasComponent } from '../ui/estadisticas/estadisticas.component
     standalone: true,
     imports: [CommonModule, FormsModule, DenunciasTableComponent, SkeletonLoaderComponent, SubmitButtonComponent, FontAwesomeModule, UiStyleDirective, EstadisticasComponent],
     templateUrl: './dashboard.page.html',
-    styleUrls: ['./dashboard.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 

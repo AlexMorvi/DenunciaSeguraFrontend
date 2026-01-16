@@ -14,7 +14,7 @@ export class UiStyleDirective {
 
     private stylesMap: Record<TextVariant, string> = {
         'h1': 'text-4xl md:text-4xl font-extrabold tracking-tight text-slate-900 mb-3',
-        'h2': 'text-3xl md:text-2xl font-bold text-slate-800 mb-4 tracking-tight',
+        'h2': 'text-3xl md:text-2xl font-bold text-slate-800 tracking-tight',
         'h3': 'text-lg font-semibold text-slate-900 mb-2',
         'subtitle': 'text-m md:text-base text-slate-900 font-bold leading-relaxed break-anywhere',
         'body': 'text-sm md:text-base text-slate-900 font-normal leading-relaxed break-anywhere',
