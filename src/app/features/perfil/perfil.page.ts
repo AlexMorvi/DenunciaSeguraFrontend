@@ -12,11 +12,12 @@ import { IconDefinition, faSave } from '@fortawesome/free-solid-svg-icons';
 import { ESTADOS_DENUNCIA } from '@/shared/constants/estados.const';
 import { EstadoEvidenciaEnum } from '@/core/api/evidencias/models';
 import { EstadoDenunciaEnum } from '@/core/api/denuncias/models';
+import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
 
 @Component({
     selector: 'app-perfil-page',
     standalone: true,
-    imports: [ReactiveFormsModule, SubmitButtonComponent, InputComponent],
+    imports: [ReactiveFormsModule, SubmitButtonComponent, InputComponent, UiStyleDirective],
     templateUrl: './perfil.page.html',
 })
 export class PerfilPageComponent implements OnInit {

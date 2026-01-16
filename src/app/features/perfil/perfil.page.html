@@ -1,16 +1,15 @@
 <div class="h-full container mx-auto md:p-6 space-y-6">
-
     <div class="mb-2">
-        <h1 class="text-3xl font-bold text-slate-900">Mi Perfil</h1>
-        <p class="text-slate-500">Gestiona tu identidad y preferencias de la cuenta.</p>
+        <h1 appText="h1">Mi Perfil</h1>
     </div>
 
     @if (currentUser(); as user) {
 
     <div
-        class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-6">
+        class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-6">
         <div>
-            <h2 class="text-3xl font-bold text-slate-900 tracking-tight">
+            <!-- <h2 class="text-3xl font-bold text-slate-900 tracking-tight"> -->
+            <h2 appText="h2">
                 {{ user.nombre || 'Usuario' }}
             </h2>
             <div class="flex items-center gap-2  text-slate-500 font-medium">
@@ -162,8 +161,7 @@
                                     Cancelar
                                 </button>
                                 <app-submit-button label="Guardar Cambios" [icon]="save" [isLoading]="isLoading()"
-                                    [isDisabled]="form.invalid || isLoading() || form.pristine"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/20">
+                                    [isDisabled]="form.invalid || isLoading() || form.pristine">
                                 </app-submit-button>
                             </div>
                         </form>
