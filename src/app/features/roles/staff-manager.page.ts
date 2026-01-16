@@ -36,7 +36,16 @@ const ENTITY_COLOR_MAP: Record<string, string> = {
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule, InputComponent, SelectComponent, CategorySelectorComponent, SubmitButtonComponent, FontAwesomeModule, UiStyleDirective],
     templateUrl: './staff-manager.page.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: [`
+
+:host {
+  display: block;
+}
+
+
+    `]
+
 })
 export class StaffManagerPage {
     protected readonly faUserPlus = faUserPlus;
