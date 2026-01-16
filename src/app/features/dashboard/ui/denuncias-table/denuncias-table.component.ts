@@ -1,7 +1,6 @@
 import { Component, input, computed, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
-import { InputComponent } from '@/shared/ui/input/input.component';
 import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 import { ESTADO_DENUNCIA_ENUM } from '@/core/api/denuncias/models/estado-denuncia-enum-array';
 import { ESTADOS_UI_OPTIONS } from '@/shared/constants/estados.const';
@@ -15,7 +14,7 @@ const SEARCH_PATTERN = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-._]*$/;
 @Component({
     selector: 'app-denuncias-table',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, FontAwesomeModule, InputComponent],
+    imports: [FormsModule, ReactiveFormsModule, FontAwesomeModule],
     templateUrl: './denuncias-table.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -24,7 +23,6 @@ export class DenunciasTableComponent {
 
     protected readonly faSearch = faSearch;
     protected readonly faChevronDown = faChevronDown;
-    // protected readonly faChevronUp = faChevronUp;
     protected readonly faCalendarAlt = faCalendarAlt;
     protected readonly faInfoCircle = faInfoCircle;
     protected readonly faImage = faImage;
