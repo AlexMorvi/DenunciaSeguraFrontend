@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { NotificacionFacade } from '@/data/services/notificacion.facade';
-import { ROLES } from '@/shared/constants/roles.const';
 import { MENU_ITEMS } from './menu.config';
 import { MenuItem } from './menu.types';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
