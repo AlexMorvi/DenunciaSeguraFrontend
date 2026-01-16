@@ -1,8 +1,8 @@
-<aside class="sidebar bg-[#0f172a] w-20 flex flex-col items-center py-6 shadow-xl z-20 h-full border-r border-slate-800"
+<aside class="sidebar bg-[#0f172a] w-16 flex flex-col items-center py-4 shadow z-20 h-full border-r border-slate-800"
     aria-label="Barra lateral de navegación">
 
     <div
-        class="mb-10 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md shadow-blue-600/50 cursor-default overflow-hidden">
+        class="mb-6 w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-sm cursor-default overflow-hidden">
         <span class="text-xs tracking-tighter">UI</span>
     </div>
 
@@ -14,10 +14,10 @@
             routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-200 ring-2 ring-blue-50 scale-105"
             #rla="routerLinkActive" [class.bg-slate-800]="!rla.isActive" [class.text-slate-400]="!rla.isActive"
             [class.hover:bg-slate-700]="!rla.isActive" [class.hover:text-blue-400]="!rla.isActive"
-            class="group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 ease-out focus:outline-none focus:ring-4 active:scale-95 cursor-pointer"
+            class="group relative flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-300 ease-out focus:outline-none focus:ring-3 active:scale-95 cursor-pointer"
             [attr.aria-label]="item.label">
 
-            <fa-icon [icon]="item.icon" class="text-sm transition-transform duration-300" [class]="{
+            <fa-icon [icon]="item.icon" class="text-xs transition-transform duration-300" [class]="{
                             'group-hover:rotate-12': !rla.isActive && item.path === 'notificaciones',
                             'group-hover:-translate-y-0.5': !rla.isActive && item.path !== 'notificaciones'
                          }">
@@ -25,7 +25,7 @@
 
             @if (item.showBadge && noLeidasCount() > 0) {
             <span
-                class="absolute -top-1 -right-1 flex h-5 min-w-[1.25rem] px-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white animate-in zoom-in duration-300">
+                class="absolute -top-0 -right-0 flex h-4 min-w-[1rem] px-1 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm ring-2 ring-white animate-in zoom-in duration-300">
                 {{ badgeLabel() }}
             </span>
             }
