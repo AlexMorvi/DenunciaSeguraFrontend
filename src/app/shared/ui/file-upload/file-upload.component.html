@@ -1,20 +1,22 @@
 <div class="flex flex-col gap-1 mb-1 mt-6">
-    <label class="flex items-center text-sm font-semibold text-slate-700 mb-2 gap-2">
+    <span class="flex items-center text-sm font-semibold text-slate-700 mb-2 gap-2">
         <fa-icon [icon]="faPaperclip" class="text-blue-600"></fa-icon>
         Evidencia de Respaldo
-    </label>
+    </span>
 </div>
 
 <div
     class="p-5 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 transition-all hover:shadow-md">
 
     <div class="space-y-5">
-        <div class="relative border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer group bg-slate-50/50 dark:bg-slate-800/30 dark:hover:bg-slate-800"
+        <div class="relative border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer group bg-slate-50/50 dark:bg-slate-800/30 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             [class.border-primary]="isDragging()" [class.bg-primary/5]="isDragging()"
             [class.border-slate-300]="!isDragging()" [class.dark:border-slate-700]="!isDragging()"
             [class.hover:border-primary/50]="!isDragging()" [class.hover:bg-slate-100]="!isDragging()"
             (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
-            (click)="fileInput.click()">
+            (click)="fileInput.click()" (keyup.enter)="fileInput.click()" (keyup.space)="fileInput.click()" tabindex="0"
+            role="button" aria-label="Subir archivos">
+
             <input #fileInput type="file" class="hidden" multiple [accept]="allowedMimeTypes().join(',')"
                 (change)="onFileSelected($event)" />
 
@@ -46,7 +48,7 @@
                     <div
                         class="size-10 rounded bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-center mr-3 shrink-0 overflow-hidden">
                         @if (item.previewUrl && isImage(item.file)) {
-                        <img [src]="item.previewUrl" class="w-full h-full object-cover">
+                        <img [src]="item.previewUrl" class="w-full h-full object-cover" [alt]="item.file.name">
                         } @else {
                         <span class="material-symbols-outlined text-slate-400 text-lg">
                             {{ item.file.type.includes('pdf') ? 'picture_as_pdf' : 'description' }}
