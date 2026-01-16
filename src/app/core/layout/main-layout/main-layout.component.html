@@ -1,12 +1,14 @@
-<div class="flex h-screen bg-gray-100">
+<div class="flex h-screen bg-gray-100 overflow-hidden">
+
     <app-sidebar></app-sidebar>
-    <div class="flex flex-col flex-1">
+
+    <div class="flex flex-col flex-1 h-full">
+
         <app-header></app-header>
 
-        <main class="h-full">
-            <!-- <main class="h-screen overflow-y-auto custom-scrollbar"> -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar relative">
             <router-outlet></router-outlet>
-
         </main>
+
     </div>
 </div>
