@@ -1,8 +1,6 @@
-<div class="overflow-y-auto mb-6 ">
+<div class="overflow-y-auto m-6">
     @if (isLoading()) {
     <div class="animate-pulse w-full">
-
-
         <div class="space-y-3 mt-7">
             @for (item of [1, 2, 3]; track $index) {
             <app-skeleton-loader customClass="h-[60px] w-[90%] rounded-lg block" />
@@ -13,32 +11,27 @@
     } @else {
     @if (denuncias(); as denuncias) {
 
-    <section class="flex flex-col gap-2 mx-6 my-2">
-
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div class="flex items-baseline gap-x-4">
-                <h1 appText="h1" class="mt-2">Dashboard</h1>
-                <p class="text-slate-500 text-sm md:text-base">
-                    Bienvenido de nuevo, <span class="font-semibold text-slate-700">{{ userName() }}</span>.
-                </p>
-            </div>
-
-            @if (showCreateButton()) {
-            <div class="shrink-0">
-                <app-submit-button [variant]="'full'" label="Nueva Denuncia" [icon]="faPlus" btnType="button"
-                    (click)="goToCreate()">
-                </app-submit-button>
-            </div>
-            }
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="flex items-baseline gap-x-4">
+            <h1 appText="h1">Dashboard</h1>
+            <p class="text-slate-500 text-sm md:text-base">
+                Bienvenido de nuevo, <span class="font-semibold text-slate-700">{{ userName() }}</span>.
+            </p>
         </div>
 
+        @if (showCreateButton()) {
+        <div class="shrink-0">
+            <app-submit-button [variant]="'full'" label="Nueva Denuncia" [icon]="faPlus" btnType="button"
+                (click)="goToCreate()">
+            </app-submit-button>
+        </div>
+        }
+    </div>
+
+    <div class="flex flex-col gap-4">
         <app-estadisticas [stats]="stats()"></app-estadisticas>
-    </section>
-
-
-
-    <app-denuncias-table [denuncias]="denuncias" (onCreate)="goToCreate()">
-    </app-denuncias-table>
+        <app-denuncias-table [denuncias]="denuncias" (onCreate)="goToCreate()"></app-denuncias-table>
+    </div>
 
     } @else {
     <p>Cargando...</p>

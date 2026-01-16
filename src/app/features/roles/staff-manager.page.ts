@@ -40,7 +40,7 @@ const ENTITY_COLOR_MAP: Record<string, string> = {
     styles: [`
 
 :host {
-  display: block;
+  display: flex;
 }
 
 
