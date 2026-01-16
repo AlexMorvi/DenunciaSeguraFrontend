@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule } from '@angular/forms';
 
-type OptionObject = { id?: number | string; value?: number | string; label?: string };
+interface OptionObject { id?: number | string; value?: number | string; label?: string }
 
 @Component({
     selector: 'app-select',
@@ -17,8 +17,8 @@ export class SelectComponent implements ControlValueAccessor {
     id = input.required<string>();
     // label = input.required<string>();
     placeholder = input<string>('Seleccione una opción');
-    options = input.required<Array<string | Record<string, any>>>();
-    customErrors = input<Record<string, string>>({}, { alias: 'errors' });
+    options = input.required<(string | Record<string, any>)[]>();
+    // customErrors = input<Record<string, string>>({}, { alias: 'errors' });
 
     private formatOptionLabel(option: string): string {
         if (option.includes(' ') || !option.includes('_')) {
@@ -48,8 +48,8 @@ export class SelectComponent implements ControlValueAccessor {
         }
     }
 
-    onChange: (value: string) => void = () => { };
-    onTouched: () => void = () => { };
+    onChange: (value: string) => void = (value: string) => { void value; };
+    onTouched: () => void = () => undefined;
 
     writeValue(val: string): void {
         this.value.set(val);
