@@ -23,7 +23,7 @@
         @if (showCreateButton()) {
         <div class="shrink-0">
             <app-submit-button [variant]="'full'" label="Nueva Denuncia" [icon]="faPlus" btnType="button"
-                (click)="goToCreate()">
+                (click)="goToCreate()" (keydown.enter)="goToCreate()">
             </app-submit-button>
         </div>
         }
