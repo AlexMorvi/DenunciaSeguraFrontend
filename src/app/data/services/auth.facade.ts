@@ -58,7 +58,7 @@ export class AuthFacade {
 
         const rol = String(user.rol || '')
             .toLowerCase()
-            .replace(/_/g, '-');
+            .replaceAll('_', '-');
         return `/${rol}`;
     });
 
@@ -196,10 +196,11 @@ export class AuthFacade {
             this._currentUser.set(null);
         }
     }
+
     private formatLabel(raw: string): string {
         return raw
-            .replace(/_/g, ' ')
+            .replaceAll('_', ' ')
             .toLowerCase()
-            .replace(/\b\w/g, (l) => l.toUpperCase());
+            .replaceAll(/\b\w/g, (l) => l.toUpperCase());
     }
 }
