@@ -2,7 +2,6 @@ import { Component, input, computed, inject, ChangeDetectionStrategy, signal } f
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
-import { ESTADO_DENUNCIA_ENUM } from '@/core/api/denuncias/models/estado-denuncia-enum-array';
 import { ESTADOS_UI_OPTIONS } from '@/shared/constants/estados.const';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSearch, faChevronDown, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +9,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 const SEARCH_PATTERN = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-._]*$/;
+export type FilterStatusType = EstadoDenunciaEnum | EstadoDenunciaEnum[] | null;
 
 @Component({
     selector: 'app-denuncias-table',
@@ -19,7 +19,7 @@ const SEARCH_PATTERN = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-._]*$/;
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DenunciasTableComponent {
-    private router = inject(Router);
+    private readonly router = inject(Router);
 
     protected readonly faSearch = faSearch;
     protected readonly faChevronDown = faChevronDown;
@@ -30,7 +30,7 @@ export class DenunciasTableComponent {
 
     denuncias = input.required<Denuncia[]>();
 
-    filterStatus = signal<EstadoDenunciaEnum | EstadoDenunciaEnum[] | null>(null);
+    filterStatus = signal<FilterStatusType>(null);
 
     readonly filterOptions = ESTADOS_UI_OPTIONS;
 
@@ -50,43 +50,35 @@ export class DenunciasTableComponent {
         { initialValue: '' }
     );
 
-    /* filteredDenuncias = computed(() => {
-        const term = this.searchText().toLowerCase();
-        const list = this.denuncias();
-
-        if (!term) return list;
-
-        return list.filter(d =>
-            (d.titulo ?? '').toLowerCase().includes(term) ||
-            (d.descripcion ?? '').toLowerCase().includes(term)
-        );
-    }); */
     filteredDenuncias = computed(() => {
         const term = this.searchText().toLowerCase();
         const status = this.filterStatus();
         const list = this.denuncias();
+
+        if (!term && !status) return list;
 
         return list.filter(d => {
             const matchesText = !term ||
                 (d.titulo ?? '').toLowerCase().includes(term) ||
                 (d.descripcion ?? '').toLowerCase().includes(term);
 
-            const matchesStatus = (() => {
-                if (!status) return true;
-                if (Array.isArray(status)) {
-                    // TODO: La validación del estado dentro del filtro puede afectar el rendimiento cuando hay muchas denuncias. Considera validar los estados al cargar los datos en lugar de en cada ejecución del computed, o asumir que los datos de la API son válidos.
-                    const isValidEstado = ESTADO_DENUNCIA_ENUM.includes(d.estado as EstadoDenunciaEnum);
-                    if (!isValidEstado) return false;
-                    return status.includes(d.estado as EstadoDenunciaEnum);
-                }
-                return d.estado === status;
-            })();
+            const matchesStatus = this.checkStatusMatch(d.estado as EstadoDenunciaEnum, status);
 
             return matchesText && matchesStatus;
         });
     });
 
-    setFilter(status: EstadoDenunciaEnum | EstadoDenunciaEnum[] | null) {
+    private checkStatusMatch(denunciaEstado: EstadoDenunciaEnum, currentFilter: FilterStatusType): boolean {
+        if (!currentFilter) return true;
+
+        if (Array.isArray(currentFilter)) {
+            return currentFilter.includes(denunciaEstado);
+        }
+
+        return denunciaEstado === currentFilter;
+    }
+
+    setFilter(status: FilterStatusType) {
         if (this.isFilterActive(status)) {
             this.filterStatus.set(null);
         } else {
@@ -94,27 +86,27 @@ export class DenunciasTableComponent {
         }
     }
 
-    isFilterActive(optionValue: EstadoDenunciaEnum | EstadoDenunciaEnum[] | null): boolean {
-        const currentStatus = this.filterStatus();
-        if (currentStatus === optionValue) {
-            return true;
+    isFilterActive(status: FilterStatusType): boolean {
+        const current = this.filterStatus();
+
+        if (Array.isArray(status) && Array.isArray(current)) {
+            const sortedStatus = [...status].sort((a, b) => a.localeCompare(b));
+            const sortedCurrent = [...current].sort((a, b) => a.localeCompare(b));
+
+            return JSON.stringify(sortedStatus) === JSON.stringify(sortedCurrent);
         }
-        if (Array.isArray(currentStatus) && Array.isArray(optionValue)) {
-            if (currentStatus.length !== optionValue.length) {
-                return false;
-            }
-            return currentStatus.every(value => optionValue.includes(value));
-        }
-        return false;
+
+        return current === status;
     }
+
     // TODO: Arreglar el tipo del id
     navigateToDenuncia(id?: number | null | undefined) {
         if (typeof id !== 'number' || !Number.isFinite(id) || id <= 0) return;
         this.router.navigate(['/denuncias', id]);
     }
-
-    getStatusClasses(estado?: EstadoDenunciaEnum | string | null): string {
+    getStatusClasses(estado?: EstadoDenunciaEnum | null): string {
         const base = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full';
+
         const colors: Record<string, string> = {
             'RECIBIDA': 'bg-yellow-100 text-yellow-800',
             'ASIGNADA': 'bg-indigo-100 text-indigo-800',
@@ -129,17 +121,15 @@ export class DenunciasTableComponent {
         return `${base} ${colors[estado] || 'bg-gray-100 text-gray-800'}`;
     }
 
-    // TODO: No utilizar any, sino el tipo de openapi correcto
+    // TODO: eliminar los any
     getLat(denuncia: any): string {
         const v = denuncia?.latitud ?? denuncia?.latitude ?? null;
-        return v != null ? String(v) : '-';
+        return v == null ? '-' : String(v);
     }
 
-
-    // TODO: No utilizar any, sino el tipo de openapi correcto
     getLng(denuncia: any): string {
         const v = denuncia?.longitud ?? denuncia?.longitude ?? null;
-        return v != null ? String(v) : '-';
+        return v == null ? '-' : String(v);
     }
 
     // TODO: No utilizar any, sino el tipo de openapi correcto
