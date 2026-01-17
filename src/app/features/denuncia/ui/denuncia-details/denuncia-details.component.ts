@@ -83,13 +83,13 @@ export class DenunciaDetailsComponent {
         afterNextRender(() => {
             this.initMapIfCoords();
         });
-    }
 
-    ngOnDestroy(): void {
-        if (this.map) {
-            this.map.remove(); // Esto desconecta Leaflet del DOM
-            this.map = undefined;
-        }
+        this.destroyRef.onDestroy(() => {
+            if (this.map) {
+                this.map.remove();
+                this.map = undefined;
+            }
+        });
     }
 
     private initMapIfCoords(): void {
