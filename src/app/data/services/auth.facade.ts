@@ -28,8 +28,8 @@ export class AuthFacade {
         id: 1,
         nombre: 'Usuario Temporal',
         email: 'temporal@example.com',
-        // rol: 'CIUDADANO',
-        rol: 'ADMIN_PLATAFORMA',
+        rol: 'CIUDADANO',
+        // rol: 'ADMIN_PLATAFORMA',
         // rol: 'SUPERVISOR_DENUNCIAS',
         // rol: 'JEFE_INTERNO',
         // rol: 'OPERADOR_INTERNO',
@@ -135,7 +135,7 @@ export class AuthFacade {
             this._loading.set(true);
             const user = await this.accountService.getMe();
             this._currentUser.set(user || null);
-        } catch (_err) {
+        } catch {
             this._currentUser.set(null);
         } finally {
             this._loading.set(false);

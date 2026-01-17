@@ -70,7 +70,7 @@ export class DenunciaPageComponent {
         try {
             const response = await this.evidenciaService.getSignedUrl(evidenceId);
             return response.url;
-        } catch (error) {
+        } catch {
             this.toast.showError('No se pudo cargar la evidencia.');
             return undefined;
         }

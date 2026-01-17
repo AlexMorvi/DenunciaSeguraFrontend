@@ -45,7 +45,7 @@ export class NotificacionFacade {
 
         try {
             await this.api.marcarLeida({ id });
-        } catch (error) {
+        } catch {
             this.loadNotificaciones();
         }
     }

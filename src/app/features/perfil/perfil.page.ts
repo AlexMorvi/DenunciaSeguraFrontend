@@ -10,7 +10,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IconDefinition, faSave } from '@fortawesome/free-solid-svg-icons';
 import { ESTADOS_DENUNCIA } from '@/shared/constants/estados.const';
-import { EstadoEvidenciaEnum } from '@/core/api/evidencias/models';
 import { EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
 
@@ -83,7 +82,7 @@ export class PerfilPageComponent implements OnInit {
             await this.performAliasUpdate(newAlias.trim());
             this.handleUpdateSuccess(newAlias);
 
-        } catch (error) {
+        } catch {
             this.toast.showError("No se pudo actualizar el perfil. Verifique su conexión.");
         }
     }

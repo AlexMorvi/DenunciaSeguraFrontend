@@ -13,7 +13,6 @@ import {
     faFileAlt,
     faClipboardCheck
 } from '@fortawesome/free-solid-svg-icons';
-import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { EvidenciaViewerComponent } from '@/shared/ui/evidencia-viewer/evidencia-viewer.component';
 import { LocationEvent, SecurityEvent, SystemEvent } from '@/core/model/app.event';

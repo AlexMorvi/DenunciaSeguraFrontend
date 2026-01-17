@@ -132,7 +132,7 @@ export class CrearDenunciaComponent implements OnDestroy {
 
             this.toast.showSuccess('Denuncia enviada', 'Su denuncia ha sido registrada correctamente.');
             await this.router.navigate(['/dashboard']);
-        } catch (error) {
+        } catch {
             this.toast.showError("No pudimos procesar su solicitud. Por favor, intente nuevamente más tarde.");
         }
     }
@@ -174,7 +174,7 @@ export class CrearDenunciaComponent implements OnDestroy {
                 this.actualizarMarcador(e.latlng.lat, e.latlng.lng);
             });
 
-        } catch (error) {
+        } catch {
             this.toast.showError("No se pudo cargar el mapa interactivo.");
         }
     }
@@ -191,7 +191,7 @@ export class CrearDenunciaComponent implements OnDestroy {
                 this.map?.setView([latitude, longitude], FOCUSED_ZOOM);
                 this.actualizarMarcador(latitude, longitude);
             },
-            (err) => {
+            () => {
                 this.toast.showWarning('Puede seleccionar la ubicación manualmente en el mapa.');
             }
         );

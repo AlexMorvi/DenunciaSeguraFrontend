@@ -85,8 +85,8 @@ export class RegisterComponent {
 
             this.form.reset();
             this.router.navigate(['/login']);
-        } catch (error) {
-
+        } catch {
+            this.toast.showError('¡Registro fallido!, Por favor intenta nuevamente.');
         } finally {
             this.submitting.set(false);
         }

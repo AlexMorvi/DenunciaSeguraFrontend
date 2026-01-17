@@ -34,7 +34,7 @@ export class DenunciaFacade {
         try {
             const data = await this.denunciaService.denunciasMeGet();
             this._denuncias.set(data || []);
-        } catch (err) {
+        } catch {
             this._error.set("No se pudo cargar las denuncias.");
             this._denuncias.set([]);
         } finally {
@@ -56,7 +56,7 @@ export class DenunciaFacade {
             const first = Array.isArray(list) && list.length > 0 ? list[0] : null;
             this._currentDenuncia.set(first);
 
-        } catch (err) {
+        } catch {
             this._error.set("No se pudo cargar la información de la denuncia.");
             this._currentDenuncia.set(null);
         } finally {
@@ -73,7 +73,7 @@ export class DenunciaFacade {
                 id: 1,
                 body: { operadorId: idOperador }
             });
-        } catch (err) {
+        } catch {
             this._error.set('Error al asignar la denuncia a operador.');
         } finally {
             this._loading.set(false);
@@ -91,7 +91,7 @@ export class DenunciaFacade {
             //     id: idDenuncia,
             //     body: { operadorId: idOperador }
             // });
-        } catch (err) {
+        } catch {
             this._error.set('Error al asignar la denuncia a entidad responsable.');
         } finally {
             this._loading.set(false);
@@ -110,7 +110,7 @@ export class DenunciaFacade {
                     ...(evidenciasIds ? { evidenciaIds: evidenciasIds } : {})
                 }
             });
-        } catch (err) {
+        } catch {
             this._error.set('Error al marcar la denuncia como resuelta.');
         } finally {
             this._loading.set(false);
@@ -125,7 +125,7 @@ export class DenunciaFacade {
             // await this.gestionInternaService.denunciasIdResolucionPatch({
             //     id: idDenuncia,
             // });
-        } catch (err) {
+        } catch {
             this._error.set('Error al marcar la denuncia como resuelta.');
         } finally {
             this._loading.set(false);
@@ -144,7 +144,7 @@ export class DenunciaFacade {
                     ...(comentarioObservacion ? { comentarioObservacion: comentarioObservacion } : {})
                 }
             });
-        } catch (err) {
+        } catch {
             this._error.set('Error al validar la denuncia.');
         } finally {
             this._loading.set(false);

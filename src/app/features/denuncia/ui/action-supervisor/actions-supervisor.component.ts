@@ -1,7 +1,6 @@
 import { Component, input, output, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthFacade } from '@/data/services/auth.facade';
-import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { SelectComponent } from '@/shared/ui/select/select.component';
 import { ENTIDAD_ENUM } from '@/core/api/auth/models/entidad-enum-array';

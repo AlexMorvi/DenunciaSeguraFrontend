@@ -138,7 +138,7 @@ export class LoggerService {
                 return value;
             });
             return JSON.parse(jsonString);
-        } catch (e) {
+        } catch {
             return { info: 'Data logging failed: Circular reference or serialization error' };
         }
     }

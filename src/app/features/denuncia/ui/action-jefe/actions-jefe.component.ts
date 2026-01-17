@@ -1,7 +1,5 @@
-// components/actions-panel/actions-panel.component.ts
 import { Component, input, output, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { SelectComponent } from '@/shared/ui/select/select.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';

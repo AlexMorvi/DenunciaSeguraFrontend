@@ -105,7 +105,7 @@ export class StaffManagerPage {
 
             this.router.navigate(['/login']);
             this.form.reset();
-        } catch (error) {
+        } catch {
             this.toast.showError('No se pudo completar el registro. Verifique su conexión o intente más tarde.');
         } finally {
             this.loading.set(false);
