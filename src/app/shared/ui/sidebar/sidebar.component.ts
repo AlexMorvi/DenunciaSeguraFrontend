@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { NotificacionFacade } from '@/data/services/notificacion.facade';
@@ -15,16 +15,17 @@ import { faBell, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
     templateUrl: './sidebar.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
     protected readonly faBell = faBell;
     protected readonly faUsers = faUsers;
     protected readonly faUser = faUser;
 
-    private authFacade = inject(AuthFacade);
-    private notificationFacade = inject(NotificacionFacade);
+    private readonly authFacade = inject(AuthFacade);
+    private readonly notificationFacade = inject(NotificacionFacade);
 
     public noLeidasCount = this.notificationFacade.noLeidasCount;
     public currentUser = this.authFacade.currentUser;
+
     public menuItems = computed<MenuItem[]>(() => {
         const user = this.currentUser();
 
@@ -39,6 +40,10 @@ export class SidebarComponent {
                 fullPath: [item.path]
             }));
     });
+
+    ngOnInit(): void {
+        this.notificationFacade.getAll();
+    }
 
     public badgeLabel = computed(() => {
         const count = this.noLeidasCount();
