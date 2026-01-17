@@ -5,9 +5,9 @@ import { UrlFirmadaResponse } from '@/core/api/evidencias/models/url-firmada-res
 
 @Injectable({ providedIn: 'root' })
 export class EvidenceFacade {
-    private evidenciasService = inject(EvidenciasService);
+    private readonly evidenciasService = inject(EvidenciasService);
     private readonly logger = inject(LoggerService);
-    private _loading = signal(false);
+    private readonly _loading = signal(false);
     readonly loading = this._loading.asReadonly();
 
     async getSignedUrl(evidenceId: string): Promise<UrlFirmadaResponse> {

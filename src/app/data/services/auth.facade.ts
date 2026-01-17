@@ -12,15 +12,15 @@ import {
     AuthResponse,
     LoginRequest,
     PasswordResetRequest,
-    RegistroCiudadanoRequest
+    RegistroCiudadanoRequest,
 } from '@/core/api/auth/models';
 import { LoggerService } from '@/core/service/logging/logger.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
-    private accountService = inject(CuentaService);
-    private adminService = inject(AdminService);
-    private publicoService = inject(PublicoService);
+    private readonly accountService = inject(CuentaService);
+    private readonly adminService = inject(AdminService);
+    private readonly publicoService = inject(PublicoService);
     private readonly logger = inject(LoggerService);
     // private readonly _currentUser = signal<UsuarioPerfilResponse | null>(null);
     // TODO: Temporal hardcoded user until backend endpoint is available
@@ -34,11 +34,11 @@ export class AuthFacade {
         // rol: 'JEFE_INTERNO',
         // rol: 'OPERADOR_INTERNO',
         aliasPublico: null,
-        publicCitizenId: 'temp-0001'
+        publicCitizenId: 'temp-0001',
     });
     public readonly currentUser = this._currentUser.asReadonly();
 
-    private _loading = signal(false);
+    private readonly _loading = signal(false);
     readonly loading = this._loading.asReadonly();
 
     // Expose constants for UI consumption
@@ -46,9 +46,9 @@ export class AuthFacade {
     // readonly availableEntities = ENTIDAD_ENUM;
     private readonly _entities = signal(ENTIDAD_ENUM);
     readonly uiEntities = computed(() => {
-        return this._entities().map(entity => ({
+        return this._entities().map((entity) => ({
             code: entity,
-            label: this.formatLabel(entity)
+            label: this.formatLabel(entity),
         }));
     });
 
@@ -56,7 +56,9 @@ export class AuthFacade {
         const user = this.currentUser();
         if (!user) return '/login';
 
-        const rol = String(user.rol || '').toLowerCase().replace(/_/g, '-');
+        const rol = String(user.rol || '')
+            .toLowerCase()
+            .replace(/_/g, '-');
         return `/${rol}`;
     });
 
@@ -69,7 +71,7 @@ export class AuthFacade {
 
         if (!this.isValidUser(user)) {
             this.logger.logError('AuthFacade', 'Intento de actualizar estado con datos corruptos', {
-                receivedData: user
+                receivedData: user,
             });
         }
 
@@ -157,14 +159,13 @@ export class AuthFacade {
 
         try {
             await this.accountService.updateMyAlias({ body });
-            this._currentUser.update(currentUser => {
+            this._currentUser.update((currentUser) => {
                 if (!currentUser) return null;
                 return {
                     ...currentUser,
-                    aliasPublico: alias
+                    aliasPublico: alias,
                 };
             });
-
         } finally {
             this._loading.set(false);
         }
@@ -175,14 +176,13 @@ export class AuthFacade {
 
         try {
             await this.accountService.updateMyAlias({ body });
-            this._currentUser.update(currentUser => {
+            this._currentUser.update((currentUser) => {
                 if (!currentUser) return null;
                 return {
                     ...currentUser,
-                    publicCitizenId: alias
+                    publicCitizenId: alias,
                 };
             });
-
         } finally {
             this._loading.set(false);
         }
@@ -197,6 +197,9 @@ export class AuthFacade {
         }
     }
     private formatLabel(raw: string): string {
-        return raw.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+        return raw
+            .replace(/_/g, ' ')
+            .toLowerCase()
+            .replace(/\b\w/g, (l) => l.toUpperCase());
     }
 }

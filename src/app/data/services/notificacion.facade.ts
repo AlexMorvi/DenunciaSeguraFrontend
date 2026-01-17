@@ -6,11 +6,11 @@ import { BuzonService } from '@/core/api/notificaciones/services/buzon.service';
     providedIn: 'root'
 })
 export class NotificacionFacade {
-    private api = inject(BuzonService);
+    private readonly api = inject(BuzonService);
 
-    private _items = signal<NotificacionResponse[]>([]);
-    private _loading = signal(false);
-    private _error = signal<string | null>(null);
+    private readonly _items = signal<NotificacionResponse[]>([]);
+    private readonly _loading = signal(false);
+    private readonly _error = signal<string | null>(null);
 
     readonly loading = this._loading.asReadonly();
     readonly error = this._error.asReadonly();

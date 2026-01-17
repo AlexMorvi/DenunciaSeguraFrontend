@@ -1,7 +1,6 @@
 import { CrearDenunciaRequest, EvidenceId } from '@/core/api/denuncias/models';
 import { DenunciaView } from '@/core/model/denuncia.model';
 import { CiudadanoService as DenunciasApiService, GestionInternaService } from '@/core/api/denuncias/services';
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { LoggerService } from '@/core/service/logging/logger.service';
 import { FileUploadService } from '@/core/service/file-upload.service';
@@ -11,21 +10,20 @@ import { FileUploadService } from '@/core/service/file-upload.service';
     providedIn: 'root'
 })
 export class DenunciaFacade {
-    private denunciaService = inject(DenunciasApiService);
-    private gestionInternaService = inject(GestionInternaService);
-    private http = inject(HttpClient);
-    private logger = inject(LoggerService);
-    private uploadService = inject(FileUploadService);
+    private readonly denunciaService = inject(DenunciasApiService);
+    private readonly gestionInternaService = inject(GestionInternaService);
+    private readonly logger = inject(LoggerService);
+    private readonly uploadService = inject(FileUploadService);
 
-    private _loading = signal(false);
-    private _error = signal<string | null>(null);
+    private readonly _loading = signal(false);
+    private readonly _error = signal<string | null>(null);
     readonly loading = this._loading.asReadonly();
     readonly error = this._error.asReadonly();
 
-    private _denuncias = signal<DenunciaView[]>([]);
+    private readonly _denuncias = signal<DenunciaView[]>([]);
     public denuncias = this._denuncias.asReadonly();
 
-    private _currentDenuncia = signal<DenunciaView | null>(null);
+    private readonly _currentDenuncia = signal<DenunciaView | null>(null);
     public currentDenuncia = this._currentDenuncia.asReadonly();
 
     async loadAll(): Promise<void> {
