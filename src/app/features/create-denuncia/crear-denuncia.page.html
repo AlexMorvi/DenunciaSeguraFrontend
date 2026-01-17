@@ -1,89 +1,110 @@
-<div class="flex h-full flex-col bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden  page-root">
-    <div class="px-8 py-6 border-b rounded-xl border-gray-100 flex items-center justify-between bg-white shrink-0">
+<div class="h-full flex flex-col p-4 md:p-4 min-h-0">
+    <div class="flex flex-col flex-1 bg-white rounded-xl shadow border border-gray-200 overflow-hidden h-full">
 
-        <h3 class="text-xl font-bold text-slate-800 tracking-tight">
-            Crear nueva denuncia
-        </h3>
-    </div>
+        <div class="px-6 py-3 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
+            <h3 appText="h2">
+                Crear nueva denuncia
+            </h3>
+        </div>
 
-    <div class="flex-1 overflow-y-auto p-6 page-scroll" #scrollArea>
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6" #scrollArea>
 
-        <form [formGroup]="form" (ngSubmit)="guardarDenuncia()" class="max-w-3xl mx-auto space-y-6">
-            <div>
-                <label for="titulo" class="block text-sm font-semibold text-slate-700 mb-2">
-                    Título</label>
-                <app-input id="titulo" formControlName="titulo" type="text"
-                    placeholder="Ej: Semáforo dañado en la Av. Amazonas" [maxlength]="100">
-                </app-input>
+            <form [formGroup]="form" (ngSubmit)="guardarDenuncia()" class="max-w-4xl mx-auto space-y-6 ">
 
-                <div class="mt-1 text-xs text-gray-500 flex items-center justify-between">
-                    <div id="titulo-help">Requerido. 5–100 caracteres.</div>
-                    <div class="text-gray-400">{{ (form.get('titulo')?.value?.length || 0) }}/100</div>
-                </div>
-            </div>
+                <div>
+                    <label for="titulo" class="block text-sm font-bold text-slate-700 mb-2">
+                        Título de la denuncia
+                    </label>
+                    <app-input id="titulo" formControlName="titulo" type="text"
+                        placeholder="Ej: Semáforo dañado en la Av. Amazonas" [maxlength]="100"
+                        [class.border-red-300]="form.get('titulo')?.invalid && form.get('titulo')?.touched">
+                    </app-input>
 
-            <div>
-                <label for="descripcion" class="block text-sm font-semibold text-slate-700 mb-2">Descripción</label>
-                <app-input id="descripcion" formControlName="descripcion" [multiline]="true" [rows]="6"
-                    placeholder="Describe detalladamente lo que está ocurriendo..." [maxlength]="1000">
-                </app-input>
-
-                <div class="mt-1 text-xs text-gray-500 flex items-center justify-between">
-                    <div id="descripcion-help">Requerido. 10–1000 caracteres.</div>
-                    <div class="text-gray-400">{{ (form.get('descripcion')?.value?.length || 0) }}/1000
+                    <div class="mt-1.5 text-xs flex items-center justify-between">
+                        <div id="titulo-help" class="text-slate-500">Requerido. 5–100 caracteres.</div>
+                        <div class="font-mono text-slate-400">{{ (form.get('titulo')?.value?.length || 0) }}/100</div>
                     </div>
                 </div>
-            </div>
 
-            <app-category-selector [categories]="listadoCategorias"
-                formControlName="categoriaDenuncia"></app-category-selector>
+                <div>
+                    <label for="descripcion" class="block text-sm font-bold text-slate-700 mb-2">Descripción
+                        detallada</label>
+                    <app-input id="descripcion" formControlName="descripcion" [multiline]="true" [rows]="6"
+                        placeholder="Describe detalladamente lo que está ocurriendo, incluyendo referencias visuales..."
+                        [maxlength]="1000">
+                    </app-input>
 
-            <div>
-                <label for="anonimato" class="block text-sm font-semibold text-slate-700 mb-2">Nivel de
-                    Anonimato</label>
-                <app-select id="nivelAnonimato" label="Nivel de Anonimato" [options]="listadoAnonimato"
-                    formControlName="nivelAnonimato" placeholder="Seleccione el nivel de privacidad">
-                </app-select>
+                    <div class="mt-1.5 text-xs flex items-center justify-between">
+                        <div id="descripcion-help" class="text-slate-500">Requerido. 10–1000 caracteres.</div>
+                        <div class="font-mono text-slate-400">{{ (form.get('descripcion')?.value?.length || 0) }}/1000
+                        </div>
+                    </div>
+                </div>
 
-                @if (form.get('nivelAnonimato')?.invalid && form.get('nivelAnonimato')?.touched) {
-                <div id="nivelAnonimato-error" class="mt-1 text-xs text-red-500">
-                    @if (form.get('nivelAnonimato')?.errors?.['required']) {
-                    <div>El nivel de anonimato es requerido.</div>
+                <div>
+                    <span class="block text-sm font-bold text-slate-700 mb-2">Categoría</span>
+                    <app-category-selector [categories]="listadoCategorias" formControlName="categoriaDenuncia">
+                    </app-category-selector>
+                </div>
+
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                    <label for="anonimato" class="block text-sm font-bold text-slate-700 mb-2">
+                        Nivel de Privacidad
+                    </label>
+                    <app-select id="nivelAnonimato" label="Nivel de Anonimato" [options]="listadoAnonimato"
+                        formControlName="nivelAnonimato" placeholder="Seleccione cómo desea enviar este reporte">
+                    </app-select>
+
+                    @if (form.get('nivelAnonimato')?.invalid && form.get('nivelAnonimato')?.touched) {
+                    <div
+                        class="mt-2 text-xs text-red-600 font-medium flex items-center gap-1 animate-in slide-in-from-top-1">
+                        <fa-icon [icon]="faInfoCircle"></fa-icon>
+                        <span>Debes seleccionar un nivel de privacidad.</span>
+                    </div>
                     }
                 </div>
-                }
-            </div>
 
-            <div>
-                <span class="flex items-center text-sm font-semibold text-slate-700 mb-2 gap-2">
-                    <fa-icon [icon]="faMapMarkerAlt" class="text-blue-600"></fa-icon>
-                    Ubicación del incidente
-                </span>
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="flex items-center text-sm font-bold text-slate-700 gap-2">
+                            <fa-icon [icon]="faMapMarkerAlt" class="text-blue-600"></fa-icon>
+                            Ubicación del incidente
+                        </span>
+                        <span class="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">
+                            Haz clic en el mapa para fijar el punto
+                        </span>
+                    </div>
 
-                <div class="map-container relative w-full h-[350px] rounded-lg overflow-hidden border border-gray-200 shadow-inner"
-                    #mapContainer></div>
+                    <div class="relative w-full h-[260px] rounded-xl overflow-hidden border border-gray-300 shadow ring-1 ring-gray-50/50"
+                        #mapContainer>
+                    </div>
+                </div>
 
-                <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
-                    <fa-icon [icon]="faInfoCircle"></fa-icon> Haz clic en el mapa para fijar el marcador.
-                </p>
-            </div>
+                <div>
+                    @defer (on viewport) {
+                    <app-file-upload (filesChange)="evidencias.set($event)" [uploadFn]="uploadEvidenceStrategy"
+                        (uploadError)="handleUploadError($event)">
+                    </app-file-upload>
+                    } @placeholder {
+                    <div
+                        class="h-24 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center bg-gray-50">
+                        <span class="text-gray-400 text-xs">Cargando módulo de archivos...</span>
+                    </div>
+                    }
+                </div>
 
-            @defer (on viewport) {
-            <app-file-upload (filesChange)="evidencias.set($event)" [uploadFn]="uploadEvidenceStrategy"
-                (uploadError)=" handleUploadError($event)"></app-file-upload>
+                <div
+                    class="pt-2 flex items-center justify-end gap-2 sticky bottom-0 bg-white/95 backdrop-blur-sm p-3 -mx-3 -mb-3 md:-mx-0 md:mb-0 md:bg-transparent md:static">
+                    <app-submit-button [variant]="'medium'" [appearance]="'secondary'" [btnType]="'button'"
+                        label="Cancelar" [icon]="faTimes" class="w-full md:w-auto">
+                    </app-submit-button>
 
-            } @placeholder {
-            <div class="h-32 border-2 border-dashed border-gray-300 rounded-lg"></div>
-            }
-
-            <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
-                <app-submit-button [variant]="'medium'" [appearance]="'secondary'" [btnType]="'button'" label="Cancelar"
-                    [icon]="faTimes">
-                </app-submit-button>
-                <app-submit-button [variant]="'medium'" [isLoading]="isLoading()" [btnType]="'submit'"
-                    [isDisabled]="form.invalid" label="Enviar denuncia" [icon]="faPaperPlane">
-                </app-submit-button>
-            </div>
-        </form>
+                    <app-submit-button [variant]="'medium'" [isLoading]="isLoading()" [btnType]="'submit'"
+                        [isDisabled]="form.invalid" label="Enviar denuncia" [icon]="faPaperPlane"
+                        class="w-full md:w-auto">
+                    </app-submit-button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

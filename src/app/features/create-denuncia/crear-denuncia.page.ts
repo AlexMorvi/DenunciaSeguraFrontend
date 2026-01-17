@@ -20,6 +20,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { FileUploadService } from '@/core/service/file-upload.service';
+import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
 
 const DEFAULT_ZOOM = 13;
 const DEFAULT_COORDS = { lat: -0.1807, lng: -78.4678 }; // Quito
@@ -38,7 +39,7 @@ const ICON_RED_CONFIG = L.icon({
 @Component({
     selector: 'app-crear-denuncia',
     standalone: true,
-    imports: [ReactiveFormsModule, CommonModule, SubmitButtonComponent, FileUploadComponent, CategorySelectorComponent, SelectComponent, FontAwesomeModule, InputComponent],
+    imports: [ReactiveFormsModule, CommonModule, SubmitButtonComponent, FileUploadComponent, CategorySelectorComponent, SelectComponent, FontAwesomeModule, InputComponent, UiStyleDirective],
     templateUrl: './crear-denuncia.page.html',
     styleUrls: ['./crear-denuncia.page.scss'],
     encapsulation: ViewEncapsulation.None
