@@ -21,11 +21,11 @@ export class NotificacionFacade {
         this._items().filter(n => !n.leida).length
     );
 
-    constructor() {
-        this.loadNotificaciones();
-    }
+    async getAll(force = false) {
+        if (this._items().length > 0 && !force) {
+            return;
+        }
 
-    async loadNotificaciones() {
         this._loading.set(true);
         try {
             const response = await this.api.meGet();
@@ -46,7 +46,7 @@ export class NotificacionFacade {
         try {
             await this.api.marcarLeida({ id });
         } catch {
-            this.loadNotificaciones();
+            this.getAll();
         }
     }
 

@@ -18,6 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { StatCard } from '../interfaz/stat.model';
 import { EstadisticasComponent } from '../ui/estadisticas/estadisticas.component';
+import { NotificacionFacade } from '@/data/services/notificacion.facade';
 
 @Component({
     selector: 'app-ciudadano-dashboard',
@@ -29,8 +30,9 @@ import { EstadisticasComponent } from '../ui/estadisticas/estadisticas.component
 
 export class CiudadanoDashboardPage implements OnInit {
     public denunciaService = inject(DenunciaFacade);
-    private router = inject(Router);
-    private authFacade = inject(AuthFacade);
+    private readonly router = inject(Router);
+    private readonly authFacade = inject(AuthFacade);
+    private readonly notificacionFacade = inject(NotificacionFacade);
 
     public isLoading = computed(() =>
         this.denunciaService.loading() || this.authFacade.loading()
