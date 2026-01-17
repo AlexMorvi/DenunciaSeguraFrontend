@@ -1,12 +1,15 @@
 // @ts-check
-const eslint = require("@eslint/js");
-const { defineConfig } = require("eslint/config");
-const tseslint = require("typescript-eslint");
-const angular = require("angular-eslint");
+const eslint = require('@eslint/js');
+const { defineConfig } = require('eslint/config');
+const tseslint = require('typescript-eslint');
+const angular = require('angular-eslint');
 
 module.exports = defineConfig([
   {
-    files: ["**/*.ts"],
+    ignores: ['src/app/core/api/**'],
+  },
+  {
+    files: ['**/*.ts'],
     extends: [
       eslint.configs.recommended,
       tseslint.configs.recommended,
@@ -15,40 +18,37 @@ module.exports = defineConfig([
     ],
     processor: angular.processInlineTemplates,
     rules: {
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
         {
-          "varsIgnorePattern": "^_",
-          "argsIgnorePattern": "^_",
-          "caughtErrorsIgnorePattern": "^_"
-        }
-      ],
-      "@angular-eslint/directive-selector": [
-        "error",
-        {
-          type: "attribute",
-          prefix: "app",
-          style: "camelCase",
+          varsIgnorePattern: '^_',
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
         },
       ],
-    '@typescript-eslint/no-explicit-any': 'off',
-      "@angular-eslint/component-selector": [
-        "error",
+      '@angular-eslint/directive-selector': [
+        'error',
         {
-          type: "element",
-          prefix: "app",
-          style: "kebab-case",
+          type: 'attribute',
+          prefix: 'app',
+          style: 'camelCase',
+        },
+      ],
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@angular-eslint/component-selector': [
+        'error',
+        {
+          type: 'element',
+          prefix: 'app',
+          style: 'kebab-case',
         },
       ],
     },
   },
   {
-    files: ["**/*.html"],
-    extends: [
-      angular.configs.templateRecommended,
-      angular.configs.templateAccessibility,
-    ],
+    files: ['**/*.html'],
+    extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
     rules: {},
-  }
+  },
 ]);
