@@ -4,7 +4,7 @@ import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, view
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as L from 'leaflet';
 import { CategoriaEnum } from '@/core/api/denuncias/models/categoria-enum';
-import { IconDefinition, faRoad, faLightbulb, faTrashAlt, faShieldAlt, faTint, faSeedling, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faRoad, faLightbulb, faTrashAlt, faShieldAlt, faTint, faSeedling, faEllipsisH, faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { CrearDenunciaRequest } from '@/core/api/denuncias/models/crear-denuncia-request';
 import { NIVEL_ANONIMATO_ENUM as NIVEL_ANONIMATO_ARRAY } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
 import { NIVEL_ANONIMATO } from '@/shared/constants/nivel-anonimato.const';
@@ -17,7 +17,6 @@ import { ToastService } from '@/core/service/toast/toast.service';
 import { LoggerService } from '@/core/service/logging/logger.service';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { FileUploadService } from '@/core/service/file-upload.service';
 import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
@@ -50,10 +49,10 @@ export class CrearDenunciaComponent implements OnDestroy {
     protected readonly faPaperPlane = faPaperPlane;
     protected readonly faTimes = faTimes;
 
-    private toast = inject(ToastService);
-    private logger = inject(LoggerService);
-    private router = inject(Router);
-    private fileService = inject(FileUploadService);
+    private readonly toast = inject(ToastService);
+    private readonly logger = inject(LoggerService);
+    private readonly router = inject(Router);
+    private readonly fileService = inject(FileUploadService);
 
     evidencias = signal<File[]>([]);
 
@@ -119,10 +118,10 @@ export class CrearDenunciaComponent implements OnDestroy {
         const rawData = this.form.getRawValue();
 
         const request: CrearDenunciaRequest = {
-            titulo: rawData.titulo!.trim(),
-            descripcion: rawData.descripcion!.trim(),
+            titulo: rawData.titulo.trim(),
+            descripcion: rawData.descripcion.trim(),
             categoria: rawData.categoriaDenuncia!,
-            nivelAnonimato: rawData.nivelAnonimato!,
+            nivelAnonimato: rawData.nivelAnonimato,
             latitud: rawData.latitud!,
             longitud: rawData.longitud!,
         };
@@ -200,7 +199,9 @@ export class CrearDenunciaComponent implements OnDestroy {
     private actualizarMarcador(lat: number, lng: number): void {
         if (!this.map) return;
 
-        if (!this.marker) {
+        if (this.marker) {
+            this.marker.setLatLng([lat, lng]);
+        } else {
             this.marker = L.marker([lat, lng], {
                 draggable: true,
                 icon: ICON_RED_CONFIG
@@ -210,16 +211,14 @@ export class CrearDenunciaComponent implements OnDestroy {
                 const position = event.target.getLatLng();
                 this.sincronizarCoordenadasFormulario(position.lat, position.lng);
             });
-        } else {
-            this.marker.setLatLng([lat, lng]);
         }
 
         this.sincronizarCoordenadasFormulario(lat, lng);
     }
 
     private sincronizarCoordenadasFormulario(lat: number, lng: number): void {
-        const latFixed = parseFloat(lat.toFixed(6));
-        const lngFixed = parseFloat(lng.toFixed(6));
+        const latFixed = Number.parseFloat(lat.toFixed(6));
+        const lngFixed = Number.parseFloat(lng.toFixed(6));
 
         this.currentCoords.set({ lat: latFixed, lng: lngFixed });
         this.form.patchValue({ latitud: latFixed, longitud: lngFixed });
