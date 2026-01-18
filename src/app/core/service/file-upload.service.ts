@@ -13,9 +13,9 @@ const PROPOSITO_CARGA = 'CIUDADANO_CREACION';
 
 @Injectable({ providedIn: 'root' })
 export class FileUploadService {
-    private http = inject(HttpClient);
-    private logger = inject(LoggerService);
-    private uploadsService = inject(UploadsService);
+    private readonly http = inject(HttpClient);
+    private readonly logger = inject(LoggerService);
+    private readonly uploadsService = inject(UploadsService);
 
     async subirEvidencia(archivo: File): Promise<EvidenceId> {
         let currentStep: UploadPhase = 'INICIO';

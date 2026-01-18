@@ -2,16 +2,50 @@ import { ApplicationConfig, provideAppInitializer, inject, importProvidersFrom }
 import { provideRouter, withViewTransitions, PreloadAllModules, withPreloading, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
-import { ApiModule as AuditoriaApi } from './core/api/auditoria/api.module';
-import { ApiModule as AuthApi } from './core/api/auth/api.module';
-import { ApiModule as DenunciasApi } from './core/api/denuncias/api.module';
-import { ApiModule as EvidenciasApi } from './core/api/evidencias/api.module';
-import { ApiModule as NotificacionesApi } from './core/api/notificaciones/api.module';
 import { environment } from '@/../environments/environment';
 import { authInterceptor } from '@/core/http/auth.interceptor';
 import { mockStorageInterceptor } from '@/core/http/mock-storage.interceptor';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { errorInterceptor } from '@/core/interceptors/error.interceptor';
+import { provideOAuthClient, AuthConfig, OAuthService } from 'angular-oauth2-oidc';
+
+import { ApiConfiguration as AuthConf } from '@/core/api/auth/api-configuration';
+import { ApiConfiguration as DenunciasConf } from '@/core/api/denuncias/api-configuration';
+import { ApiConfiguration as UsuariosConf } from '@/core/api/usuarios/api-configuration';
+import { ApiConfiguration as EvidenciasConf } from '@/core/api/evidencias/api-configuration';
+
+const authCodeFlowConfig: AuthConfig = {
+    // Url del servidor de identidad (pregúntale a Ander cual es el 'Issuer')
+    issuer: 'http://localhost:9092',
+
+    // URL de tu Angular donde volverá el usuario tras loguearse
+    // redirectUri: window.location.origin + '/dashboard',
+    redirectUri: 'http://localhost:4200/dashboard',
+
+    // El ID de cliente que Ander configuró en el backend para tu Angular
+    clientId: 'ds-web',
+
+    // Permisos que pides (openid profile email offline_access, etc.)
+    scope: 'openid profile',
+
+    responseType: 'code',
+    showDebugInformation: true,
+    requireHttps: false, // false porque estás en localhost (http)
+    strictDiscoveryDocumentValidation: false, // A veces necesario en dev local
+    // dummyClientSecret: '',
+
+    // Opcional: Asegura que el token endpoint use POST urlencoded
+    // (generalmente es el default, pero ayuda ser explícito)
+    // oidc: true
+};
+
+function initializeOAuth(oauthService: OAuthService) {
+    return async () => {
+        oauthService.configure(authCodeFlowConfig);
+        oauthService.setupAutomaticSilentRefresh();
+        await oauthService.loadDiscoveryDocumentAndTryLogin();
+    };
+}
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -21,21 +55,31 @@ export const appConfig: ApplicationConfig = {
             withPreloading(PreloadAllModules),
             withComponentInputBinding()
         ),
+        provideOAuthClient(),
         provideHttpClient(
             withFetch(),
-            withInterceptors([mockStorageInterceptor, authInterceptor, errorInterceptor])
+            withInterceptors([authInterceptor, errorInterceptor])
         ),
-        importProvidersFrom(
-            AuditoriaApi.forRoot({ rootUrl: environment.apiAuditoriaUrl! }),
-            AuthApi.forRoot({ rootUrl: environment.apiAuthUrl! }),
-            DenunciasApi.forRoot({ rootUrl: environment.apiDenunciasUrl! }),
-            EvidenciasApi.forRoot({ rootUrl: environment.apiEvidenciasUrl! }),
-            NotificacionesApi.forRoot({ rootUrl: environment.apiNotificacionesUrl! })
 
-        ),
         provideAppInitializer(() => {
-            const authFacade = inject(AuthFacade);
-            return authFacade.getMe();
+            // const authFacade = inject(AuthFacade);
+            // return authFacade.getMe();
+
+            const authConfig = inject(AuthConf);
+            authConfig.rootUrl = `${environment.apiUrl}/auth`;
+
+            const denunciasConfig = inject(DenunciasConf);
+            denunciasConfig.rootUrl = `${environment.apiUrl}/denuncias`;
+
+            const usuariosConfig = inject(UsuariosConf);
+            usuariosConfig.rootUrl = `${environment.apiUrl}/usuarios`;
+
+            const evidenciasConfig = inject(EvidenciasConf);
+            evidenciasConfig.rootUrl = `${environment.apiUrl}/evidencias`;
+
+            const oauthService = inject(OAuthService);
+
+            return initializeOAuth(oauthService)();
         })
     ],
 };

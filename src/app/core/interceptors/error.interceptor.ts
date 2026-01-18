@@ -10,6 +10,15 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
+            if (req.url.includes('/oauth2/token')) {
+                return throwError(() => error);
+            }
+
+            if (error.status === 401) {
+                // Aquí podrías redirigir al login si no estás ahí, pero sin mostrar alerta roja
+                return throwError(() => error);
+            }
+
             let userMessage = 'Ocurrió un error inesperado. Por favor intente más tarde.';
 
             logger.logError('API Error', { url: req.url, status: error.status, message: error.message });

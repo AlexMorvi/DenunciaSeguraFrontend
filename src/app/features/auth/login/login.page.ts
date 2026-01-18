@@ -9,6 +9,7 @@ import { faEnvelope, faLock, faArrowRight, faUsers, faKey, faCheckCircle, faInfo
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { AuthFacade } from '@/data/services/auth.facade';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 @Component({
     selector: 'app-login',
@@ -35,10 +36,18 @@ export class LoginComponent {
 
     protected readonly isLoading = this.authFacade.loading;
 
+
+    private readonly oauthService = inject(OAuthService);
+
+    ingresar() {
+        // Al hacer clic, te lleva al 9092
+        this.oauthService.initLoginFlow();
+    }
+
     mensaje = signal('Tu contraseña ha sido cambiada exitosamente.');
 
     form = this.fb.nonNullable.group({
-        email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
+        email: ['', [Validators.required, Validators.maxLength(254)]],
         password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(128)]]
     });
 

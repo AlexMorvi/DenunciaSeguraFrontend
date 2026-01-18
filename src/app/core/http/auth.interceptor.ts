@@ -1,18 +1,79 @@
+// import { HttpInterceptorFn } from '@angular/common/http';
+// import { SKIP_AUTH } from '../http/http-context';
+
+// export const authInterceptor: HttpInterceptorFn = (req, next) => {
+//     if (req.context.get(SKIP_AUTH) === true) {
+//         return next(req);
+//     }
+
+//     const mockToken = 'soy-un-token-falso-para-el-mock';
+
+//     const authReq = req.clone({
+//         setHeaders: {
+//             Authorization: `Bearer ${mockToken}`
+//         }
+//     });
+
+//     return next(authReq);
+// };
+
+// import { HttpInterceptorFn } from '@angular/common/http';
+// import { inject } from '@angular/core';
+// import { OAuthService } from 'angular-oauth2-oidc';
+
+// export const authInterceptor: HttpInterceptorFn = (req, next) => {
+//     const oauthService = inject(OAuthService);
+
+//     // 1. Verificamos si tenemos un token válido en la mano
+//     if (oauthService.hasValidAccessToken()) {
+
+//         // 2. Obtenemos el token
+//         const token = oauthService.getAccessToken();
+
+//         // 3. Clonamos la petición y le pegamos la cabecera Authorization
+//         const authReq = req.clone({
+//             headers: req.headers.set('Authorization', `Bearer ${token}`)
+//         });
+
+//         // 4. Enviamos la petición modificada
+//         return next(authReq);
+//     }
+
+//     // Si no hay token, mandamos la petición tal cual (el backend probablemente dará error,
+//     // pero el Guard ya se encargó de proteger las rutas)
+//     return next(req);
+// };
+
 import { HttpInterceptorFn } from '@angular/common/http';
-import { SKIP_AUTH } from '../http/http-context';
+import { inject } from '@angular/core';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-    if (req.context.get(SKIP_AUTH) === true) {
+    const oauthService = inject(OAuthService);
+
+    // 0. EXCEPCIÓN CRUCIAL:
+    // Si la petición es para pedir o refrescar el token (/oauth2/token),
+    // NO debemos inyectar el token actual, porque el backend se confunde 
+    // (recibe credenciales del body y del header al mismo tiempo).
+    if (req.url.includes('/oauth2/token')) {
         return next(req);
     }
 
-    const mockToken = 'soy-un-token-falso-para-el-mock';
+    // 1. Verificamos si tenemos un token válido en la mano
+    if (oauthService.hasValidAccessToken()) {
 
-    const authReq = req.clone({
-        setHeaders: {
-            Authorization: `Bearer ${mockToken}`
-        }
-    });
+        // 2. Obtenemos el token
+        const token = oauthService.getAccessToken();
 
-    return next(authReq);
+        // 3. Clonamos la petición y le pegamos la cabecera Authorization
+        const authReq = req.clone({
+            headers: req.headers.set('Authorization', `Bearer ${token}`)
+        });
+
+        // 4. Enviamos la petición modificada
+        return next(authReq);
+    }
+
+    // Si no hay token, mandamos la petición tal cual
+    return next(req);
 };

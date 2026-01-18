@@ -15,6 +15,7 @@ import {
     RegistroCiudadanoRequest,
 } from '@/core/api/auth/models';
 import { LoggerService } from '@/core/service/logging/logger.service';
+// import { UsuarioResponse } from '@/core/api/usuarios/models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
@@ -28,8 +29,8 @@ export class AuthFacade {
         id: 1,
         nombre: 'Usuario Temporal',
         email: 'temporal@example.com',
-        rol: 'CIUDADANO',
-        // rol: 'ADMIN_PLATAFORMA',
+        // rol: 'CIUDADANO',
+        rol: 'ADMIN_PLATAFORMA',
         // rol: 'SUPERVISOR_DENUNCIAS',
         // rol: 'JEFE_INTERNO',
         // rol: 'OPERADOR_INTERNO',
@@ -128,11 +129,30 @@ export class AuthFacade {
     // Métodos Privados (Requieren Autenticación)
     // =============================================================================
 
-    async getMe(): Promise<void> {
+    /**
+     * Establece un usuario mock para permitir el funcionamiento de la UI
+     * mientras no exista el endpoint /me.
+     */
+    /* public setMockUser(): void {
+        this.updateAuthState({
+            id: 1,
+            nombre: 'Usuario Temporal',
+            email: 'temporal@example.com',
+            rol: 'CIUDADANO',
+            // rol: 'ADMIN_PLATAFORMA',
+            // rol: 'SUPERVISOR_DENUNCIAS',
+            // rol: 'JEFE_INTERNO',
+            // rol: 'OPERADOR_INTERNO',
+            aliasPublico: null,
+            publicCitizenId: 'temp-0001',
+        });
+    } */
+
+    /* async getMe(): Promise<void> {
         if (this.currentUser()) {
             return;
         }
-
+    
         try {
             this._loading.set(true);
             const user = await this.accountService.getMe();
@@ -142,12 +162,12 @@ export class AuthFacade {
         } finally {
             this._loading.set(false);
         }
-    }
+    } */
 
-    refreshUser() {
-        this._currentUser.set(null);
-        return this.getMe();
-    }
+    // refreshUser() {
+    //     this._currentUser.set(null);
+    //     return this.getMe();
+    // }
 
     registerStaff(request: RegistroStaffRequest): Promise<RegistroUsuarioResponse> {
         return this.adminService.registerStaff({ body: request });

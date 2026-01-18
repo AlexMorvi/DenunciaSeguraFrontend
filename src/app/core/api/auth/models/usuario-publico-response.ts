@@ -9,16 +9,17 @@ import { RolEnum } from '../models/rol-enum';
  */
 export interface UsuarioPublicoResponse {
 
-  /**
-   * Alias visible para ciudadanos si es staff.
-   */
-  aliasPublico?: string | null;
-  entidad?: EntidadEnum;
-  id?: number;
+    /**
+     * Alias visible para ciudadanos si es staff.
+     */
+    aliasPublico?: string | null;
+    entidad?: EntidadEnum;
+    id?: number;
 
-  /**
-   * Identificador público pseudónimo si es ciudadano.
-   */
-  publicCitizenId?: string | null;
-  rol?: RolEnum;
+    /**
+     * Identificador público pseudónimo si es ciudadano.
+     */
+    publicCitizenId?: string | null;
+    rol?: RolEnum;
 }
+

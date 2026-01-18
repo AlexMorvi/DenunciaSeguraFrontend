@@ -1,4 +1,3 @@
-import { UsuarioPerfilResponse } from '@/core/api/auth/models';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { ROLES } from '@/shared/constants/roles.const';
@@ -12,6 +11,7 @@ import { IconDefinition, faSave } from '@fortawesome/free-solid-svg-icons';
 import { ESTADOS_DENUNCIA } from '@/shared/constants/estados.const';
 import { EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
+import { UsuarioResponse } from '@/core/api/usuarios/models';
 
 @Component({
     selector: 'app-perfil-page',
@@ -68,7 +68,7 @@ export class PerfilPageComponent implements OnInit {
         effect(() => {
             const user = this.currentUser();
             if (user) {
-                this.resetFormValues(user);
+                // this.resetFormValues(user);
             }
         });
     }
@@ -88,13 +88,13 @@ export class PerfilPageComponent implements OnInit {
     }
 
     cancel(): void {
-        const user = this.currentUser();
-        if (user) this.resetFormValues(user);
+        // const user = this.currentUser();
+        // if (user) this.resetFormValues(user);
     }
 
     // --- Métodos Privados (Helpers & Business Logic) ---
 
-    private resetFormValues(user: UsuarioPerfilResponse): void {
+    private resetFormValues(user: UsuarioResponse): void {
         const currentAlias = this.isCitizen()
             ? user.publicCitizenId
             : user.aliasPublico;
