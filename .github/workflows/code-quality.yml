@@ -27,13 +27,9 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies (dev only)
+      - name: Install linting tools only
         run: |
-          if [ -f package-lock.json ]; then
-            npm ci --only=development
-          else
-            npm install --only=development
-          fi
+          npm install --no-save eslint prettier @angular-eslint/eslint-plugin @angular-eslint/eslint-plugin-template @angular-eslint/template-parser typescript-eslint
 
       - name: ESLint
         run: npm run lint:eslint
