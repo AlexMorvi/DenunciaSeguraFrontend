@@ -13,11 +13,6 @@ export const CITIZEN_ROUTES: Routes = [
                     .then(m => m.CiudadanoDashboardPage)
             },
             {
-                path: `${APP_ROUTES.DENUNCIAS}/:id`,
-                loadComponent: () => import('@/features/denuncia/views/denuncia.page')
-                    .then(m => m.DenunciaPageComponent)
-            },
-            {
                 path: APP_ROUTES.DENUNCIAS,
                 children: [
                     {
@@ -25,7 +20,6 @@ export const CITIZEN_ROUTES: Routes = [
                         loadComponent: () => import('@/features/create-denuncia/crear-denuncia.page')
                             .then(m => m.CrearDenunciaComponent)
                     },
-
                     {
                         path: ':id',
                         loadComponent: () => import('@/features/denuncia/views/denuncia.page')
