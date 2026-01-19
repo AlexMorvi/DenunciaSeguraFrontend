@@ -29,13 +29,12 @@ jobs:
 
       - name: Remove private package from package.json (temporary)
         run: |
-          # Crear copia temporal del package.json sin el paquete privado
           node -e "const pkg=require('./package.json'); delete pkg.dependencies['@jotavalla/denunciasegura-openapi']; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));"
 
       - name: Install dependencies
         run: npm install
 
-  
+
 
       - name: SonarCloud Scan
         if: ${{ env.SONAR_TOKEN != '' }}
