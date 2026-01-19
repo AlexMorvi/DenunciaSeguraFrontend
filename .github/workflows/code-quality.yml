@@ -30,7 +30,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      
 
+      - name: Verify SonarCloud Token
+        run: |
+          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "ERROR: SONAR_TOKEN secret is not configured"
+            exit 1
+          fi
+          echo "SONAR_TOKEN is configured"
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
