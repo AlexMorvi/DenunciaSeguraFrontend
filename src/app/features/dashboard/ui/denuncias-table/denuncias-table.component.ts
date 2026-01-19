@@ -1,7 +1,7 @@
-import { Component, input, computed, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, input, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
-import { DenunciaResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
+import { DenunciaListadoResponse, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 import { ESTADOS_UI_OPTIONS } from '@/shared/constants/estados.const';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSearch, faChevronDown, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
@@ -28,7 +28,7 @@ export class DenunciasTableComponent {
     protected readonly faImage = faImage;
     protected readonly faFileAlt = faFileAlt;
 
-    denuncias = input.required<Denuncia[]>();
+    denuncias = input.required<DenunciaListadoResponse[]>();
 
     filterStatus = signal<FilterStatusType>(null);
 
@@ -99,8 +99,7 @@ export class DenunciasTableComponent {
         return current === status;
     }
 
-    // TODO: Arreglar el tipo del id
-    navigateToDenuncia(id?: number | null | undefined) {
+    navigateToDenuncia(id?: number | null) {
         if (typeof id !== 'number' || !Number.isFinite(id) || id <= 0) return;
         this.router.navigate(['/denuncias', id]);
     }
@@ -122,27 +121,14 @@ export class DenunciasTableComponent {
         return `${base} ${colors[estado] || 'bg-gray-100 text-gray-800'}`;
     }
 
-    // TODO: eliminar los any
-    getLat(denuncia: any): string {
-        const v = denuncia?.latitud ?? denuncia?.latitude ?? null;
-        return v == null ? '-' : String(v);
-    }
-
-    getLng(denuncia: any): string {
-        const v = denuncia?.longitud ?? denuncia?.longitude ?? null;
-        return v == null ? '-' : String(v);
-    }
-
-    // TODO: No utilizar any, sino el tipo de openapi correcto
-    getFechaFormatted(denuncia: any): string {
-        const val = denuncia?.fechaCreacion ?? denuncia?.createdAt ?? denuncia?.created_at ?? null;
-        if (!val) return '-';
+    getFechaFormatted(value?: string | null): string {
+        if (!value) return '-';
         try {
-            const d = new Date(val);
+            const d = new Date(value);
             const fmt = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
             return fmt.format(d);
         } catch {
-            return String(val);
+            return String(value);
         }
     }
 }

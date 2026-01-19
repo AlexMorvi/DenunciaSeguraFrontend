@@ -5,13 +5,13 @@ import { CategoriaDenunciaEnum } from '../models/categoria-denuncia-enum';
 import { EntidadResponsableEnum } from '../models/entidad-responsable-enum';
 import { EstadoDenunciaEnum } from '../models/estado-denuncia-enum';
 export interface DenunciaListadoResponse {
-  categoriaDenuncia?: CategoriaDenunciaEnum;
-  ciudadanoId?: number;
-  creadoEn?: string;
-  entidadResponsable?: EntidadResponsableEnum;
-  estadoDenuncia?: EstadoDenunciaEnum;
-  id?: number;
-  jefeId?: number;
-  operadorId?: number;
-  titulo?: string;
+    categoriaDenuncia?: CategoriaDenunciaEnum;
+    ciudadanoId?: number;
+    creadoEn?: string;
+    entidadResponsable?: EntidadResponsableEnum;
+    estadoDenuncia?: EstadoDenunciaEnum;
+    id?: number;
+    jefeId?: number;
+    operadorId?: number;
+    titulo?: string;
 }
