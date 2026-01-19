@@ -1,6 +1,6 @@
-import { CrearDenunciaRequest, EvidenceId } from '@/core/api/denuncias/models';
-import { DenunciaView } from '@/core/model/denuncia.model';
-import { CiudadanoService as DenunciasApiService, GestionInternaService } from '@/core/api/denuncias/services';
+import { CrearDenunciaRequest, DenunciaResponse, DenunciaListadoResponse, EntidadResponsableEnum } from '@/core/api/denuncias/models';
+import { DenunciasService } from '@/core/api/denuncias/services/denuncias.service';
+import { WorkflowService } from '@/core/api/denuncias/services/workflow.service';
 import { Injectable, inject, signal } from '@angular/core';
 import { LoggerService } from '@/core/service/logging/logger.service';
 import { FileUploadService } from '@/core/service/file-upload.service';
@@ -10,8 +10,8 @@ import { FileUploadService } from '@/core/service/file-upload.service';
     providedIn: 'root'
 })
 export class DenunciaFacade {
-    private readonly denunciaService = inject(DenunciasApiService);
-    private readonly gestionInternaService = inject(GestionInternaService);
+    private readonly denunciaService = inject(DenunciasService);
+    private readonly workflowService = inject(WorkflowService);
     private readonly logger = inject(LoggerService);
     private readonly uploadService = inject(FileUploadService);
 
@@ -20,19 +20,22 @@ export class DenunciaFacade {
     readonly loading = this._loading.asReadonly();
     readonly error = this._error.asReadonly();
 
-    private readonly _denuncias = signal<DenunciaView[]>([]);
+    private readonly _denuncias = signal<DenunciaListadoResponse[]>([]);
     public denuncias = this._denuncias.asReadonly();
 
-    private readonly _currentDenuncia = signal<DenunciaView | null>(null);
+    private readonly _currentDenuncia = signal<DenunciaResponse | null>(null);
     public currentDenuncia = this._currentDenuncia.asReadonly();
 
     async loadAll(): Promise<void> {
         this._loading.set(true);
+        console.log('DenunciaFacade: Iniciando carga de denuncias...');
 
         try {
-            const data = await this.denunciaService.denunciasMeGet();
+            const data = await this.denunciaService.listarDenuncias();
+            console.log('DenunciaFacade: Denuncias obtenidas:', data);
             this._denuncias.set(data || []);
-        } catch {
+        } catch (err) {
+            console.error('DenunciaFacade: Error al cargar denuncias:', err);
             this._error.set("No se pudo cargar las denuncias.");
             this._denuncias.set([]);
         } finally {
@@ -40,20 +43,14 @@ export class DenunciaFacade {
         }
     }
 
-    async loadById(id: number): Promise<void> {
+    async obtenerDenunciaPorId(id: number): Promise<void> {
         this._loading.set(true);
 
         this._currentDenuncia.set(null);
 
         try {
-            // TODO: Reemplazar por el método correcto cuando esté disponible
-            // let data: DenunciaView;
-            // data = await this.denunciaService.denunciasIdGet({ id });
-            // this._currentDenuncia.set(data);
-            const list = await this.denunciaService.denunciasMeGet();
-            const first = Array.isArray(list) && list.length > 0 ? list[0] : null;
-            this._currentDenuncia.set(first);
-
+            const data = await this.denunciaService.obtenerDenunciaPorId({ denunciaId: id });
+            this._currentDenuncia.set(data);
         } catch {
             this._error.set("No se pudo cargar la información de la denuncia.");
             this._currentDenuncia.set(null);
@@ -65,10 +62,17 @@ export class DenunciaFacade {
     async asignarOperadorPorJefe(idOperador: number): Promise<void> {
         this._loading.set(true);
         this._error.set(null);
+
+        const denunciaId = this._currentDenuncia()?.id;
+        if (!denunciaId) {
+            this._error.set('No hay denuncia seleccionada para asignar.');
+            this._loading.set(false);
+            return;
+        }
+
         try {
-            await this.gestionInternaService.denunciasIdAsignacionPost({
-                // TODO: Eliminar, el front no envía la denuncia
-                id: 1,
+            await this.workflowService.asignarOperadorAdenuncia({
+                denunciaId: denunciaId,
                 body: { operadorId: idOperador }
             });
         } catch {
@@ -78,17 +82,15 @@ export class DenunciaFacade {
         }
     }
 
-    async asignarJefePorSupervisor(idDenuncia: number, idOperador: number): Promise<void> {
+    async asignarJefePorSupervisor(idDenuncia: number, entidadId: number): Promise<void> {
         this._loading.set(true);
         this._error.set(null);
 
-
         try {
-            // TODO: Reemplazar por el método correcto cuando esté disponible del back
-            // await this.gestionInternaService.denunciasIdAsignacionPost({
-            //     id: idDenuncia,
-            //     body: { operadorId: idOperador }
-            // });
+            await this.workflowService.asignarEntidadADenuncia({
+                denunciaId: idDenuncia,
+                entidad: entidadId as unknown as EntidadResponsableEnum
+            });
         } catch {
             this._error.set('Error al asignar la denuncia a entidad responsable.');
         } finally {
@@ -101,11 +103,11 @@ export class DenunciaFacade {
         this._error.set(null);
 
         try {
-            await this.gestionInternaService.denunciasIdResolucionPatch({
-                id,
+            await this.workflowService.resolverDenuncia({
+                denunciaId: id,
                 body: {
-                    ...(comentarioResolucion ? { comentarioTecnico: comentarioResolucion } : {}),
-                    ...(evidenciasIds ? { evidenciaIds: evidenciasIds } : {})
+                    comentarioResolucion,
+                    evidenciasIds: evidenciasIds || []
                 }
             });
         } catch {
@@ -120,11 +122,11 @@ export class DenunciaFacade {
         this._error.set(null);
 
         try {
-            // await this.gestionInternaService.denunciasIdResolucionPatch({
-            //     id: idDenuncia,
-            // });
+            await this.workflowService.iniciarProcesoDenunciaOperadores({
+                denunciaId: idDenuncia,
+            });
         } catch {
-            this._error.set('Error al marcar la denuncia como resuelta.');
+            this._error.set('Error al iniciar la denuncia.');
         } finally {
             this._loading.set(false);
         }
@@ -133,13 +135,20 @@ export class DenunciaFacade {
     async validarDenunciaPorSupervisor(aprobada: boolean, comentarioObservacion?: string): Promise<void> {
         this._loading.set(true);
         this._error.set(null);
+
+        const denunciaId = this._currentDenuncia()?.id;
+        if (!denunciaId) {
+            this._error.set('No hay denuncia seleccionada para validar.');
+            this._loading.set(false);
+            return;
+        }
+
         try {
-            await this.gestionInternaService.denunciasIdValidacionPatch({
-                // TODO: eliminar el idDenuncia, el front no debe enviarlo
-                id: 1,
+            await this.workflowService.validarSolucionDenuncia({
+                denunciaId: denunciaId,
                 body: {
                     aprobada,
-                    ...(comentarioObservacion ? { comentarioObservacion: comentarioObservacion } : {})
+                    comentarioObservacion: comentarioObservacion || ''
                 }
             });
         } catch {
@@ -159,22 +168,18 @@ export class DenunciaFacade {
         this._error.set(null);
 
         if (archivos && archivos.length > 0) {
-            const evidenciasIds: EvidenceId[] = [];
-
+            const evidenciasIds: string[] = [];
+            // TODO: Ajustar subida con EvidenceFacade real si es necesario.
             for (const archivo of archivos) {
-                const evidenciaId = await this.uploadService.subirEvidencia(archivo);
-                evidenciasIds.push(evidenciaId);
+                const url = await this.uploadService.subirEvidencia(archivo);
+                evidenciasIds.push(url);
             }
-            datos.evidenciaIds = datos.evidenciaIds || [];
-            datos.evidenciaIds.push(...evidenciasIds);
+            datos.evidenciasIds = datos.evidenciasIds || [];
+            datos.evidenciasIds.push(...evidenciasIds);
         }
 
-        //TODO: qué hacer con la respuesta?
-        const respuesta = await this.denunciaService.crearDenuncia({ body: datos });
-        // this.logger.logInfo('Denuncia creada exitosamente', {
-        //     id: respuesta.id,
-        //     codigo: respuesta.mensaje
-        // });
+        await this.denunciaService.crearDenuncia({ body: datos });
+        this.logger.logInfo('Denuncia creada exitosamente');
     }
 
 

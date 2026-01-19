@@ -3,8 +3,8 @@ import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angu
 import { AuthFacade } from '@/data/services/auth.facade';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { SelectComponent } from '@/shared/ui/select/select.component';
-import { ENTIDAD_ENUM } from '@/core/api/auth/models/entidad-enum-array';
-import { EntidadEnum } from '@/core/api/auth/models/entidad-enum';
+import { ENTIDAD_ENUM } from '@/core/api/usuarios/models/entidad-enum-array';
+import { EntidadEnum } from '@/core/api/usuarios/models/entidad-enum';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { faSave, faComment } from '@fortawesome/free-solid-svg-icons';
 

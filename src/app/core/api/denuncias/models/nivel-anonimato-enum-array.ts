@@ -7,7 +7,7 @@ import { NivelAnonimatoEnum } from './nivel-anonimato-enum';
  * Each possible value of `NivelAnonimatoEnum`
  */
 export const NIVEL_ANONIMATO_ENUM: NivelAnonimatoEnum[] = [
-  'REAL',
-  'SEUDONIMO',
-  'ANONIMO'
+  'ANONIMO',
+  'PSEUDOANONIMO',
+  'REAL'
 ];

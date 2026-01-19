@@ -7,5 +7,6 @@ import { EntidadTipoEnum } from './entidad-tipo-enum';
  * Each possible value of `EntidadTipoEnum`
  */
 export const ENTIDAD_TIPO_ENUM: EntidadTipoEnum[] = [
-  'DENUNCIA'
+  'DENUNCIA',
+  'RESOLUCION'
 ];

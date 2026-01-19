@@ -2,9 +2,9 @@ import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@a
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthFacade } from '@/data/services/auth.facade';
-import { RolEnum } from '@/core/api/auth/models/rol-enum';
-import { EntidadEnum } from '@/core/api/auth/models/entidad-enum';
-import { RegistroStaffRequest } from '@/core/api/auth/models/registro-staff-request';
+import { RolEnum } from '@/core/api/usuarios/models/rol-enum';
+import { EntidadEnum } from '@/core/api/usuarios/models/entidad-enum';
+import { RegistroStaffRequest } from '@/core/api/usuarios/models/registro-staff-request';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { SelectComponent } from '@/shared/ui/select/select.component';
 import { CategorySelectorComponent } from '@/shared/ui/category-selector/category-selector.component';
@@ -50,18 +50,18 @@ const ENTITY_COLOR_MAP: Record<string, string> = {
 export class StaffManagerPage {
     protected readonly faUserPlus = faUserPlus;
 
-    private fb = inject(FormBuilder);
-    private authFacade = inject(AuthFacade);
-    private toast = inject(ToastService);
+    private readonly fb = inject(FormBuilder);
+    private readonly authFacade = inject(AuthFacade);
+    private readonly toast = inject(ToastService);
     private readonly router = inject(Router);
 
     loading = signal<boolean>(false);
 
-    roles = this.authFacade.availableRoles.filter(r => r !== 'CIUDADANO');
+    roles = this.authFacade.availableRoles.filter((r: string) => r !== 'CIUDADANO');
     entidades = this.authFacade.uiEntities;
 
     readonly listadoEntidades = computed(() => {
-        return this.authFacade.uiEntities().map(e => ({
+        return this.authFacade.uiEntities().map((e: { code: string | number; label: any; }) => ({
             value: e.code as EntidadEnum,
             label: e.label,
             icon: ENTITY_ICON_MAP[e.code] ?? faBuilding,
@@ -73,6 +73,7 @@ export class StaffManagerPage {
     form = this.fb.group({
         nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
         email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
+        cedula: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
         rol: ['', [Validators.required]],
         entidad: ['', [Validators.required]],
         aliasPublico: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
@@ -94,6 +95,7 @@ export class StaffManagerPage {
         const request: RegistroStaffRequest = {
             nombre: this.form.value.nombre!,
             email: this.form.value.email!,
+            cedula: this.form.value.cedula!,
             rol: this.form.value.rol as RolEnum,
             entidad: this.form.value.entidad as EntidadEnum,
             aliasPublico: this.form.value.aliasPublico || undefined

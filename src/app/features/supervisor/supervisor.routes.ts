@@ -13,6 +13,11 @@ export const SUPERVISOR_ROUTES: Routes = [
                     .then(m => m.CiudadanoDashboardPage)
             },
             {
+                path: `${APP_ROUTES.DASHBOARD}/:id`,
+                loadComponent: () => import('@/features/denuncia/views/denuncia.page')
+                    .then(m => m.DenunciaPageComponent)
+            },
+            {
                 path: APP_ROUTES.DENUNCIAS,
                 children: [
                     {

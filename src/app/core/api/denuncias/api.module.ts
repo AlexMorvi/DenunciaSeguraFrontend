@@ -5,8 +5,8 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { CiudadanoService } from './services/ciudadano.service';
-import { GestionInternaService } from './services/gestion-interna.service';
+import { DenunciasService } from './services/denuncias.service';
+import { WorkflowService } from './services/workflow.service';
 
 /**
  * Module that provides all services and configuration.
@@ -16,8 +16,8 @@ import { GestionInternaService } from './services/gestion-interna.service';
   exports: [],
   declarations: [],
   providers: [
-    CiudadanoService,
-    GestionInternaService,
+    DenunciasService,
+    WorkflowService,
     ApiConfiguration
   ],
 })

@@ -9,22 +9,18 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { AuthResponse } from '../models/auth-response';
-import { forgotPassword } from '../fn/publico/forgot-password';
-import { ForgotPassword$Params } from '../fn/publico/forgot-password';
-import { login } from '../fn/publico/login';
-import { Login$Params } from '../fn/publico/login';
-import { refreshToken } from '../fn/publico/refresh-token';
-import { RefreshToken$Params } from '../fn/publico/refresh-token';
-import { registerCitizen } from '../fn/publico/register-citizen';
-import { RegisterCitizen$Params } from '../fn/publico/register-citizen';
+import { forgot } from '../fn/publico/forgot';
+import { Forgot$Params } from '../fn/publico/forgot';
+import { PasswordResetResponse } from '../models/password-reset-response';
+import { registrarCiudadano } from '../fn/publico/registrar-ciudadano';
+import { RegistrarCiudadano$Params } from '../fn/publico/registrar-ciudadano';
 import { RegistroUsuarioResponse } from '../models/registro-usuario-response';
-import { resetPassword } from '../fn/publico/reset-password';
-import { ResetPassword$Params } from '../fn/publico/reset-password';
+import { reset } from '../fn/publico/reset';
+import { Reset$Params } from '../fn/publico/reset';
 
 
 /**
- * Accesible sin token.
+ * Endpoints accesibles sin token.
  */
 @Injectable({ providedIn: 'root' })
 export class PublicoService extends BaseService {
@@ -32,168 +28,102 @@ export class PublicoService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `login()` */
-  static readonly LoginPath = '/login';
-
-  /**
-   * Iniciar sesión.
-   *
-   * Recibe credenciales y devuelve Access Token + Refresh Token. Controles defensivos: rate limiting y bloqueo temporal ante intentos fallidos.
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `login()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  login$Response(params: Login$Params, context?: HttpContext): Promise<StrictHttpResponse<AuthResponse>> {
-    const obs = login(this.http, this.rootUrl, params, context);
-    return firstValueFrom(obs);
-  }
-
-  /**
-   * Iniciar sesión.
-   *
-   * Recibe credenciales y devuelve Access Token + Refresh Token. Controles defensivos: rate limiting y bloqueo temporal ante intentos fallidos.
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `login$Response()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  login(params: Login$Params, context?: HttpContext): Promise<AuthResponse> {
-    const resp = this.login$Response(params, context);
-    return resp.then((r: StrictHttpResponse<AuthResponse>): AuthResponse => r.body);
-  }
-
-  /** Path part for operation `refreshToken()` */
-  static readonly RefreshTokenPath = '/token/refresh';
-
-  /**
-   * Renovar tokens (refresh).
-   *
-   * Canjea un refresh token por un nuevo access token y un nuevo refresh token (rotación). Si el refresh token está revocado, expirado o no corresponde al estado de rotación, se rechaza.
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `refreshToken()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  refreshToken$Response(params: RefreshToken$Params, context?: HttpContext): Promise<StrictHttpResponse<AuthResponse>> {
-    const obs = refreshToken(this.http, this.rootUrl, params, context);
-    return firstValueFrom(obs);
-  }
-
-  /**
-   * Renovar tokens (refresh).
-   *
-   * Canjea un refresh token por un nuevo access token y un nuevo refresh token (rotación). Si el refresh token está revocado, expirado o no corresponde al estado de rotación, se rechaza.
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `refreshToken$Response()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  refreshToken(params: RefreshToken$Params, context?: HttpContext): Promise<AuthResponse> {
-    const resp = this.refreshToken$Response(params, context);
-    return resp.then((r: StrictHttpResponse<AuthResponse>): AuthResponse => r.body);
-  }
-
-  /** Path part for operation `registerCitizen()` */
-  static readonly RegisterCitizenPath = '/register/citizen';
+  /** Path part for operation `registrarCiudadano()` */
+  static readonly RegistrarCiudadanoPath = '/register/citizen';
 
   /**
    * Registro de Ciudadano (Auto-servicio).
    *
-   * Crea una cuenta con rol CIUDADANO por defecto. Nota de privacidad: nombre y cédula se tratan como datos sensibles y no se exponen a roles operativos.
+   *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `registerCitizen()` instead.
+   * To access only the response body, use `registrarCiudadano()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  registerCitizen$Response(params: RegisterCitizen$Params, context?: HttpContext): Promise<StrictHttpResponse<RegistroUsuarioResponse>> {
-    const obs = registerCitizen(this.http, this.rootUrl, params, context);
+  registrarCiudadano$Response(params: RegistrarCiudadano$Params, context?: HttpContext): Promise<StrictHttpResponse<RegistroUsuarioResponse>> {
+    const obs = registrarCiudadano(this.http, this.rootUrl, params, context);
     return firstValueFrom(obs);
   }
 
   /**
    * Registro de Ciudadano (Auto-servicio).
    *
-   * Crea una cuenta con rol CIUDADANO por defecto. Nota de privacidad: nombre y cédula se tratan como datos sensibles y no se exponen a roles operativos.
+   *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `registerCitizen$Response()` instead.
+   * To access the full response (for headers, for example), `registrarCiudadano$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  registerCitizen(params: RegisterCitizen$Params, context?: HttpContext): Promise<RegistroUsuarioResponse> {
-    const resp = this.registerCitizen$Response(params, context);
+  registrarCiudadano(params: RegistrarCiudadano$Params, context?: HttpContext): Promise<RegistroUsuarioResponse> {
+    const resp = this.registrarCiudadano$Response(params, context);
     return resp.then((r: StrictHttpResponse<RegistroUsuarioResponse>): RegistroUsuarioResponse => r.body);
   }
 
-  /** Path part for operation `forgotPassword()` */
-  static readonly ForgotPasswordPath = '/password/forgot';
+  /** Path part for operation `forgot()` */
+  static readonly ForgotPath = '/password/forgot';
 
   /**
-   * Solicitar recuperación.
+   * Solicitar recuperación de contraseña.
    *
-   * Genera token y envía correo (o log en MVP). Para evitar enumeración de cuentas, la respuesta es uniforme: se devuelve 200 aunque el email no exista.
+   *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `forgotPassword()` instead.
+   * To access only the response body, use `forgot()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  forgotPassword$Response(params: ForgotPassword$Params, context?: HttpContext): Promise<StrictHttpResponse<void>> {
-    const obs = forgotPassword(this.http, this.rootUrl, params, context);
+  forgot$Response(params: Forgot$Params, context?: HttpContext): Promise<StrictHttpResponse<PasswordResetResponse>> {
+    const obs = forgot(this.http, this.rootUrl, params, context);
     return firstValueFrom(obs);
   }
 
   /**
-   * Solicitar recuperación.
+   * Solicitar recuperación de contraseña.
    *
-   * Genera token y envía correo (o log en MVP). Para evitar enumeración de cuentas, la respuesta es uniforme: se devuelve 200 aunque el email no exista.
+   *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `forgotPassword$Response()` instead.
+   * To access the full response (for headers, for example), `forgot$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  forgotPassword(params: ForgotPassword$Params, context?: HttpContext): Promise<void> {
-    const resp = this.forgotPassword$Response(params, context);
-    return resp.then((r: StrictHttpResponse<void>): void => r.body);
+  forgot(params: Forgot$Params, context?: HttpContext): Promise<PasswordResetResponse> {
+    const resp = this.forgot$Response(params, context);
+    return resp.then((r: StrictHttpResponse<PasswordResetResponse>): PasswordResetResponse => r.body);
   }
 
-  /** Path part for operation `resetPassword()` */
-  static readonly ResetPasswordPath = '/password/reset';
+  /** Path part for operation `reset()` */
+  static readonly ResetPath = '/password/reset';
 
   /**
    * Establecer nueva contraseña.
    *
-   * Usa el token recibido por correo.
+   *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `resetPassword()` instead.
+   * To access only the response body, use `reset()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  resetPassword$Response(params: ResetPassword$Params, context?: HttpContext): Promise<StrictHttpResponse<void>> {
-    const obs = resetPassword(this.http, this.rootUrl, params, context);
+  reset$Response(params: Reset$Params, context?: HttpContext): Promise<StrictHttpResponse<void>> {
+    const obs = reset(this.http, this.rootUrl, params, context);
     return firstValueFrom(obs);
   }
 
   /**
    * Establecer nueva contraseña.
    *
-   * Usa el token recibido por correo.
+   *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `resetPassword$Response()` instead.
+   * To access the full response (for headers, for example), `reset$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  resetPassword(params: ResetPassword$Params, context?: HttpContext): Promise<void> {
-    const resp = this.resetPassword$Response(params, context);
+  reset(params: Reset$Params, context?: HttpContext): Promise<void> {
+    const resp = this.reset$Response(params, context);
     return resp.then((r: StrictHttpResponse<void>): void => r.body);
   }
 

@@ -3,7 +3,7 @@ import { FileUploadErrorEvent } from '@/core/model/file-upload.event';
 import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, viewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as L from 'leaflet';
-import { CategoriaEnum } from '@/core/api/denuncias/models/categoria-enum';
+import { CategoriaDenunciaEnum } from '@/core/api/denuncias/models/categoria-denuncia-enum';
 import { IconDefinition, faRoad, faLightbulb, faTrashAlt, faShieldAlt, faTint, faSeedling, faEllipsisH, faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { CrearDenunciaRequest } from '@/core/api/denuncias/models/crear-denuncia-request';
 import { NIVEL_ANONIMATO_ENUM as NIVEL_ANONIMATO_ARRAY } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
@@ -69,14 +69,14 @@ export class CrearDenunciaComponent implements OnDestroy {
     readonly selectedFile = signal<File | null>(null);
     readonly currentCoords = signal<{ lat: number; lng: number } | null>(null);
 
-    readonly listadoCategorias: { value: CategoriaEnum; label: string; icon: IconDefinition; colorClass: string }[] = [
-        { value: 'VIALIDAD' as CategoriaEnum, label: 'Bacheo / Vialidad', icon: faRoad, colorClass: 'text-primary' },
-        { value: 'ILUMINACION' as CategoriaEnum, label: 'Alumbrado', icon: faLightbulb, colorClass: 'text-yellow-500' },
-        { value: 'SANIDAD' as CategoriaEnum, label: 'Basura / Limpieza', icon: faTrashAlt, colorClass: 'text-green-500' },
-        { value: 'SEGURIDAD' as CategoriaEnum, label: 'Seguridad', icon: faShieldAlt, colorClass: 'text-red-500' },
-        { value: 'AGUA' as CategoriaEnum, label: 'Agua', icon: faTint, colorClass: 'text-blue-500' },
-        { value: 'JARDINERIA' as CategoriaEnum, label: 'Jardinería', icon: faSeedling, colorClass: 'text-emerald-500' },
-        { value: 'OTROS' as CategoriaEnum, label: 'Otro', icon: faEllipsisH, colorClass: 'text-purple-500' }
+    readonly listadoCategorias: { value: CategoriaDenunciaEnum; label: string; icon: IconDefinition; colorClass: string }[] = [
+        { value: 'VIALIDAD' as CategoriaDenunciaEnum, label: 'Bacheo / Vialidad', icon: faRoad, colorClass: 'text-primary' },
+        { value: 'ILUMINACION' as CategoriaDenunciaEnum, label: 'Alumbrado', icon: faLightbulb, colorClass: 'text-yellow-500' },
+        { value: 'SANIDAD' as CategoriaDenunciaEnum, label: 'Basura / Limpieza', icon: faTrashAlt, colorClass: 'text-green-500' },
+        { value: 'SEGURIDAD' as CategoriaDenunciaEnum, label: 'Seguridad', icon: faShieldAlt, colorClass: 'text-red-500' },
+        { value: 'AGUA' as CategoriaDenunciaEnum, label: 'Agua', icon: faTint, colorClass: 'text-blue-500' },
+        { value: 'JARDINERIA' as CategoriaDenunciaEnum, label: 'Jardinería', icon: faSeedling, colorClass: 'text-emerald-500' },
+        { value: 'OTROS' as CategoriaDenunciaEnum, label: 'Otro', icon: faEllipsisH, colorClass: 'text-purple-500' }
     ];
     readonly listadoAnonimato = NIVEL_ANONIMATO_ARRAY;
 
@@ -94,7 +94,7 @@ export class CrearDenunciaComponent implements OnDestroy {
             Validators.minLength(10),
             Validators.maxLength(500)
         ]),
-        categoriaDenuncia: new FormControl<CategoriaEnum | null>(null, {
+        categoriaDenuncia: new FormControl<CategoriaDenunciaEnum | null>(null, {
             validators: [Validators.required]
         }),
         nivelAnonimato: this.fb.nonNullable.control(NIVEL_ANONIMATO.REAL, [
@@ -120,7 +120,7 @@ export class CrearDenunciaComponent implements OnDestroy {
         const request: CrearDenunciaRequest = {
             titulo: rawData.titulo.trim(),
             descripcion: rawData.descripcion.trim(),
-            categoria: rawData.categoriaDenuncia!,
+            categoriaDenuncia: rawData.categoriaDenuncia!,
             nivelAnonimato: rawData.nivelAnonimato,
             latitud: rawData.latitud!,
             longitud: rawData.longitud!,

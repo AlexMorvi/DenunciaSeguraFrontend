@@ -17,7 +17,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { AuthFacade } from '@/data/services/auth.facade';
-import { RegistroCiudadanoRequest } from '@/core/api/auth/models';
+import { RegistroCiudadanoAuthRequest } from '@/core/api/auth/models';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { numericValidator } from '@/shared/validators/numeric.validator';
 
@@ -74,7 +74,7 @@ export class RegisterComponent {
         this.message.set(null);
         this.messageClass.set(null);
 
-        const request: RegistroCiudadanoRequest = this.form.getRawValue();
+        const request: RegistroCiudadanoAuthRequest = this.form.getRawValue();
 
         try {
             await this.authFacade.registerCitizen(request);

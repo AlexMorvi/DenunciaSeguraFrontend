@@ -6,7 +6,6 @@ import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { PublicoService } from './services/publico.service';
-import { CuentaService } from './services/cuenta.service';
 import { AdminService } from './services/admin.service';
 
 /**
@@ -18,7 +17,6 @@ import { AdminService } from './services/admin.service';
   declarations: [],
   providers: [
     PublicoService,
-    CuentaService,
     AdminService,
     ApiConfiguration
   ],

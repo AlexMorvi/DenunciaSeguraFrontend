@@ -9,16 +9,13 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { getUserPublicProfile } from '../fn/admin/get-user-public-profile';
-import { GetUserPublicProfile$Params } from '../fn/admin/get-user-public-profile';
-import { registerStaff } from '../fn/admin/register-staff';
-import { RegisterStaff$Params } from '../fn/admin/register-staff';
+import { registrarStaff } from '../fn/admin/registrar-staff';
+import { RegistrarStaff$Params } from '../fn/admin/registrar-staff';
 import { RegistroUsuarioResponse } from '../models/registro-usuario-response';
-import { UsuarioPublicoResponse } from '../models/usuario-publico-response';
 
 
 /**
- * Gestión de usuarios del sistema (Staff).
+ * Operaciones administrativas (registro de staff).
  */
 @Injectable({ providedIn: 'root' })
 export class AdminService extends BaseService {
@@ -26,70 +23,37 @@ export class AdminService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `registerStaff()` */
-  static readonly RegisterStaffPath = '/staff';
+  /** Path part for operation `registrarStaff()` */
+  static readonly RegistrarStaffPath = '/register/staff';
 
   /**
    * Registrar funcionario (Operador, Jefe, Supervisor).
    *
-   * Endpoint exclusivo para el 'Administrador de la plataforma'. Permite crear usuarios con roles elevados y asignarles su entidad (ej: Empresa Eléctrica).
+   *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `registerStaff()` instead.
+   * To access only the response body, use `registrarStaff()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  registerStaff$Response(params: RegisterStaff$Params, context?: HttpContext): Promise<StrictHttpResponse<RegistroUsuarioResponse>> {
-    const obs = registerStaff(this.http, this.rootUrl, params, context);
+  registrarStaff$Response(params: RegistrarStaff$Params, context?: HttpContext): Promise<StrictHttpResponse<RegistroUsuarioResponse>> {
+    const obs = registrarStaff(this.http, this.rootUrl, params, context);
     return firstValueFrom(obs);
   }
 
   /**
    * Registrar funcionario (Operador, Jefe, Supervisor).
    *
-   * Endpoint exclusivo para el 'Administrador de la plataforma'. Permite crear usuarios con roles elevados y asignarles su entidad (ej: Empresa Eléctrica).
+   *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `registerStaff$Response()` instead.
+   * To access the full response (for headers, for example), `registrarStaff$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  registerStaff(params: RegisterStaff$Params, context?: HttpContext): Promise<RegistroUsuarioResponse> {
-    const resp = this.registerStaff$Response(params, context);
+  registrarStaff(params: RegistrarStaff$Params, context?: HttpContext): Promise<RegistroUsuarioResponse> {
+    const resp = this.registrarStaff$Response(params, context);
     return resp.then((r: StrictHttpResponse<RegistroUsuarioResponse>): RegistroUsuarioResponse => r.body);
-  }
-
-  /** Path part for operation `getUserPublicProfile()` */
-  static readonly GetUserPublicProfilePath = '/users/{id}/public';
-
-  /**
-   * Obtener perfil público/minimizado de usuario.
-   *
-   * Perfil minimizado para consumo interno entre microservicios. Diseñado para evitar propagación de PII: no incluye nombre real, email ni cédula. Para staff devuelve rol, entidad y alias público; para ciudadanos devuelve identificador público pseudónimo.
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getUserPublicProfile()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  getUserPublicProfile$Response(params: GetUserPublicProfile$Params, context?: HttpContext): Promise<StrictHttpResponse<UsuarioPublicoResponse>> {
-    const obs = getUserPublicProfile(this.http, this.rootUrl, params, context);
-    return firstValueFrom(obs);
-  }
-
-  /**
-   * Obtener perfil público/minimizado de usuario.
-   *
-   * Perfil minimizado para consumo interno entre microservicios. Diseñado para evitar propagación de PII: no incluye nombre real, email ni cédula. Para staff devuelve rol, entidad y alias público; para ciudadanos devuelve identificador público pseudónimo.
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `getUserPublicProfile$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  getUserPublicProfile(params: GetUserPublicProfile$Params, context?: HttpContext): Promise<UsuarioPublicoResponse> {
-    const resp = this.getUserPublicProfile$Response(params, context);
-    return resp.then((r: StrictHttpResponse<UsuarioPublicoResponse>): UsuarioPublicoResponse => r.body);
   }
 
 }

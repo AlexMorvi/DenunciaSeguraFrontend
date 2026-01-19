@@ -32,7 +32,7 @@ export class CiudadanoDashboardPage implements OnInit {
     public denunciaService = inject(DenunciaFacade);
     private readonly router = inject(Router);
     private readonly authFacade = inject(AuthFacade);
-    private readonly notificacionFacade = inject(NotificacionFacade);
+    // private readonly notificacionFacade = inject(NotificacionFacade);
 
     public isLoading = computed(() =>
         this.denunciaService.loading() || this.authFacade.loading()
@@ -42,9 +42,7 @@ export class CiudadanoDashboardPage implements OnInit {
     protected readonly faPlus = faPlus;
 
     userName = computed(() => this.authFacade.currentUser()?.nombre || "Usuario");
-    // userName = computed(() => 'Usuario');
     showCreateButton = computed(() => this.authFacade.currentUser()?.rol === ROLES.CIUDADANO);
-    // showCreateButton = computed(() => true);
 
     ngOnInit(): void {
         this.denunciaService.loadAll();
@@ -58,11 +56,12 @@ export class CiudadanoDashboardPage implements OnInit {
         const allDenuncias = this.denuncias();
         const total = allDenuncias.length;
 
-        const enProgreso = allDenuncias.filter(d => d.estado === 'EN_PROCESO').length;
-        const resueltas = allDenuncias.filter(d => d.estado === 'RESUELTA').length;
-        const rechazadas = allDenuncias.filter(d => d.estado === 'RECHAZADA').length;
+        const enProgreso = allDenuncias.filter(d => d.estadoDenuncia === 'EN_PROCESO').length;
+        const resueltas = allDenuncias.filter(d => d.estadoDenuncia === 'RESUELTA').length;
+        // const rechazadas = allDenuncias.filter(d => d.estadoDenuncia === 'RECHAZADA').length;
 
-        const finalizadas = resueltas + rechazadas;
+        // const finalizadas = resueltas + rechazadas;
+        const finalizadas = resueltas;
         const tasaExito = finalizadas > 0 ? Math.round((resueltas / finalizadas) * 100) : 0;
 
         // TODO: descomentar cuando denuncia tenga fecha de creación

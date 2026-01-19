@@ -5,8 +5,7 @@
   // class="... bg-[url('/assets/images/auth-bg.jpg')] ..."
 }
 
-
 // Estilo reutilizable para los items de características
 .feature-badge {
-    @apply flex items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-3 text-sm font-medium text-white transition-all hover:bg-white/20;
+  @apply flex items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-3 text-sm font-medium text-white transition-all hover:bg-white/20;
 }

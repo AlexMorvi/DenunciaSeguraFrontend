@@ -2,7 +2,7 @@ import { NivelAnonimatoEnum } from '@/core/api/denuncias/models/nivel-anonimato-
 
 export const NIVEL_ANONIMATO: Record<NivelAnonimatoEnum, NivelAnonimatoEnum> = {
     REAL: 'REAL',
-    SEUDONIMO: 'SEUDONIMO',
+    PSEUDOANONIMO: 'PSEUDOANONIMO',
     ANONIMO: 'ANONIMO'
 } as const;
 

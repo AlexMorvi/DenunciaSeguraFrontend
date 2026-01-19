@@ -22,7 +22,7 @@ export function provideApiConfiguration(rootUrl: string) {
   providedIn: 'root',
 })
 export class ApiConfiguration {
-  rootUrl: string = '/api/v1';
+  rootUrl: string = '/api/denuncias';
 }
 
 /**

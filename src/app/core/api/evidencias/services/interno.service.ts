@@ -9,16 +9,19 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { AdjuntarEvidenciasResponse } from '../models/adjuntar-evidencias-response';
+import { adjuntarEvidencias } from '../fn/interno/adjuntar-evidencias';
+import { AdjuntarEvidencias$Params } from '../fn/interno/adjuntar-evidencias';
+import { confirmarCarga } from '../fn/interno/confirmar-carga';
+import { ConfirmarCarga$Params } from '../fn/interno/confirmar-carga';
+import { crearIntencionDeCarga } from '../fn/interno/crear-intencion-de-carga';
+import { CrearIntencionDeCarga$Params } from '../fn/interno/crear-intencion-de-carga';
 import { EvidenciaInternaResponse } from '../models/evidencia-interna-response';
-import { internoAdjuntarPost } from '../fn/interno/interno-adjuntar-post';
-import { InternoAdjuntarPost$Params } from '../fn/interno/interno-adjuntar-post';
-import { internoEntidadesTipoEntidadIdEvidenciasGet } from '../fn/interno/interno-entidades-tipo-entidad-id-evidencias-get';
-import { InternoEntidadesTipoEntidadIdEvidenciasGet$Params } from '../fn/interno/interno-entidades-tipo-entidad-id-evidencias-get';
+import { obtenerEvidencias } from '../fn/interno/obtener-evidencias';
+import { ObtenerEvidencias$Params } from '../fn/interno/obtener-evidencias';
 
 
 /**
- * Endpoints S2S (Service-to-Service) para adjuntar evidencias a denuncias y gestionar permisos.
+ * Endpoints S2S para manejo de evidencias.
  */
 @Injectable({ providedIn: 'root' })
 export class InternoService extends BaseService {
@@ -26,70 +29,136 @@ export class InternoService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `internoAdjuntarPost()` */
-  static readonly InternoAdjuntarPostPath = '/interno/adjuntar';
+  /** Path part for operation `adjuntarEvidencias()` */
+  static readonly AdjuntarEvidenciasPath = '/interno/adjuntar';
 
   /**
-   * Adjuntar evidencias a una entidad de negocio.
+   * Adjuntar evidencias a una entidad.
    *
-   * Endpoint S2S: permite a otros microservicios (principalmente Denuncias) adjuntar evidencias a una entidad (por ejemplo, una denuncia). Puede establecer permisos explícitos por rol/usuarios. Este endpoint evita que Denuncias deba conocer el storage.
+   *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `internoAdjuntarPost()` instead.
+   * To access only the response body, use `adjuntarEvidencias()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  internoAdjuntarPost$Response(params: InternoAdjuntarPost$Params, context?: HttpContext): Promise<StrictHttpResponse<AdjuntarEvidenciasResponse>> {
-    const obs = internoAdjuntarPost(this.http, this.rootUrl, params, context);
+  adjuntarEvidencias$Response(params: AdjuntarEvidencias$Params, context?: HttpContext): Promise<StrictHttpResponse<void>> {
+    const obs = adjuntarEvidencias(this.http, this.rootUrl, params, context);
     return firstValueFrom(obs);
   }
 
   /**
-   * Adjuntar evidencias a una entidad de negocio.
+   * Adjuntar evidencias a una entidad.
    *
-   * Endpoint S2S: permite a otros microservicios (principalmente Denuncias) adjuntar evidencias a una entidad (por ejemplo, una denuncia). Puede establecer permisos explícitos por rol/usuarios. Este endpoint evita que Denuncias deba conocer el storage.
+   *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `internoAdjuntarPost$Response()` instead.
+   * To access the full response (for headers, for example), `adjuntarEvidencias$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  internoAdjuntarPost(params: InternoAdjuntarPost$Params, context?: HttpContext): Promise<AdjuntarEvidenciasResponse> {
-    const resp = this.internoAdjuntarPost$Response(params, context);
-    return resp.then((r: StrictHttpResponse<AdjuntarEvidenciasResponse>): AdjuntarEvidenciasResponse => r.body);
+  adjuntarEvidencias(params: AdjuntarEvidencias$Params, context?: HttpContext): Promise<void> {
+    const resp = this.adjuntarEvidencias$Response(params, context);
+    return resp.then((r: StrictHttpResponse<void>): void => r.body);
   }
 
-  /** Path part for operation `internoEntidadesTipoEntidadIdEvidenciasGet()` */
-  static readonly InternoEntidadesTipoEntidadIdEvidenciasGetPath = '/interno/entidades/{tipo}/{entidadId}/evidencias';
+  /** Path part for operation `obtenerEvidencias()` */
+  static readonly ObtenerEvidenciasPath = '/interno/entidades/{tipo}/{id}/evidencias';
 
   /**
-   * Listar evidencias de una entidad (S2S).
+   * Listar evidencias por entidad.
    *
-   * Endpoint S2S para consultar evidencias adjuntas a una entidad de negocio (ej. una denuncia), usado por Denuncias para componer respuestas (sin exponer URLs públicas).
+   *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `internoEntidadesTipoEntidadIdEvidenciasGet()` instead.
+   * To access only the response body, use `obtenerEvidencias()` instead.
    *
    * This method doesn't expect any request body.
    */
-  internoEntidadesTipoEntidadIdEvidenciasGet$Response(params: InternoEntidadesTipoEntidadIdEvidenciasGet$Params, context?: HttpContext): Promise<StrictHttpResponse<Array<EvidenciaInternaResponse>>> {
-    const obs = internoEntidadesTipoEntidadIdEvidenciasGet(this.http, this.rootUrl, params, context);
+  obtenerEvidencias$Response(params: ObtenerEvidencias$Params, context?: HttpContext): Promise<StrictHttpResponse<Array<EvidenciaInternaResponse>>> {
+    const obs = obtenerEvidencias(this.http, this.rootUrl, params, context);
     return firstValueFrom(obs);
   }
 
   /**
-   * Listar evidencias de una entidad (S2S).
+   * Listar evidencias por entidad.
    *
-   * Endpoint S2S para consultar evidencias adjuntas a una entidad de negocio (ej. una denuncia), usado por Denuncias para componer respuestas (sin exponer URLs públicas).
+   *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `internoEntidadesTipoEntidadIdEvidenciasGet$Response()` instead.
+   * To access the full response (for headers, for example), `obtenerEvidencias$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  internoEntidadesTipoEntidadIdEvidenciasGet(params: InternoEntidadesTipoEntidadIdEvidenciasGet$Params, context?: HttpContext): Promise<Array<EvidenciaInternaResponse>> {
-    const resp = this.internoEntidadesTipoEntidadIdEvidenciasGet$Response(params, context);
+  obtenerEvidencias(params: ObtenerEvidencias$Params, context?: HttpContext): Promise<Array<EvidenciaInternaResponse>> {
+    const resp = this.obtenerEvidencias$Response(params, context);
     return resp.then((r: StrictHttpResponse<Array<EvidenciaInternaResponse>>): Array<EvidenciaInternaResponse> => r.body);
+  }
+
+  /** Path part for operation `confirmarCarga()` */
+  static readonly ConfirmarCargaPath = '/interno/{id}/confirmar';
+
+  /**
+   * Confirmar evidencia cargada.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `confirmarCarga()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  confirmarCarga$Response(params: ConfirmarCarga$Params, context?: HttpContext): Promise<StrictHttpResponse<void>> {
+    const obs = confirmarCarga(this.http, this.rootUrl, params, context);
+    return firstValueFrom(obs);
+  }
+
+  /**
+   * Confirmar evidencia cargada.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `confirmarCarga$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  confirmarCarga(params: ConfirmarCarga$Params, context?: HttpContext): Promise<void> {
+    const resp = this.confirmarCarga$Response(params, context);
+    return resp.then((r: StrictHttpResponse<void>): void => r.body);
+  }
+
+  /** Path part for operation `crearIntencionDeCarga()` */
+  static readonly CrearIntencionDeCargaPath = '/interno/uploads';
+
+  /**
+   * Iniciar carga de evidencia.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `crearIntencionDeCarga()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  crearIntencionDeCarga$Response(params: CrearIntencionDeCarga$Params, context?: HttpContext): Promise<StrictHttpResponse<EvidenciaInternaResponse>> {
+    const obs = crearIntencionDeCarga(this.http, this.rootUrl, params, context);
+    return firstValueFrom(obs);
+  }
+
+  /**
+   * Iniciar carga de evidencia.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `crearIntencionDeCarga$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  crearIntencionDeCarga(params: CrearIntencionDeCarga$Params, context?: HttpContext): Promise<EvidenciaInternaResponse> {
+    const resp = this.crearIntencionDeCarga$Response(params, context);
+    return resp.then((r: StrictHttpResponse<EvidenciaInternaResponse>): EvidenciaInternaResponse => r.body);
   }
 
 }

@@ -15,15 +15,16 @@ import { faBell, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
     templateUrl: './sidebar.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidebarComponent implements OnInit {
+// export class SidebarComponent implements OnInit {
+export class SidebarComponent {
     protected readonly faBell = faBell;
     protected readonly faUsers = faUsers;
     protected readonly faUser = faUser;
 
     private readonly authFacade = inject(AuthFacade);
-    private readonly notificationFacade = inject(NotificacionFacade);
+    // private readonly notificationFacade = inject(NotificacionFacade);
 
-    public noLeidasCount = this.notificationFacade.noLeidasCount;
+    // public noLeidasCount = this.notificationFacade.noLeidasCount;
     public currentUser = this.authFacade.currentUser;
 
     public menuItems = computed<MenuItem[]>(() => {
@@ -41,13 +42,13 @@ export class SidebarComponent implements OnInit {
             }));
     });
 
-    ngOnInit(): void {
-        this.notificationFacade.getAll();
-    }
+    // ngOnInit(): void {
+    //     this.notificationFacade.getAll();
+    // }
 
-    public badgeLabel = computed(() => {
-        const count = this.noLeidasCount();
+    // public badgeLabel = computed(() => {
+    //     const count = this.noLeidasCount();
 
-        return count > 99 ? '99+' : count.toString();
-    });
+    //     return count > 99 ? '99+' : count.toString();
+    // });
 }

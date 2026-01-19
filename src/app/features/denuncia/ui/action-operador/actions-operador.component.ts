@@ -7,7 +7,7 @@ import { ESTADO_DENUNCIA_ENUM } from '@/core/api/denuncias/models/estado-denunci
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { InputComponent } from '@/shared/ui/input/input.component';
 import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.component';
-import { ENTIDAD_ENUM } from '@/core/api/auth/models/entidad-enum-array';
+import { ENTIDAD_ENUM } from '@/core/api/usuarios/models/entidad-enum-array';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { faSave, faComment, faPlay, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FileUploadErrorEvent } from '@/core/model/file-upload.event';

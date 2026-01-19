@@ -4,9 +4,5 @@
 export interface RegistroUsuarioResponse {
   id?: number;
   mensaje?: string;
-
-  /**
-   * Identificador público pseudónimo del ciudadano. Solo aplica a rol CIUDADANO.
-   */
-  publicCitizenId?: string | null;
+  publicCitizenId?: string;
 }

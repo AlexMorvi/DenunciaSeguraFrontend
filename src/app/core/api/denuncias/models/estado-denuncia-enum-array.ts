@@ -11,6 +11,5 @@ export const ESTADO_DENUNCIA_ENUM: EstadoDenunciaEnum[] = [
   'ASIGNADA',
   'EN_PROCESO',
   'EN_VALIDACION',
-  'RESUELTA',
-  'RECHAZADA'
+  'RESUELTA'
 ];

@@ -14,8 +14,8 @@ import { AuthFacade } from '@/data/services/auth.facade';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
-    private router = inject(Router);
-    private authFacade = inject(AuthFacade);
+    private readonly router = inject(Router);
+    private readonly authFacade = inject(AuthFacade);
 
     protected readonly faBell = faBell;
     protected readonly faEnvelope = faEnvelope;

@@ -36,7 +36,7 @@ export class ForgotPasswordComponent {
 
     // Form group
     form = this.fb.nonNullable.group({
-        email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
+        cedula: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
     });
 
     async forgotPassword(): Promise<void> {
@@ -45,10 +45,10 @@ export class ForgotPasswordComponent {
             return;
         }
 
-        const { email } = this.form.getRawValue();
+        const cedula = this.form.getRawValue().cedula;
 
         try {
-            await this.authFacade.forgotPassword({ email: email.trim().toLowerCase() });
+            await this.authFacade.forgotPassword(cedula);
             this.toast.showSuccess('Éxito',
                 'Si tu correo electrónico está registrado, recibirás un enlace para restablecer tu contraseña.'
             );

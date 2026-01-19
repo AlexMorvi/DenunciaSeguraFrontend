@@ -5,8 +5,6 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { UploadsService } from './services/uploads.service';
-import { EvidenciasService } from './services/evidencias.service';
 import { InternoService } from './services/interno.service';
 
 /**
@@ -17,8 +15,6 @@ import { InternoService } from './services/interno.service';
   exports: [],
   declarations: [],
   providers: [
-    UploadsService,
-    EvidenciasService,
     InternoService,
     ApiConfiguration
   ],

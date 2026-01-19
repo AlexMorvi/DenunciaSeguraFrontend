@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faBell, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faChevronRight, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { NotificacionResponse } from '@/core/api/notificaciones/models/notificacion-response';
 
 @Component({

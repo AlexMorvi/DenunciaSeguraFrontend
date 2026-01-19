@@ -66,7 +66,8 @@
                 </thead>
 
                 <tbody class="bg-white divide-y divide-gray-100">
-                    @for (denuncia of filteredDenuncias(); track denuncia.id) {
+                    <!-- @for (denuncia of filteredDenuncias(); track denuncia.id) { -->
+                    @for (denuncia of denuncias(); track denuncia.id) {
                     <tr (click)="navigateToDenuncia(denuncia.id)"
                         class="group hover:bg-gray-50/80 cursor-pointer transition-colors duration-200 border-l-4 border-transparent hover:border-blue-500">
 
@@ -79,7 +80,7 @@
                         <td class="px-4 py-3 whitespace-nowrap text-left">
                             <div class="text-sm text-gray-500 flex items-center justify-start gap-2"> <span
                                     class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
-                                {{ denuncia.asignadoA }}
+                                {{ denuncia.categoriaDenuncia }}
                             </div>
                         </td>
 
@@ -96,10 +97,10 @@
                         </td>
 
                         <td class="px-4 py-3 whitespace-nowrap text-center">
-                            <span [class]="getStatusClasses(denuncia.estado)"
+                            <!-- <span [class]="getStatusClasses(denuncia.estado)"
                                 class="shadow-sm border border-black/5 px-2 py-0.5 text-xs rounded inline-block">
                                 {{ denuncia.estado }}
-                            </span>
+                            </span> -->
                         </td>
                     </tr>
                     } @empty {
@@ -130,6 +131,6 @@
 
     <div
         class="flex bg-gray-50 px-6 py-3 border-t border-gray-200 items-center justify-between text-xs text-gray-500 shrink-0">
-        <span>Mostrando {{ filteredDenuncias().length }} registro(s)</span>
+        <!-- <span>Mostrando {{ filteredDenuncias().length }} registro(s)</span> -->
     </div>
 </div>

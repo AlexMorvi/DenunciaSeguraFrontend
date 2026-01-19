@@ -1,4 +1,4 @@
-import { Component, inject, computed, input, effect, untracked, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, computed, input, effect, untracked, ChangeDetectionStrategy, numberAttribute } from '@angular/core';
 // import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models/denuncia-staff-view-response';
 import { DenunciaLayoutComponent } from '@/core/layout/denuncia-layout/denuncia-layout.component';
 import { ROLES } from '@/shared/constants/roles.const';
@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { FileUploadService } from '@/core/service/file-upload.service';
 import { SkeletonLoaderComponent } from '@/shared/components/skeleton-loader/skeleton-loader';
-import { EvidenceFacade } from '@/data/services/evidence.facade';
 
 @Component({
     selector: 'app-denuncia-page',
@@ -23,17 +22,16 @@ import { EvidenceFacade } from '@/data/services/evidence.facade';
 })
 export class DenunciaPageComponent {
     denunciaService = inject(DenunciaFacade);
-    evidenciaService = inject(EvidenceFacade);
     authService = inject(AuthFacade);
-    private toast = inject(ToastService);
-    private fileService = inject(FileUploadService);
-    private router = inject(Router);
+    private readonly toast = inject(ToastService);
+    private readonly fileService = inject(FileUploadService);
+    private readonly router = inject(Router);
 
     public currentUser = this.authService.currentUser;
     public denuncia = this.denunciaService.currentDenuncia;
     protected readonly isLoading = this.denunciaService.loading;
 
-    id = input<number>();
+    id = input(undefined, { transform: numberAttribute });
 
     constructor() {
         effect(() => {
@@ -41,7 +39,7 @@ export class DenunciaPageComponent {
             const currentId = this.id();
             if (currentId) {
                 untracked(() => {
-                    this.denunciaService.loadById(currentId);
+                    this.denunciaService.obtenerDenunciaPorId(currentId);
                 });
             }
         });
@@ -65,16 +63,6 @@ export class DenunciaPageComponent {
         const rol = this.currentUser()?.rol;
         return [ROLES.CIUDADANO].includes(rol as any);
     });
-
-    public readonly resolveUrlFn = async (evidenceId: string): Promise<string | undefined> => {
-        try {
-            const response = await this.evidenciaService.getSignedUrl(evidenceId);
-            return response.url;
-        } catch {
-            this.toast.showError('No se pudo cargar la evidencia.');
-            return undefined;
-        }
-    };
 
     showActionsPanel = computed(() => {
         return this.isJefe() || this.isSupervisor() || this.isOperador();

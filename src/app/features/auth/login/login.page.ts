@@ -51,22 +51,22 @@ export class LoginComponent {
         password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(128)]]
     });
 
-    async login(): Promise<void> {
-        if (this.form.invalid || this.isLoading()) return;
-
-        const { email, password } = this.form.getRawValue();
-
-        try {
-            await this.authFacade.login({
-                email: email.trim().toLowerCase(),
-                password: password
-            });
-
-            this.router.navigate(['/dashboard']);
-        } catch {
-            this.toast.showError('Credenciales incorrectas. Por favor, verifica tu email y contraseña.');
-        }
-    }
+    /*     async login(): Promise<void> {
+            if (this.form.invalid || this.isLoading()) return;
+    
+            const { email, password } = this.form.getRawValue();
+    
+            try {
+                await this.authFacade.login({
+                    email: email.trim().toLowerCase(),
+                    password: password
+                });
+    
+                this.router.navigate(['/dashboard']);
+            } catch {
+                this.toast.showError('Credenciales incorrectas. Por favor, verifica tu email y contraseña.');
+            }
+        } */
 
     goToForgotPassword() { this.router.navigate(['/forgot-password']); }
     goToRegister() { this.router.navigate(['/crear-cuenta']); }

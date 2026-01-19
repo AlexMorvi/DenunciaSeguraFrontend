@@ -1,15 +1,15 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { ApiService } from '@/core/api/usuarios/services/api.service';
+import { InternoService } from '@/core/api/usuarios/services/interno.service';
 import { UsuarioResponse } from '@/core/api/usuarios/models/usuario-response';
-import { CrearCiudadano$Params } from '@/core/api/usuarios/fn/operations/crear-ciudadano';
-import { CrearStaff$Params } from '@/core/api/usuarios/fn/operations/crear-staff';
-import { ActualizarAlias$Params } from '@/core/api/usuarios/fn/operations/actualizar-alias';
+import { CrearCiudadano$Params } from '@/core/api/usuarios/fn/interno/crear-ciudadano';
+import { CrearStaff$Params } from '@/core/api/usuarios/fn/interno/crear-staff';
+import { ActualizarAlias$Params } from '@/core/api/usuarios/fn/interno/actualizar-alias';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UsuariosFacade {
-    private readonly api = inject(ApiService);
+    private readonly internoService = inject(InternoService);
 
     // State
     private readonly _currentUser = signal<UsuarioResponse | null>(null);
@@ -24,7 +24,7 @@ export class UsuariosFacade {
     async getById(id: number) {
         this._loading.set(true);
         try {
-            const result = await this.api.obtenerUsuario({ id });
+            const result = await this.internoService.obtenerUsuario({ id });
             this._currentUser.set(result);
             this._error.set(null);
             return result;
@@ -40,7 +40,7 @@ export class UsuariosFacade {
     async getByCedula(cedula: string) {
         this._loading.set(true);
         try {
-            const result = await this.api.obtenerPorCedula({ cedula });
+            const result = await this.internoService.obtenerPorCedula({ cedula });
             this._currentUser.set(result);
             this._error.set(null);
             return result;
@@ -56,7 +56,7 @@ export class UsuariosFacade {
     async crearCiudadano(params: CrearCiudadano$Params) {
         this._loading.set(true);
         try {
-            const result = await this.api.crearCiudadano(params);
+            const result = await this.internoService.crearCiudadano(params);
             this._currentUser.set(result);
             this._error.set(null);
             return result;
@@ -72,7 +72,7 @@ export class UsuariosFacade {
     async crearStaff(params: CrearStaff$Params) {
         this._loading.set(true);
         try {
-            const result = await this.api.crearStaff(params);
+            const result = await this.internoService.crearStaff(params);
             // No seteamos currentUser porque usualmente esto lo hace un admin para otro usuario
             this._error.set(null);
             return result;
@@ -88,7 +88,7 @@ export class UsuariosFacade {
     async updateAlias(params: ActualizarAlias$Params) {
         this._loading.set(true);
         try {
-            const result = await this.api.actualizarAlias(params);
+            const result = await this.internoService.actualizarAlias(params);
 
             this._currentUser.update(user => {
                 if (user && user.id === params.id) {

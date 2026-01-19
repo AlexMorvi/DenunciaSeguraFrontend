@@ -1,11 +1,9 @@
-import { ApplicationConfig, provideAppInitializer, inject, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, provideAppInitializer, inject } from '@angular/core';
 import { provideRouter, withViewTransitions, PreloadAllModules, withPreloading, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { environment } from '@/../environments/environment';
 import { authInterceptor } from '@/core/http/auth.interceptor';
-import { mockStorageInterceptor } from '@/core/http/mock-storage.interceptor';
-import { AuthFacade } from '@/data/services/auth.facade';
 import { errorInterceptor } from '@/core/interceptors/error.interceptor';
 import { provideOAuthClient, AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 
@@ -62,20 +60,17 @@ export const appConfig: ApplicationConfig = {
         ),
 
         provideAppInitializer(() => {
-            // const authFacade = inject(AuthFacade);
-            // return authFacade.getMe();
-
             const authConfig = inject(AuthConf);
-            authConfig.rootUrl = `${environment.apiUrl}/auth`;
+            authConfig.rootUrl = `${environment.apiUrl}/api/v1/auth`;
 
             const denunciasConfig = inject(DenunciasConf);
-            denunciasConfig.rootUrl = `${environment.apiUrl}/denuncias`;
+            denunciasConfig.rootUrl = `${environment.apiUrl}/api/denuncias`;
 
             const usuariosConfig = inject(UsuariosConf);
-            usuariosConfig.rootUrl = `${environment.apiUrl}/usuarios`;
+            usuariosConfig.rootUrl = `${environment.apiUrl}/api/usuarios`;
 
             const evidenciasConfig = inject(EvidenciasConf);
-            evidenciasConfig.rootUrl = `${environment.apiUrl}/evidencias`;
+            evidenciasConfig.rootUrl = `${environment.apiUrl}/api/v1/evidencias`;
 
             const oauthService = inject(OAuthService);
 

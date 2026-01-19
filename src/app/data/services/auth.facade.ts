@@ -1,40 +1,41 @@
-import { UsuarioPerfilResponse } from '@/core/api/auth/models/usuario-perfil-response';
-import { CuentaService } from '@/core/api/auth/services/cuenta.service';
-import { AdminService } from '@/core/api/auth/services/admin.service';
-import { RegistroStaffRequest } from '@/core/api/auth/models/registro-staff-request';
-import { RegistroUsuarioResponse } from '@/core/api/auth/models/registro-usuario-response';
-import { ROL_ENUM } from '@/core/api/auth/models/rol-enum-array';
-import { ENTIDAD_ENUM } from '@/core/api/auth/models/entidad-enum-array';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { PublicoService } from '@/core/api/auth/services';
-import {
-    ActualizarAliasRequest,
-    AuthResponse,
-    LoginRequest,
-    PasswordResetRequest,
-    RegistroCiudadanoRequest,
-} from '@/core/api/auth/models';
+import { AdminService } from '@/core/api/auth/services/admin.service';
+import { PublicoService } from '@/core/api/auth/services/publico.service';
+import { InternoService as UsuariosInternoService } from '@/core/api/usuarios/services/interno.service';
 import { LoggerService } from '@/core/service/logging/logger.service';
-// import { UsuarioResponse } from '@/core/api/usuarios/models';
+
+import { RegistroStaffAuthRequest } from '@/core/api/auth/models/registro-staff-auth-request';
+import { RegistroCiudadanoAuthRequest } from '@/core/api/auth/models/registro-ciudadano-auth-request';
+import { RegistroUsuarioResponse } from '@/core/api/auth/models/registro-usuario-response';
+import { PasswordResetRequest } from '@/core/api/auth/models/password-reset-request';
+import { PasswordForgotRequest } from '@/core/api/auth/models/password-forgot-request';
+
+import { UsuarioResponse } from '@/core/api/usuarios/models/usuario-response';
+import { ActualizarAliasRequest } from '@/core/api/usuarios/models/actualizar-alias-request';
+import { ROL_ENUM } from '@/core/api/usuarios/models/rol-enum-array';
+import { ENTIDAD_ENUM } from '@/core/api/usuarios/models/entidad-enum-array';
+import { RolEnum } from '@/core/api/usuarios/models/rol-enum';
+
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
-    private readonly accountService = inject(CuentaService);
     private readonly adminService = inject(AdminService);
     private readonly publicoService = inject(PublicoService);
+    private readonly usuariosInternoService = inject(UsuariosInternoService);
     private readonly logger = inject(LoggerService);
-    // private readonly _currentUser = signal<UsuarioPerfilResponse | null>(null);
+
+    // private readonly _currentUser = signal<UsuarioResponse | null>(null);
     // TODO: Temporal hardcoded user until backend endpoint is available
-    private readonly _currentUser = signal<UsuarioPerfilResponse | null>({
+    private readonly _currentUser = signal<UsuarioResponse | null>({
         id: 1,
         nombre: 'Usuario Temporal',
         email: 'temporal@example.com',
-        // rol: 'CIUDADANO',
-        rol: 'ADMIN_PLATAFORMA',
+        rol: 'CIUDADANO',
+        // rol: 'ADMIN',
         // rol: 'SUPERVISOR_DENUNCIAS',
         // rol: 'JEFE_INTERNO',
         // rol: 'OPERADOR_INTERNO',
-        aliasPublico: null,
+        aliasPublico: undefined,
         publicCitizenId: 'temp-0001',
     });
     public readonly currentUser = this._currentUser.asReadonly();
@@ -63,7 +64,7 @@ export class AuthFacade {
         return `/${rol}`;
     });
 
-    public updateAuthState(user: UsuarioPerfilResponse | null): void {
+    public updateAuthState(user: UsuarioResponse | null): void {
         if (user === null) {
             this._currentUser.set(null);
             this.logger.logInfo('AuthFacade', 'Sesión de usuario limpiada');
@@ -80,7 +81,7 @@ export class AuthFacade {
         this.logger.logInfo('AuthFacade', 'Estado de usuario actualizado', { userId: user.id });
     }
 
-    private isValidUser(user: any): user is UsuarioPerfilResponse {
+    private isValidUser(user: any): user is UsuarioResponse {
         return user && typeof user.id === 'number' && user.id > 0;
     }
 
@@ -88,29 +89,30 @@ export class AuthFacade {
     // Métodos Públicos (Sin Autenticación)
     // =============================================================================
 
-    async login(request: LoginRequest): Promise<AuthResponse> {
-        this._loading.set(true);
-        try {
-            return await this.publicoService.login({ body: request });
-        } finally {
-            this._loading.set(false);
-        }
-    }
+    // async login(request: LoginRequest): Promise<AuthResponse> {
+    //     this._loading.set(true);
+    //     try {
+    //         return await this.publicoService.login({ body: request });
+    //     } finally {
+    //         this._loading.set(false);
+    //     }
+    // }
 
-    async registerCitizen(request: RegistroCiudadanoRequest): Promise<void> {
+    async registerCitizen(request: RegistroCiudadanoAuthRequest): Promise<void> {
         this._loading.set(true);
         try {
-            const response = await this.publicoService.registerCitizen({ body: request });
+            const response = await this.publicoService.registrarCiudadano({ body: request });
             this.logger.logInfo('RegisterComponent', 'Registro exitoso', { userId: response.id });
         } finally {
             this._loading.set(false);
         }
     }
 
-    async forgotPassword(request: { email: string }): Promise<void> {
+    async forgotPassword(cedula: string): Promise<void> {
         this._loading.set(true);
         try {
-            await this.publicoService.forgotPassword({ body: request });
+            const body: PasswordForgotRequest = { cedula };
+            await this.publicoService.forgot({ body });
         } finally {
             this._loading.set(false);
         }
@@ -119,7 +121,7 @@ export class AuthFacade {
     async resetPassword(request: PasswordResetRequest): Promise<void> {
         this._loading.set(true);
         try {
-            await this.publicoService.resetPassword({ body: request });
+            await this.publicoService.reset({ body: request });
         } finally {
             this._loading.set(false);
         }
@@ -129,20 +131,12 @@ export class AuthFacade {
     // Métodos Privados (Requieren Autenticación)
     // =============================================================================
 
-    /**
-     * Establece un usuario mock para permitir el funcionamiento de la UI
-     * mientras no exista el endpoint /me.
-     */
     /* public setMockUser(): void {
-        this.updateAuthState({
+         this.updateAuthState({
             id: 1,
             nombre: 'Usuario Temporal',
             email: 'temporal@example.com',
-            rol: 'CIUDADANO',
-            // rol: 'ADMIN_PLATAFORMA',
-            // rol: 'SUPERVISOR_DENUNCIAS',
-            // rol: 'JEFE_INTERNO',
-            // rol: 'OPERADOR_INTERNO',
+            rol: 'CIUDADANO' as RolEnum,
             aliasPublico: null,
             publicCitizenId: 'temp-0001',
         });
@@ -152,33 +146,25 @@ export class AuthFacade {
         if (this.currentUser()) {
             return;
         }
-    
-        try {
-            this._loading.set(true);
-            const user = await this.accountService.getMe();
-            this._currentUser.set(user || null);
-        } catch {
-            this._currentUser.set(null);
-        } finally {
-            this._loading.set(false);
-        }
+        // ... (Not implemented due to missing model)
     } */
 
-    // refreshUser() {
-    //     this._currentUser.set(null);
-    //     return this.getMe();
-    // }
-
-    registerStaff(request: RegistroStaffRequest): Promise<RegistroUsuarioResponse> {
-        return this.adminService.registerStaff({ body: request });
+    async registerStaff(request: RegistroStaffAuthRequest): Promise<RegistroUsuarioResponse> {
+        return await this.adminService.registrarStaff({ body: request });
     }
 
     async updateMyAlias(alias: string): Promise<void> {
+        const userId = this.currentUser()?.id;
+        if (!userId) {
+            this.logger.logError('AuthFacade', 'Intento de actualizar alias sin usuario autenticado');
+            return;
+        }
+
         const body: ActualizarAliasRequest = { aliasPublico: alias };
         this._loading.set(true);
 
         try {
-            await this.accountService.updateMyAlias({ body });
+            await this.usuariosInternoService.actualizarAlias({ id: userId, body });
             this._currentUser.update((currentUser) => {
                 if (!currentUser) return null;
                 return {
@@ -191,11 +177,15 @@ export class AuthFacade {
         }
     }
     async updateCitizenAlias(alias: string): Promise<void> {
+        // NOTE: citizen alias uses the same endpoint if it refers to aliasPublico
+        const userId = this.currentUser()?.id;
+        if (!userId) return;
+
         const body: ActualizarAliasRequest = { aliasPublico: alias };
         this._loading.set(true);
 
         try {
-            await this.accountService.updateMyAlias({ body });
+            await this.usuariosInternoService.actualizarAlias({ id: userId, body });
             this._currentUser.update((currentUser) => {
                 if (!currentUser) return null;
                 return {
@@ -211,7 +201,8 @@ export class AuthFacade {
     // TODO: manejar errores
     async logout(): Promise<void> {
         try {
-            await this.accountService.logout();
+            // await firstValueFrom(logout(this.http, this.config.rootUrl));
+            // For now just clear local state since logout endpoint is missing/not implemented in facade via service
         } finally {
             this._currentUser.set(null);
         }

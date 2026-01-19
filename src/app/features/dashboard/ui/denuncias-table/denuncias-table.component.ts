@@ -1,7 +1,7 @@
 import { Component, input, computed, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
-import { DenunciaCitizenViewResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
+import { DenunciaResponse as Denuncia, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 import { ESTADOS_UI_OPTIONS } from '@/shared/constants/estados.const';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSearch, faChevronDown, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
@@ -50,23 +50,23 @@ export class DenunciasTableComponent {
         { initialValue: '' }
     );
 
-    filteredDenuncias = computed(() => {
-        const term = this.searchText().toLowerCase();
-        const status = this.filterStatus();
-        const list = this.denuncias();
+    // filteredDenuncias = computed(() => {
+    //     const term = this.searchText().toLowerCase();
+    //     const status = this.filterStatus();
+    //     const list = this.denuncias();
 
-        if (!term && !status) return list;
+    //     if (!term && !status) return list;
 
-        return list.filter(d => {
-            const matchesText = !term ||
-                (d.titulo ?? '').toLowerCase().includes(term) ||
-                (d.descripcion ?? '').toLowerCase().includes(term);
+    //     return list.filter(d => {
+    //         const matchesText = !term ||
+    //             (d.titulo ?? '').toLowerCase().includes(term) ||
+    //             (d.descripcion ?? '').toLowerCase().includes(term);
 
-            const matchesStatus = this.checkStatusMatch(d.estado as EstadoDenunciaEnum, status);
+    //         const matchesStatus = this.checkStatusMatch(d.estado as EstadoDenunciaEnum, status);
 
-            return matchesText && matchesStatus;
-        });
-    });
+    //         return matchesText && matchesStatus;
+    //     });
+    // });
 
     private checkStatusMatch(denunciaEstado: EstadoDenunciaEnum, currentFilter: FilterStatusType): boolean {
         if (!currentFilter) return true;
@@ -104,6 +104,7 @@ export class DenunciasTableComponent {
         if (typeof id !== 'number' || !Number.isFinite(id) || id <= 0) return;
         this.router.navigate(['/denuncias', id]);
     }
+
     getStatusClasses(estado?: EstadoDenunciaEnum | null): string {
         const base = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full';
 

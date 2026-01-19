@@ -1,25 +1,23 @@
-import { EvidenceId } from '@/core/api/denuncias/models';
 import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { LoggerService } from './logging/logger.service';
 import { firstValueFrom, retry, timeout } from 'rxjs';
-import { CrearUploadRequest } from '@/core/api/evidencias/models/crear-upload-request';
-import { UploadsService } from '../api/evidencias/services';
 import { SKIP_AUTH } from '../http/http-context';
 import { EvidenceUploadError } from '../errors/create-denuncia.errors';
+import { InternoService } from '@/core/api/evidencias/services/interno.service';
+import { CrearIntencionDeCarga$Params } from '@/core/api/evidencias/fn/interno/crear-intencion-de-carga';
 
 type UploadPhase = 'INICIO' | 'SESION' | 'CARGA_NUBE' | 'CONFIRMACION';
-const PROPOSITO_CARGA = 'CIUDADANO_CREACION';
 
 @Injectable({ providedIn: 'root' })
 export class FileUploadService {
     private readonly http = inject(HttpClient);
     private readonly logger = inject(LoggerService);
-    private readonly uploadsService = inject(UploadsService);
+    private readonly internoService = inject(InternoService);
 
-    async subirEvidencia(archivo: File): Promise<EvidenceId> {
+    async subirEvidencia(archivo: File): Promise<string> {
         let currentStep: UploadPhase = 'INICIO';
-        let sessionData: { uploadUrl: string; uploadId: string; evidenceId: string, contentType: string } | null = null;
+        let sessionData: { uploadUrl: string; uploadId: string; contentType: string } | null = null;
 
         try {
             currentStep = 'SESION';
@@ -29,9 +27,9 @@ export class FileUploadService {
             await this.cargarArchivoEnNube(sessionData, archivo);
 
             currentStep = 'CONFIRMACION';
-            await this.confirmarSubida(sessionData.uploadId, sessionData.evidenceId);
+            await this.confirmarSubida(sessionData.uploadId);
 
-            return sessionData.evidenceId;
+            return sessionData.uploadId;
 
         } catch (error) {
             const errorDetails = this.extractErrorMessage(error);
@@ -48,31 +46,26 @@ export class FileUploadService {
     }
 
     private async iniciarSesionCarga(archivo: File) {
-        const payload: CrearUploadRequest = {
-            proposito: PROPOSITO_CARGA,
-            archivos: [{
-                nombreArchivo: archivo.name,
-                contentType: archivo.type,
-                sizeBytes: archivo.size
-            }]
+        const params: CrearIntencionDeCarga$Params = {
+            filename: archivo.name,
+            contentType: archivo.type,
+            size: archivo.size
         };
 
-        const response = await this.uploadsService.uploadsPost({ body: payload });
-        const item = response.items?.[0];
+        const response = await this.internoService.crearIntencionDeCarga(params);
 
-        if (!response.uploadId || !item?.uploadUrl || !item?.evidenceId) {
-            throw new Error('La sesión de carga no devolvió los datos requeridos (URL o IDs faltantes).');
+        if (!response.id || !response.url) {
+            throw new Error('La sesión de carga no devolvió los datos requeridos (URL o ID faltantes).');
         }
 
         return {
-            uploadId: response.uploadId,
-            uploadUrl: item.uploadUrl,
-            evidenceId: item.evidenceId,
+            uploadId: response.id,
+            uploadUrl: response.url,
             contentType: archivo.type
         };
     }
 
-    private async cargarArchivoEnNube(sessionData: { uploadUrl: string; uploadId: string; evidenceId: string, contentType: string }, archivo: File): Promise<void> {
+    private async cargarArchivoEnNube(sessionData: { uploadUrl: string; uploadId: string; contentType: string }, archivo: File): Promise<void> {
         await firstValueFrom(
             this.http.put(sessionData.uploadUrl, archivo, {
                 // TODO: revisar si los headers de http son seguros
@@ -89,14 +82,11 @@ export class FileUploadService {
         );
     }
 
-    private async confirmarSubida(uploadId: string, evidenceId: string): Promise<void> {
-        await this.uploadsService.uploadsUploadIdConfirmarPost({
-            uploadId,
-            body: { evidenceIds: [evidenceId] }
-        });
+    private async confirmarSubida(uploadId: string): Promise<void> {
+        await this.internoService.confirmarCarga({ id: uploadId });
     }
 
-    private handleUploadError(fase: UploadPhase, detalles: string): EvidenceUploadError {
+    private handleUploadError(fase: UploadPhase, _detalles: string): EvidenceUploadError {
         switch (fase) {
             case 'SESION':
                 return new EvidenceUploadError('El sistema no pudo autorizar la carga. Verifique el formato del archivo.');
