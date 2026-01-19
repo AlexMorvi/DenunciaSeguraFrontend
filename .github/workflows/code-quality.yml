@@ -26,12 +26,19 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Configure npm auth (private packages)
+        if: ${{ secrets.NPM_TOKEN != '' }}
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=${NPM_TOKEN}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Install dependencies
         run: |
           if [ -f package-lock.json ]; then
-            npm ci
+            npm ci --omit=prod
           else
-            npm install
+            npm install --omit=prod
           fi
 
       - name: ESLint
