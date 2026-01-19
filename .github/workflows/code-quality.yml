@@ -2,19 +2,21 @@ name: Code Quality
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   quality:
     runs-on: ubuntu-latest
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,15 +27,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
+
+      - name: Remove private package from package.json (temporary)
+        run: |
+          node -e "const pkg=require('./package.json'); delete pkg.dependencies['@jotavalla/denunciasegura-openapi']; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));"
 
       - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+        run: npm install
 
       - name: ESLint
         run: npm run lint:eslint
@@ -41,12 +41,16 @@ jobs:
       - name: Prettier (check)
         run: npm run format:check
 
+      - name: Verify SonarCloud Token
+        run: |
+          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "ERROR: SONAR_TOKEN secret is not configured"
+            exit 1
+          fi
+          echo "SONAR_TOKEN is configured"
+
       - name: SonarCloud Scan
-        if: ${{ env.SONAR_TOKEN != '' }}
         uses: SonarSource/sonarcloud-github-action@v2
         env:
-          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
