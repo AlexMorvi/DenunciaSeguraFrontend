@@ -1,44 +1,46 @@
-name: Code Quality
+name: Code Quality (CI)
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   quality:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Use Node.js
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Remove private package from package.json (temporary)
+      - name: Prepare package.json
         run: |
-          node -e "const pkg=require('./package.json'); delete pkg.dependencies['@jotavalla/denunciasegura-openapi']; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));"
+          node -e "
+          const fs = require('fs');
+          const pkg = require('./package.json');
+          delete pkg.dependencies['@jotavalla/denunciasegura-openapi'];
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+          "
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-    
 
-      - name: Verify SonarCloud Token
-        run: |
-          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
-            echo "ERROR: SONAR_TOKEN secret is not configured"
-            exit 1
-          fi
-          echo "SONAR_TOKEN is configured"
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
