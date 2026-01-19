@@ -16,6 +16,7 @@ import {
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { EvidenciaViewerComponent } from '@/shared/ui/evidencia-viewer/evidencia-viewer.component';
 import { LocationEvent, SecurityEvent, SystemEvent } from '@/core/model/app.event';
+import { DenunciaResponse } from '@/core/api/denuncias/models';
 
 @Component({
     selector: 'app-denuncia-details',
@@ -34,9 +35,8 @@ export class DenunciaDetailsComponent {
     }
 
     private destroyRef = inject(DestroyRef);
-    //TODO: No utilizar any, sino el tipo de openapi correcto
-    denuncia = input.required<any>();
-    // denuncia = input.required<DenunciaStaffViewResponse>();
+    // Tipo OpenAPI para evitar `any` y fortalecer el contrato de datos
+    denuncia = input.required<DenunciaResponse | null>();
 
     protected readonly faMapMarkerAlt = faMapMarkerAlt;
     protected readonly faTriangleExclamation = faTriangleExclamation;
@@ -50,6 +50,7 @@ export class DenunciaDetailsComponent {
 
     googleMapsUrl = computed(() => {
         const d = this.denuncia();
+        if (!d) return null;
         const lat = Number(d.latitud);
         const lng = Number(d.longitud);
 
@@ -97,6 +98,7 @@ export class DenunciaDetailsComponent {
             this.map = undefined;
         }
         const denuncia = this.denuncia();
+        if (!denuncia) return;
         const lat = Number(denuncia.latitud);
         const lng = Number(denuncia.longitud);
 

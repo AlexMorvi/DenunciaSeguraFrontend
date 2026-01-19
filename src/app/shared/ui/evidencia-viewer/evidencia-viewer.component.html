@@ -4,7 +4,7 @@
 
     <div
         class="relative shrink-0 w-full h-full rounded-lg overflow-hidden border border-gray-200 bg-gray-100 shadow-sm hover:shadow-md transition-shadow">
-        @if (evidencia.type === 'image') {
+        @if (evidencia.contentType?.includes('image')) {
         <app-secure-image [src]="evidencia.url" class="w-full h-full object-cover"
             (uploadError)="propagateError($event)" />
         } @else {

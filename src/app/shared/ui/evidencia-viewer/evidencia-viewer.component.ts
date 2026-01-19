@@ -3,6 +3,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faImages, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { SecureImageComponent } from '@/shared/ui/img/img.component';
 import { ImgEvent } from '@/core/model/app.event';
+import { EvidenciaDto } from '@/core/api/denuncias/models';
 export type EvidenceEmptyKey = 'ciudadano' | 'operador';
 
 @Component({
@@ -14,7 +15,7 @@ export type EvidenceEmptyKey = 'ciudadano' | 'operador';
 })
 export class EvidenciaViewerComponent {
     imageError = output<ImgEvent>();
-    evidencias = input<any[]>([]);
+    evidencias = input<EvidenciaDto[] | undefined>([]);
     emptyStateKey = input<EvidenceEmptyKey>('ciudadano');
 
     protected readonly faImages = faImages;
