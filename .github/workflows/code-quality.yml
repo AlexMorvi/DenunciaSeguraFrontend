@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      
+    
 
       - name: Verify SonarCloud Token
         run: |
