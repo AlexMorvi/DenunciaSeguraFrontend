@@ -21,7 +21,11 @@
         "mock:evidencias": "prism mock node_modules/@jotavalla/denunciasegura-openapi/evidencias-api.yaml -p 4013",
         "mock:notificaciones": "prism mock node_modules/@jotavalla/denunciasegura-openapi/notificaciones-api.yaml -p 4014",
         "mocks": "concurrently \"npm:mock:*\"",
-        "lint": "ng lint"
+        "lint": "ng lint",
+        "lint:eslint": "eslint . --max-warnings=0",
+        "format": "prettier . --write",
+        "format:check": "prettier . --check",
+        "sonar": "sonar-scanner"
     },
     "prettier": {
         "printWidth": 100,
@@ -77,6 +81,7 @@
         "ng-openapi-gen": "^1.0.5",
         "postcss": "^8.5.6",
         "prettier": "^3.8.0",
+        "sonar-scanner": "^3.1.0",
         "tailwindcss": "^3.4.19",
         "typescript": "~5.9.2",
         "typescript-eslint": "8.46.4"
