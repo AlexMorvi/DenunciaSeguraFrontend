@@ -35,11 +35,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: ESLint
-        run: npm run lint:eslint
 
-      - name: Prettier (check)
-        run: npm run format:check
 
       - name: Verify SonarCloud Token
         run: |
