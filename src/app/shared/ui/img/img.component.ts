@@ -12,16 +12,25 @@ const ALLOWED_DOMAINS = ['tu-bucket.s3.amazonaws.com', 'api.tudominio.com', 'sto
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SecureImageComponent {
-    src = input.required<string>();
+    src = input.required<string | undefined>();
     width = input<number>(160);
     height = input<number>(160);
 
     uploadError = output<ImgEvent>();
 
-    private browserLoadError = signal<string | null>(null);
+    private readonly browserLoadError = signal<string | null>(null);
 
-    private validationResult = computed(() => {
+    private readonly validationResult = computed(() => {
         const rawUrl = this.src();
+
+        if (!rawUrl) {
+            return {
+                isValid: false,
+                userMsg: 'URL de imagen no proporcionada',
+                techMsg: 'Security Block: Missing URL',
+                reason: 'missing_url'
+            };
+        }
 
         if (!rawUrl.startsWith('https://')) {
             return {
@@ -67,16 +76,16 @@ export class SecureImageComponent {
             const result = this.validationResult();
 
             untracked(() => {
-                if (!result.isValid) {
-                    this.emitErrorEvent(
-                        result.userMsg!,
-                        result.techMsg!,
-                        result.reason!,
-                        this.src()
-                    );
-                } else {
+                if (result.isValid) {
                     this.browserLoadError.set(null);
+                    return;
                 }
+                this.emitErrorEvent(
+                    result.userMsg!,
+                    result.techMsg!,
+                    result.reason!,
+                    this.src() ?? ''
+                );
             });
         });
     }
@@ -84,7 +93,7 @@ export class SecureImageComponent {
     handleLoadError() {
         const msg = 'Imagen no disponible';
         this.browserLoadError.set(msg);
-        this.emitErrorEvent(msg, 'Image Resource Not Found (404/Network)', 'network_error', this.src());
+        this.emitErrorEvent(msg, 'Image Resource Not Found (404/Network)', 'network_error', this.src() ?? '');
     }
 
     private emitErrorEvent(userMsg: string, techMsg: string, reason: string, url: string) {
