@@ -1,4 +1,4 @@
-import { Component, input, output, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, input, output, inject, ChangeDetectionStrategy, computed, effect } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { SelectComponent } from '@/shared/ui/select/select.component';
@@ -6,6 +6,8 @@ import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.c
 import { faCheckCircle, faComment, faUsers, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { InputComponent } from '@/shared/ui/input/input.component';
+import { DenunciaResponse } from '@/core/api/denuncias/models';
+import { StaffFacade } from '@/data/services/staff.facade';
 
 @Component({
     selector: 'app-actions-jefe',
@@ -15,8 +17,9 @@ import { InputComponent } from '@/shared/ui/input/input.component';
     templateUrl: './actions-jefe.component.html'
 })
 export class ActionsJefeComponent {
-    private fb = inject(FormBuilder);
-    private toast = inject(ToastService);
+    private readonly fb = inject(FormBuilder);
+    private readonly toast = inject(ToastService);
+    private readonly staffFacade = inject(StaffFacade);
 
     protected readonly faCheck = faCheckCircle;
     protected readonly faComment = faComment;
@@ -28,21 +31,26 @@ export class ActionsJefeComponent {
     asignar = output<{ idOperador: number }>();
 
     // TODO: Eliminar el signal true y utilizar el dinámico
-    // isEnValidacion = computed(() => this.currentDenuncia().estado === 'EN_VALIDACION');
-    isEnValidacion = signal(true);
-    // TODO: Cargar lista real de operadores desde un servicio
-    // Ahora `operadores` es un arreglo de objetos con `id` y `label`.
-    operadores = signal<{ id: number; label: string }[]>([
-        { id: 1, label: '1 - Operador Alpha' },
-        { id: 2, label: '2 - Operador Bravo' },
-        { id: 3, label: '3 - Operador Charlie' }
-    ]);
+    isEnValidacion = computed(() => this.currentDenuncia().estadoDenuncia === 'EN_VALIDACION');
 
-    // TODO: Utilizar la denuncia actual que envía denuncia page
-    // currentDenuncia = input.required<DenunciaStaffViewResponse>();
-    currentDenuncia = input.required<any>();
+    operadores = computed(() =>
+        this.staffFacade.operadores().map(op => ({
+            id: op.id!,
+            label: `${op.cedula} - ${op.nombre}`
+        }))
+    );
+
+    currentDenuncia = input.required<DenunciaResponse>();
     public isLoading = input<boolean>(false);
 
+    constructor() {
+        effect(() => {
+            const denuncia = this.currentDenuncia();
+            if (denuncia?.entidadResponsable) {
+                this.staffFacade.loadOperadoresPorEntidad(denuncia.entidadResponsable);
+            }
+        });
+    }
 
     readonly form = this.fb.nonNullable.group({
         operadorId: new FormControl(0, {
