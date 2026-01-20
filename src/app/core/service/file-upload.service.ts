@@ -17,7 +17,7 @@ export class FileUploadService {
 
     async subirEvidencia(archivo: File): Promise<string> {
         let currentStep: UploadPhase = 'INICIO';
-        let sessionData: { uploadUrl: string; uploadId: string; contentType: string } | null = null;
+        let sessionData: { uploadUrl: string; uploadId: string; contentType: string; sizeBytes: number } | null = null;
 
         try {
             currentStep = 'SESION';
@@ -61,16 +61,17 @@ export class FileUploadService {
         return {
             uploadId: response.id,
             uploadUrl: response.url,
-            contentType: archivo.type
+            contentType: archivo.type,
+            sizeBytes: archivo.size
         };
     }
 
-    private async cargarArchivoEnNube(sessionData: { uploadUrl: string; uploadId: string; contentType: string }, archivo: File): Promise<void> {
+    private async cargarArchivoEnNube(sessionData: { uploadUrl: string; uploadId: string; contentType: string; sizeBytes: number }, archivo: File): Promise<void> {
         await firstValueFrom(
             this.http.put(sessionData.uploadUrl, archivo, {
-                // TODO: revisar si los headers de http son seguros
                 headers: new HttpHeaders({
-                    'Content-Type': sessionData.contentType
+                    'Content-Type': sessionData.contentType,
+                    'Content-Length': sessionData.sizeBytes.toString()
                 }),
                 context: new HttpContext().set(SKIP_AUTH, true),
                 reportProgress: true,
