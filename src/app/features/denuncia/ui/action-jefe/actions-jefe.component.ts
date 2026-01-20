@@ -34,10 +34,12 @@ export class ActionsJefeComponent {
     isEnValidacion = computed(() => this.currentDenuncia().estadoDenuncia === 'EN_VALIDACION');
 
     operadores = computed(() =>
-        this.staffFacade.operadores().map(op => ({
-            id: op.id!,
-            label: `${op.cedula} - ${op.nombre}`
-        }))
+        this.staffFacade.operadores()
+            .filter(op => op.id !== undefined && op.id !== null)
+            .map(op => ({
+                id: op.id!,
+                label: `${op.cedula} - ${op.nombre}`
+            }))
     );
 
     currentDenuncia = input.required<DenunciaResponse>();
@@ -47,15 +49,19 @@ export class ActionsJefeComponent {
         effect(() => {
             const denuncia = this.currentDenuncia();
             if (denuncia?.entidadResponsable) {
-                this.staffFacade.loadOperadoresPorEntidad(denuncia.entidadResponsable);
+                this.staffFacade.loadAllOperadoresPorEntidad(denuncia.entidadResponsable);
             }
+        });
+
+        effect(() => {
+            console.log('Operadores cargados:', this.operadores());
         });
     }
 
     readonly form = this.fb.nonNullable.group({
-        operadorId: new FormControl(0, {
+        operadorId: new FormControl<string | number>('', {
             nonNullable: true,
-            validators: [Validators.required, Validators.min(1)]
+            validators: [Validators.required]
         }),
 
         comentarioObservacion: new FormControl('', {

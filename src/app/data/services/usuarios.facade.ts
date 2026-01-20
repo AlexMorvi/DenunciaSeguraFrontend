@@ -71,6 +71,14 @@ export class UsuariosFacade {
         }
     }
 
+    /**
+     * Obtiene un usuario por ID sin afectar el estado global del facade.
+     * Útil para consultar datos de ciudadanos en reportes o listados.
+     */
+    async findUsuarioById(id: number): Promise<UsuarioResponse> {
+        return this.internoService.obtenerUsuario({ id });
+    }
+
     async crearCiudadano(params: CrearCiudadano$Params) {
         this._loading.set(true);
         try {

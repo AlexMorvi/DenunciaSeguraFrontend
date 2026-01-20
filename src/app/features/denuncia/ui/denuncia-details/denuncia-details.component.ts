@@ -19,6 +19,7 @@ import { EvidenciaViewerComponent } from '@/shared/ui/evidencia-viewer/evidencia
 import { LocationEvent, SecurityEvent, SystemEvent } from '@/core/model/app.event';
 import { DenunciaResponse, EvidenciaDto } from '@/core/api/denuncias/models';
 import { EvidenceFacade } from '@/data/services/evidence.facade';
+import { UsuariosFacade } from '@/data/services/usuarios.facade';
 
 @Component({
     selector: 'app-denuncia-details',
@@ -32,10 +33,12 @@ import { EvidenceFacade } from '@/data/services/evidence.facade';
 export class DenunciaDetailsComponent {
     errorEvent = output<SecurityEvent>();
     private readonly evidenceFacade = inject(EvidenceFacade);
+    private readonly usuariosFacade = inject(UsuariosFacade);
 
     // Signal para almacenar evidencias completas con URL
     protected evidencias = signal<EvidenciaDto[]>([]);
     protected evidenciasResolucion = signal<EvidenciaDto[]>([]);
+    protected nombreReportado = signal<string>('Anónimo');
 
     propagateError(event: SecurityEvent) {
         this.errorEvent.emit(event);
@@ -98,7 +101,21 @@ export class DenunciaDetailsComponent {
             if (!currentDenuncia?.id) {
                 this.evidencias.set([]);
                 this.evidenciasResolucion.set([]);
+                this.nombreReportado.set('Anónimo');
                 return;
+            }
+
+            // Lógica de nombre reportado
+            if (currentDenuncia.nivelAnonimato === 'REAL' && currentDenuncia.ciudadanoId) {
+                try {
+                    const user = await this.usuariosFacade.findUsuarioById(currentDenuncia.ciudadanoId);
+                    this.nombreReportado.set(user.nombre || 'Desconocido');
+                } catch {
+                    this.nombreReportado.set('Error obteniendo nombre');
+                }
+            } else {
+                // PSEUDOANONIMO (Default)
+                this.nombreReportado.set(String(currentDenuncia.ciudadanoId || 'ID Oculto'));
             }
 
             try {
