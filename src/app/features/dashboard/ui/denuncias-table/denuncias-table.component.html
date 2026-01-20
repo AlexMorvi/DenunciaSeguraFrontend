@@ -30,6 +30,17 @@
                     {{ option.label }}
                 </button>
                 }
+
+                @if (isSupervisor()) {
+                <button (click)="toggleOtrosFilter()"
+                    class="px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 flex items-left gap-2 border"
+                    [class.bg-gray-900]="filterOtros()" [class.text-white]="filterOtros()"
+                    [class.border-gray-900]="filterOtros()" [class.hover:bg-gray-700]="filterOtros()"
+                    [class.bg-gray-50]="!filterOtros()" [class.text-gray-600]="!filterOtros()"
+                    [class.border-transparent]="!filterOtros()" [class.hover:bg-gray-200]="!filterOtros()">
+                    OTROS
+                </button>
+                }
             </div>
         </div>
         <div
@@ -62,8 +73,7 @@
                 </thead>
 
                 <tbody class="bg-white divide-y divide-gray-100">
-                    <!-- @for (denuncia of filteredDenuncias(); track denuncia.id) { -->
-                    @for (denuncia of denuncias(); track denuncia.id) {
+                    @for (denuncia of filteredDenuncias(); track denuncia.id) {
                     <tr
                         class="group hover:bg-gray-50/80 transition-colors duration-200 border-l-4 border-transparent hover:border-blue-500">
 

@@ -1,4 +1,4 @@
-import { Component, input, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, input, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { DenunciaListadoResponse, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
@@ -7,6 +7,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSearch, faChevronDown, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { AuthFacade } from '@/data/services/auth.facade';
+import { ROLES } from '@/shared/constants/roles.const';
 
 const SEARCH_PATTERN = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-._]*$/;
 export type FilterStatusType = EstadoDenunciaEnum | EstadoDenunciaEnum[] | null;
@@ -20,6 +22,7 @@ export type FilterStatusType = EstadoDenunciaEnum | EstadoDenunciaEnum[] | null;
 })
 export class DenunciasTableComponent {
     private readonly router = inject(Router);
+    private readonly authFacade = inject(AuthFacade);
 
     protected readonly faSearch = faSearch;
     protected readonly faChevronDown = faChevronDown;
@@ -31,6 +34,9 @@ export class DenunciasTableComponent {
     denuncias = input.required<DenunciaListadoResponse[]>();
 
     filterStatus = signal<FilterStatusType>(null);
+    filterOtros = signal<boolean>(false);
+
+    isSupervisor = computed(() => this.authFacade.currentUser()?.rol === ROLES.SUPERVISOR);
 
     readonly filterOptions = ESTADOS_UI_OPTIONS;
 
@@ -50,23 +56,28 @@ export class DenunciasTableComponent {
         { initialValue: '' }
     );
 
-    // filteredDenuncias = computed(() => {
-    //     const term = this.searchText().toLowerCase();
-    //     const status = this.filterStatus();
-    //     const list = this.denuncias();
+    filteredDenuncias = computed(() => {
+        const term = this.searchText().toLowerCase();
+        const status = this.filterStatus();
+        const otros = this.filterOtros();
+        const list = this.denuncias();
 
-    //     if (!term && !status) return list;
+        if (!term && !status && !otros) return list;
 
-    //     return list.filter(d => {
-    //         const matchesText = !term ||
-    //             (d.titulo ?? '').toLowerCase().includes(term) ||
-    //             (d.descripcion ?? '').toLowerCase().includes(term);
+        return list.filter(d => {
+            const matchesText = !term ||
+                (d.titulo ?? '').toLowerCase().includes(term);
 
-    //         const matchesStatus = this.checkStatusMatch(d.estado as EstadoDenunciaEnum, status);
+            const matchesStatus = this.checkStatusMatch(d.estadoDenuncia as EstadoDenunciaEnum, status);
+            const matchesOtros = !otros || d.categoriaDenuncia === 'OTROS';
 
-    //         return matchesText && matchesStatus;
-    //     });
-    // });
+            return matchesText && matchesStatus && matchesOtros;
+        });
+    });
+
+    toggleOtrosFilter() {
+        this.filterOtros.update(v => !v);
+    }
 
     private checkStatusMatch(denunciaEstado: EstadoDenunciaEnum, currentFilter: FilterStatusType): boolean {
         if (!currentFilter) return true;
