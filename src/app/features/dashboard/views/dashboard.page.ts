@@ -18,7 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { StatCard } from '../interfaz/stat.model';
 import { EstadisticasComponent } from '../ui/estadisticas/estadisticas.component';
-import { NotificacionFacade } from '@/data/services/notificacion.facade';
+// import { NotificacionFacade } from '@/data/services/notificacion.facade';
 
 @Component({
     selector: 'app-ciudadano-dashboard',
@@ -58,22 +58,19 @@ export class CiudadanoDashboardPage implements OnInit {
 
         const enProgreso = allDenuncias.filter(d => d.estadoDenuncia === 'EN_PROCESO').length;
         const resueltas = allDenuncias.filter(d => d.estadoDenuncia === 'RESUELTA').length;
-        // const rechazadas = allDenuncias.filter(d => d.estadoDenuncia === 'RECHAZADA').length;
+        const rechazadas = allDenuncias.filter(d => d.estadoDenuncia === 'RECHAZADA').length;
 
-        // const finalizadas = resueltas + rechazadas;
-        const finalizadas = resueltas;
+
+        const finalizadas = resueltas + rechazadas;
         const tasaExito = finalizadas > 0 ? Math.round((resueltas / finalizadas) * 100) : 0;
 
-        // TODO: descomentar cuando denuncia tenga fecha de creación
-        // const hoy = new Date();
-        // const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-        // const nuevasEsteMes = allDenuncias.filter(d => {
-        //   const fechaCreacion = new Date(d.fechaCreacion); // Suponiendo que d.fechaCreacion existe
-        //   return fechaCreacion >= primerDiaMes;
-        // }).length;
-        // const subtextTotal = nuevasEsteMes > 0 ? `↗ +${nuevasEsteMes} este mes` : 'No hay reportes nuevos este mes';
-        const subtextTotal = 'Conteo total de tus reportes';
-
+        const hoy = new Date();
+        const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+        const nuevasEsteMes = allDenuncias.filter(d => {
+            const fechaCreacion = new Date(d.creadoEn!);
+            return fechaCreacion >= primerDiaMes;
+        }).length;
+        const subtextTotal = nuevasEsteMes > 0 ? `↗ +${nuevasEsteMes} este mes` : 'No hay reportes nuevos este mes';
 
         return [
             {
