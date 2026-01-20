@@ -1,5 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { InternoService } from '@/core/api/usuarios/services/interno.service';
+import { PerfilService } from '@/core/api/usuarios/services/perfil.service';
 import { UsuarioResponse } from '@/core/api/usuarios/models/usuario-response';
 import { CrearCiudadano$Params } from '@/core/api/usuarios/fn/interno/crear-ciudadano';
 import { CrearStaff$Params } from '@/core/api/usuarios/fn/interno/crear-staff';
@@ -10,6 +11,7 @@ import { ActualizarAlias$Params } from '@/core/api/usuarios/fn/interno/actualiza
 })
 export class UsuariosFacade {
     private readonly internoService = inject(InternoService);
+    private readonly perfilService = inject(PerfilService);
 
     // State
     private readonly _currentUser = signal<UsuarioResponse | null>(null);
@@ -20,6 +22,22 @@ export class UsuariosFacade {
     readonly currentUser = this._currentUser.asReadonly();
     readonly loading = this._loading.asReadonly();
     readonly error = this._error.asReadonly();
+
+    async getProfile() {
+        this._loading.set(true);
+        try {
+            const result = await this.perfilService.obtenerPerfil();
+            this._currentUser.set(result);
+            this._error.set(null);
+            return result;
+        } catch (err: any) {
+            const msg = err?.message || 'Error al obtener perfil';
+            this._error.set(msg);
+            throw err;
+        } finally {
+            this._loading.set(false);
+        }
+    }
 
     async getById(id: number) {
         this._loading.set(true);
