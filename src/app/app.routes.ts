@@ -39,7 +39,7 @@ export const routes: Routes = [
     },
     {
         path: '',
-        canMatch: [authGuard, roleMatchGuard(ROLES.JEFE_INTERNO)],
+        canMatch: [authGuard, roleMatchGuard(ROLES.JEFE_EXTERNO, ROLES.JEFE_INTERNO)],
         loadChildren: () => import('./features/jefe/jefe.routes').then(m => m.JEFE_ROUTES)
     },
     {
