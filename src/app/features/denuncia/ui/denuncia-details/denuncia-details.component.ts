@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy, computed, afterNextRender, viewChild, ElementRef, ViewEncapsulation, inject, DestroyRef, output } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy, computed, afterNextRender, viewChild, ElementRef, ViewEncapsulation, inject, DestroyRef, output, signal, effect } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import * as L from 'leaflet';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -11,12 +11,14 @@ import {
     faVideo,
     faMapMarkerAlt,
     faFileAlt,
-    faClipboardCheck
+    faClipboardCheck,
+    faWrench
 } from '@fortawesome/free-solid-svg-icons';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { EvidenciaViewerComponent } from '@/shared/ui/evidencia-viewer/evidencia-viewer.component';
 import { LocationEvent, SecurityEvent, SystemEvent } from '@/core/model/app.event';
-import { DenunciaResponse } from '@/core/api/denuncias/models';
+import { DenunciaResponse, EvidenciaDto } from '@/core/api/denuncias/models';
+import { EvidenceFacade } from '@/data/services/evidence.facade';
 
 @Component({
     selector: 'app-denuncia-details',
@@ -29,12 +31,17 @@ import { DenunciaResponse } from '@/core/api/denuncias/models';
 })
 export class DenunciaDetailsComponent {
     errorEvent = output<SecurityEvent>();
+    private readonly evidenceFacade = inject(EvidenceFacade);
+
+    // Signal para almacenar evidencias completas con URL
+    protected evidencias = signal<EvidenciaDto[]>([]);
+    protected evidenciasResolucion = signal<EvidenciaDto[]>([]);
 
     propagateError(event: SecurityEvent) {
         this.errorEvent.emit(event);
     }
 
-    private destroyRef = inject(DestroyRef);
+    private readonly destroyRef = inject(DestroyRef);
     // Tipo OpenAPI para evitar `any` y fortalecer el contrato de datos
     denuncia = input.required<DenunciaResponse | null>();
 
@@ -47,6 +54,7 @@ export class DenunciaDetailsComponent {
     protected readonly faVideo = faVideo;
     protected readonly faClipboardCheck = faClipboardCheck;
     protected readonly faFileAlt = faFileAlt;
+    protected readonly faWrench = faWrench;
 
     googleMapsUrl = computed(() => {
         const d = this.denuncia();
@@ -84,9 +92,36 @@ export class DenunciaDetailsComponent {
             this.initMapIfCoords();
         });
 
-        this.destroyRef.onDestroy(() => {
-            if (this.map) {
-                this.map.remove();
+        // Efecto para cargar evidencias cuando cambia la denuncia
+        effect(async () => {
+            const currentDenuncia = this.denuncia();
+            if (!currentDenuncia?.id) {
+                this.evidencias.set([]);
+                this.evidenciasResolucion.set([]);
+                return;
+            }
+
+            try {
+                const results = await this.evidenceFacade.getEvidences({
+                    tipo: 'DENUNCIA',
+                    id: currentDenuncia.id
+                });
+                // Mapeamos o casteamos porque EvidenciaInternaResponse es compatible con EvidenciaDto
+                this.evidencias.set(results as unknown as EvidenciaDto[]);
+            } catch {
+                // El error ya es manejado/logueado en el facade, pero aseguramos estado limpio
+                this.evidencias.set([]);
+            }
+
+            try {
+                const resultsRes = await this.evidenceFacade.getEvidences({
+                    tipo: 'RESOLUCION',
+                    id: currentDenuncia.id
+                });
+                this.evidenciasResolucion.set(resultsRes as unknown as EvidenciaDto[]);
+            } catch {
+                this.evidenciasResolucion.set([]);
+                this.map?.remove();
                 this.map = undefined;
             }
         });

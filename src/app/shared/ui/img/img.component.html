@@ -1,24 +1,11 @@
-<!-- @if (safeUrl() && !loadError(); as url) {
-
-<img [ngSrc]="url" [width]="width()" [height]="height()" alt="Evidencia adjunta"
-    class="w-full h-full object-cover transition-opacity duration-300" (error)="handleError()" />
-
-} @else {
-
-<div
-    class="flex flex-col items-center justify-center h-full bg-gray-100 text-gray-600 text-sm text-center p-4 border border-gray-200 rounded">
-    <p class="mb-1 font-medium">Imagen no disponible</p>
-    <p class="text-xs text-gray-500">No se pudo cargar la evidencia. Intenta recargar la página.</p>
+<div class="relative w-full h-full bg-gray-50 overflow-hidden">
+    @if (safeUrl()) {
+    <img [ngSrc]="safeUrl()!" fill priority (error)="handleLoadError()" alt="User provided content"
+        class="object-cover w-full h-full transition-opacity duration-300" />
+    } @else {
+    <div
+        class="flex flex-col items-center justify-center w-full h-full p-2 text-center bg-gray-100 text-gray-500 text-xs min-h-[150px]">
+        <span class="break-words w-full">{{ displayError() }}</span>
+    </div>
+    }
 </div>
-
-} -->
-
-@if (safeUrl()) {
-<img [ngSrc]="safeUrl()!" [width]="width()" [height]="height()" (error)="handleLoadError()" alt="User provided content"
-    class="rounded-md object-cover" />
-} @else {
-<div class="flex items-center justify-center bg-gray-100 text-gray-500 text-xs text-center p-2"
-    [style.width.px]="width()" [style.height.px]="height()">
-    {{ displayError() }}
-</div>
-}

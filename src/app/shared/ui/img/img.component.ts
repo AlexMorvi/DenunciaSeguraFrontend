@@ -2,7 +2,7 @@ import { Component, input, computed, signal, effect, untracked, output, ChangeDe
 import { NgOptimizedImage, CommonModule } from '@angular/common';
 import { ImgEvent } from '@/core/model/app.event';
 
-const ALLOWED_DOMAINS = ['tu-bucket.s3.amazonaws.com', 'api.tudominio.com', 'storage.googleapis.com'];
+const ALLOWED_DOMAINS = ['tu-bucket.s3.amazonaws.com', 'wgqripvsznlcmrgitkqp.supabase.co', 'storage.googleapis.com'];
 
 @Component({
     selector: 'app-secure-image',
@@ -22,6 +22,7 @@ export class SecureImageComponent {
 
     private readonly validationResult = computed(() => {
         const rawUrl = this.src();
+        console.log('UPDAATED IMG URL:', rawUrl);
 
         if (!rawUrl) {
             return {

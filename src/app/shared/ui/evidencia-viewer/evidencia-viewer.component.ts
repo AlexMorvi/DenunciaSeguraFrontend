@@ -34,4 +34,13 @@ export class EvidenciaViewerComponent {
         const key = this.emptyStateKey();
         return this.emptyMessages[key] ?? this.emptyMessages['ciudadano'];
     });
+
+    gridClass = computed(() => {
+        const count = this.evidencias()?.length ?? 0;
+        switch (count) {
+            case 1: return 'grid-cols-1';
+            case 2: return 'grid-cols-2';
+            default: return 'grid-cols-2 grid-rows-2';
+        }
+    });
 }

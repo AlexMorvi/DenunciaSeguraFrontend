@@ -29,18 +29,6 @@
 
     <hr class="border-gray-200 my-4">
 
-    <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-4 bg-gray-100 rounded-lg border border-gray-100">
-        <div>
-            <span appText="caption" class="block text-left mb-1">Categoría</span>
-            <div class="font-semibold text-slate-700 flex items-center gap-2">
-                <fa-icon [icon]="faLayerGroup"></fa-icon> {{ denuncia().categoria }}
-            </div>
-        </div>
-        <div>
-            <span appText="caption" class="block text-left mb-1">ID Denuncia</span>
-            <div class="font-mono text-slate-600">#{{ denuncia().id }}</div>
-        </div>
-    </div> -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
         <div>
@@ -63,47 +51,47 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 items-stretch">
-        <div class="h-72 box-border">
-            <h3 appText="label" class="mb-2 flex items-center gap-2">
+
+        <div class="h-72 flex flex-col bg-white">
+            <h3 appText="label" class="mb-2 shrink-0 flex items-center gap-2">
                 <fa-icon [icon]="faImages" class="text-blue-600"></fa-icon>
                 Evidencia Adjunta
             </h3>
 
-            <div class="h-full">
-                <app-evidencia-viewer class="h-full" [evidencias]="denuncia()?.evidenciaCreacionIds"
-                    [emptyStateKey]="'ciudadano'" (imageError)="propagateError($event)"></app-evidencia-viewer>
+            <div class="flex-1 min-h-0 w-full">
+                <app-evidencia-viewer class="block h-full w-full" [evidencias]="evidencias()"
+                    [emptyStateKey]="'ciudadano'" (imageError)="propagateError($event)">
+                </app-evidencia-viewer>
             </div>
         </div>
 
-        <div>
-            <div class="flex justify-between items-center mb-2">
+        <div class="h-72 flex flex-col">
+            <div class="flex justify-between items-center mb-2 shrink-0">
                 <h3 appText="label">
                     <fa-icon [icon]="faMapMarkerAlt" class="text-blue-600"></fa-icon>
                     Ubicación
                 </h3>
                 @if (googleMapsUrl(); as url) {
                 <a [href]="url" target="_blank" rel="noopener noreferrer"
-                    class="text-blue-600 hover:underline flex items-center gap-2"
+                    class="text-blue-600 hover:underline flex items-center gap-2 text-sm"
                     aria-label="Abrir ubicación de la denuncia en Google Maps">
                     Ver en Google Maps
                 </a>
-                } @else {
-                <span class="text-gray-400 italic text-sm flex items-center gap-2" title="Coordenadas no válidas">
-                    <fa-icon [icon]="faCircleExclamation" class="text-gray-400"></fa-icon>
-                    Ubicación no disponible
-                </span>
                 }
+            </div>
 
+            <div class="flex-1 min-h-0 w-full relative">
+                @if (googleMapsUrl(); as url) {
+                <div #mapContainer
+                    class="w-full h-full box-border bg-gray-100 rounded-lg border-2 border-slate-300 overflow-hidden"
+                    role="region" aria-label="Mapa de la denuncia"></div>
+                } @else {
+                <div
+                    class="w-full h-full bg-gray-100 rounded-lg border border-emerald-100 flex items-center justify-center">
+                    <span class="text-emerald-600 font-medium">Ubicación no disponible</span>
+                </div>
+                }
             </div>
-            @if (googleMapsUrl(); as url) {
-            <div #mapContainer
-                class="w-full h-72 box-border p-6 bg-gray-100 rounded-lg border-2 border-slate-300 overflow-hidden"
-                role="region" aria-label="Mapa de la denuncia"></div>
-            } @else {
-            <div class="w-full h-48 bg-gray-100 rounded-lg border border-emerald-100 flex items-center justify-center">
-                <span class="text-emerald-600 font-medium">Ubicación no disponible</span>
-            </div>
-            }
         </div>
     </div>
 
@@ -143,31 +131,33 @@
         </div>
 
         @if (denuncia()?.comentarioResolucion) {
-        <div class="mb-6">
+        <!-- <div class="mb-6">
             <span appText="caption" class="block text-left mb-1">Comentario Técnico</span>
             <p class="text-sm text-slate-700 bg-white p-3 rounded border border-slate-200">
                 {{ denuncia()?.comentarioResolucion }}
             </p>
+        </div> -->
+        <div class="mb-6">
+            <div class="flex items-center gap-2 mb-2">
+                <fa-icon [icon]="faWrench" class="text-xs text-blue-500"></fa-icon>
+                <span appText="caption" class="font-medium text-slate-500">Comentario Técnico</span>
+            </div>
+
+            <div class="relative pl-4 py-3 pr-4 bg-slate-50 rounded-r-lg border-l-4 border-blue-500 shadow-sm">
+                <p class="text-sm text-slate-700 leading-relaxed italic">
+                    "{{ denuncia()?.comentarioResolucion }}"
+                </p>
+            </div>
         </div>
         }
 
         <div>
             <span appText="caption" class="block text-left mb-2">Evidencia de Resolución</span>
-            @if (denuncia()?.evidenciasResolucionIds?.length) {
-            <div class="flex gap-4 overflow-x-auto pb-2">
-                @for (evidenciaId of denuncia()?.evidenciasResolucionIds; track evidenciaId) {
-                <div
-                    class="relative shrink-0 w-32 h-32 rounded-lg overflow-hidden border border-gray-200 bg-white flex items-center justify-center p-2">
-                    <span class="text-xs text-slate-500 break-all text-center">{{ evidenciaId }}</span>
-                </div>
-                }
+            <div class="h-64 w-full relative overflow-hidden rounded-lg">
+                <app-evidencia-viewer class="block h-full w-full" [evidencias]="evidenciasResolucion()"
+                    [emptyStateKey]="'operador'" (imageError)="propagateError($event)">
+                </app-evidencia-viewer>
             </div>
-            } @else {
-            <div
-                class="flex items-center justify-center p-6 bg-white rounded-lg border border-dashed border-slate-300 text-slate-400 text-sm">
-                <span><fa-icon [icon]="faImages"></fa-icon> Sin evidencias adjuntas</span>
-            </div>
-            }
         </div>
     </div>
 </div>
