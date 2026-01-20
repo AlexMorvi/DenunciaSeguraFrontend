@@ -15,13 +15,13 @@ export const MENU_ITEMS: MenuItem[] = [
         path: 'dashboard',
         allowedRoles: Object.values(ROLES),
     },
-    {
-        label: 'Ver notificaciones',
-        icon: faBell,
-        path: 'notificaciones',
-        allowedRoles: [ROLES.CIUDADANO],
-        showBadge: true
-    },
+    // {
+    //     label: 'Ver notificaciones',
+    //     icon: faBell,
+    //     path: 'notificaciones',
+    //     allowedRoles: [ROLES.CIUDADANO],
+    //     showBadge: true
+    // },
     {
         label: 'Crear usuarios',
         icon: faUserPlus,
