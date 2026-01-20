@@ -28,15 +28,10 @@ export const CITIZEN_ROUTES: Routes = [
                 ]
             },
             {
-                path: APP_ROUTES.NOTIFICACIONES,
-                loadComponent: () => import('@/features/notification/views/notifications-page/notifications.page')
-                    .then(m => m.NotificationsPage)
-            },
-            {
                 path: APP_ROUTES.PERFIL,
                 loadComponent: () => import('@/features/perfil/perfil.page')
                     .then(m => m.PerfilPageComponent)
-            },
+            }
         ]
     }
 ];

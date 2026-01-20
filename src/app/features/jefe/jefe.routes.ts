@@ -13,18 +13,19 @@ export const JEFE_ROUTES: Routes = [
                     .then(m => m.CiudadanoDashboardPage)
             },
             {
-                path: `${APP_ROUTES.DENUNCIAS}/:id`,
-                loadComponent: () => import('@/features/denuncia/views/denuncia.page')
-                    .then(m => m.DenunciaPageComponent)
-            },
-            {
                 path: APP_ROUTES.DENUNCIAS,
                 children: [
+                    {
+                        path: APP_ROUTES.NUEVA,
+                        loadComponent: () => import('@/features/create-denuncia/crear-denuncia.page')
+                            .then(m => m.CrearDenunciaComponent)
+                    },
                     {
                         path: ':id',
                         loadComponent: () => import('@/features/denuncia/views/denuncia.page')
                             .then(m => m.DenunciaPageComponent)
-                    }]
+                    },
+                ]
             },
             {
                 path: APP_ROUTES.PERFIL,
