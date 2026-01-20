@@ -24,20 +24,22 @@ export class AuthFacade {
     private readonly usuariosInternoService = inject(UsuariosInternoService);
     private readonly logger = inject(LoggerService);
 
-    // private readonly _currentUser = signal<UsuarioResponse | null>(null);
     // TODO: Temporal hardcoded user until backend endpoint is available
-    private readonly _currentUser = signal<UsuarioResponse | null>({
-        id: 1,
-        nombre: 'Usuario Temporal',
-        email: 'temporal@example.com',
-        rol: 'CIUDADANO',
-        // rol: 'ADMIN',
-        // rol: 'SUPERVISOR_DENUNCIAS',
-        // rol: 'JEFE_INTERNO',
-        // rol: 'OPERADOR_INTERNO',
-        aliasPublico: undefined,
-        publicCitizenId: 'temp-0001',
-    });
+    // private readonly _currentUser = signal<UsuarioResponse | null>({
+    //     id: 1,
+    //     nombre: 'Usuario Temporal',
+    //     email: 'temporal@example.com',
+    //     rol: 'CIUDADANO',
+    //     // rol: 'ADMIN',
+    //     // rol: 'SUPERVISOR',
+    //     // rol: 'JEFE_OP_EXT',
+    //     // rol: 'OPERADOR_INTERNO',
+    //     aliasPublico: undefined,
+    //     publicCitizenId: 'temp-0001',
+
+    // });
+
+    private readonly _currentUser = signal<UsuarioResponse | null>(null);
     public readonly currentUser = this._currentUser.asReadonly();
 
     private readonly _loading = signal(false);
@@ -170,27 +172,6 @@ export class AuthFacade {
                 return {
                     ...currentUser,
                     aliasPublico: alias,
-                };
-            });
-        } finally {
-            this._loading.set(false);
-        }
-    }
-    async updateCitizenAlias(alias: string): Promise<void> {
-        // NOTE: citizen alias uses the same endpoint if it refers to aliasPublico
-        const userId = this.currentUser()?.id;
-        if (!userId) return;
-
-        const body: ActualizarAliasRequest = { aliasPublico: alias };
-        this._loading.set(true);
-
-        try {
-            await this.usuariosInternoService.actualizarAlias({ id: userId, body });
-            this._currentUser.update((currentUser) => {
-                if (!currentUser) return null;
-                return {
-                    ...currentUser,
-                    publicCitizenId: alias,
                 };
             });
         } finally {
