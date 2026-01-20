@@ -7,6 +7,7 @@ import { ENTIDAD_ENUM } from '@/core/api/usuarios/models/entidad-enum-array';
 import { EntidadEnum } from '@/core/api/usuarios/models/entidad-enum';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { faSave, faComment } from '@fortawesome/free-solid-svg-icons';
+import { DenunciaResponse } from '@/core/api/denuncias/models';
 
 @Component({
     selector: 'app-actions-supervisor',
@@ -27,9 +28,7 @@ export class ActionsSupervisorComponent {
     entidadesOptions = computed(() => this.entidadesOptionsInput() ?? ENTIDAD_ENUM);
     public isLoading = input<boolean>(false);
 
-    // TODO: una vez corregido el contrato utilizar el tipo correcto
-    // currentDenuncia = input.required<DenunciaStaffViewResponse>();
-    currentDenuncia = input.required<any>();
+    currentDenuncia = input.required<DenunciaResponse>();
 
     asignar = output<{ idDenuncia: number, entidadId: number }>();
 
