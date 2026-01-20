@@ -34,16 +34,16 @@ export class PerfilPageComponent implements OnInit {
 
 
     readonly denunciasCount = computed(() => this.denunciaService.denuncias()?.length ?? 0);
-    // readonly resolvedCount = computed(() => (this.denunciaService.denuncias() || []).filter(d => d.estado === ESTADOS_DENUNCIA.RESUELTA).length);
-    // readonly inProgressCount = computed(() => {
-    //     const list = this.denunciaService.denuncias() || [];
-    //     const inProgressStates = [
-    //         ESTADOS_DENUNCIA.ASIGNADA,
-    //         ESTADOS_DENUNCIA.EN_PROCESO,
-    //         ESTADOS_DENUNCIA.EN_VALIDACION
-    //     ];
-    //     return list.filter(d => inProgressStates.includes(d.estado as EstadoDenunciaEnum)).length;
-    // });
+    readonly resolvedCount = computed(() => (this.denunciaService.denuncias() || []).filter(d => d.estadoDenuncia === ESTADOS_DENUNCIA.RESUELTA).length);
+    readonly inProgressCount = computed(() => {
+        const list = this.denunciaService.denuncias() || [];
+        const inProgressStates = [
+            ESTADOS_DENUNCIA.ASIGNADA,
+            ESTADOS_DENUNCIA.EN_PROCESO,
+            ESTADOS_DENUNCIA.EN_VALIDACION
+        ];
+        return list.filter(d => inProgressStates.includes(d.estadoDenuncia as EstadoDenunciaEnum)).length;
+    });
 
     // Computados para lógica de vista
     readonly isCitizen = computed(() => this.currentUser()?.rol === ROLES.CIUDADANO);
@@ -79,7 +79,7 @@ export class PerfilPageComponent implements OnInit {
         const { alias: newAlias } = this.form.getRawValue();
 
         try {
-            await this.performAliasUpdate(newAlias.trim());
+            await this.authService.updateMyAlias(newAlias);
             this.handleUpdateSuccess(newAlias);
 
         } catch {
@@ -113,12 +113,6 @@ export class PerfilPageComponent implements OnInit {
             return false;
         }
         return true;
-    }
-
-    private async performAliasUpdate(alias: string): Promise<void> {
-        return this.isCitizen()
-            ? await this.authService.updateCitizenAlias(alias)
-            : await this.authService.updateMyAlias(alias);
     }
 
     private handleUpdateSuccess(newAlias: string): void {
