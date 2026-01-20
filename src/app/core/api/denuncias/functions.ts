@@ -17,5 +17,7 @@ export type { ResolverDenuncia$Params as ResolverDenuncia$Params } from './fn/wo
 export { resolverDenuncia as resolverDenuncia } from './fn/workflow/resolver-denuncia';
 export type { ValidarSolucionDenuncia$Params as ValidarSolucionDenuncia$Params } from './fn/workflow/validar-solucion-denuncia';
 export { validarSolucionDenuncia as validarSolucionDenuncia } from './fn/workflow/validar-solucion-denuncia';
+export type { RechazarDenuncia$Params as RechazarDenuncia$Params } from './fn/workflow/rechazar-denuncia';
+export { rechazarDenuncia as rechazarDenuncia } from './fn/workflow/rechazar-denuncia';
 export type { DenunciaHistorialEstados$Params as DenunciaHistorialEstados$Params } from './fn/workflow/denuncia-historial-estados';
 export { denunciaHistorialEstados as denunciaHistorialEstados } from './fn/workflow/denuncia-historial-estados';

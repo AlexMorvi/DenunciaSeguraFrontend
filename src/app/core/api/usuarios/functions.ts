@@ -5,6 +5,8 @@ export type { UsuarioAdminObtenerJefePorEntidad$Params as UsuarioAdminObtenerJef
 export { usuarioAdminObtenerJefePorEntidad as usuarioAdminObtenerJefePorEntidad } from './fn/admin/usuario-admin-obtener-jefe-por-entidad';
 export type { UsuarioAdminObtenerOperadoresPorEntidad$Params as UsuarioAdminObtenerOperadoresPorEntidad$Params } from './fn/admin/usuario-admin-obtener-operadores-por-entidad';
 export { usuarioAdminObtenerOperadoresPorEntidad as usuarioAdminObtenerOperadoresPorEntidad } from './fn/admin/usuario-admin-obtener-operadores-por-entidad';
+export type { ObtenerPerfil$Params as ObtenerPerfil$Params } from './fn/perfil/obtener-perfil';
+export { obtenerPerfil as obtenerPerfil } from './fn/perfil/obtener-perfil';
 export type { CrearCiudadano$Params as CrearCiudadano$Params } from './fn/interno/crear-ciudadano';
 export { crearCiudadano as crearCiudadano } from './fn/interno/crear-ciudadano';
 export type { CrearStaff$Params as CrearStaff$Params } from './fn/interno/crear-staff';

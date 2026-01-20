@@ -15,4 +15,5 @@ export type { EstadoDenunciaEnum } from './models/estado-denuncia-enum';
 export type { EvidenciaDto } from './models/evidencia-dto';
 export type { MarcarResolucionRequest } from './models/marcar-resolucion-request';
 export type { NivelAnonimatoEnum } from './models/nivel-anonimato-enum';
+export type { RechazarDenunciaRequest } from './models/rechazar-denuncia-request';
 export type { ValidarSolucionRequest } from './models/validar-solucion-request';

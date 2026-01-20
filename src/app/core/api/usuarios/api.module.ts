@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AdminService } from './services/admin.service';
+import { PerfilService } from './services/perfil.service';
 import { InternoService } from './services/interno.service';
 
 /**
@@ -17,6 +18,7 @@ import { InternoService } from './services/interno.service';
   declarations: [],
   providers: [
     AdminService,
+    PerfilService,
     InternoService,
     ApiConfiguration
   ],

@@ -18,6 +18,8 @@ import { denunciaHistorialEstados } from '../fn/workflow/denuncia-historial-esta
 import { DenunciaHistorialEstados$Params } from '../fn/workflow/denuncia-historial-estados';
 import { iniciarProcesoDenunciaOperadores } from '../fn/workflow/iniciar-proceso-denuncia-operadores';
 import { IniciarProcesoDenunciaOperadores$Params } from '../fn/workflow/iniciar-proceso-denuncia-operadores';
+import { rechazarDenuncia } from '../fn/workflow/rechazar-denuncia';
+import { RechazarDenuncia$Params } from '../fn/workflow/rechazar-denuncia';
 import { resolverDenuncia } from '../fn/workflow/resolver-denuncia';
 import { ResolverDenuncia$Params } from '../fn/workflow/resolver-denuncia';
 import { validarSolucionDenuncia } from '../fn/workflow/validar-solucion-denuncia';
@@ -195,6 +197,39 @@ export class WorkflowService extends BaseService {
    */
   validarSolucionDenuncia(params: ValidarSolucionDenuncia$Params, context?: HttpContext): Promise<void> {
     const resp = this.validarSolucionDenuncia$Response(params, context);
+    return resp.then((r: StrictHttpResponse<void>): void => r.body);
+  }
+
+  /** Path part for operation `rechazarDenuncia()` */
+  static readonly RechazarDenunciaPath = '/{denunciaId}/rechazo';
+
+  /**
+   * Rechazar denuncia.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `rechazarDenuncia()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  rechazarDenuncia$Response(params: RechazarDenuncia$Params, context?: HttpContext): Promise<StrictHttpResponse<void>> {
+    const obs = rechazarDenuncia(this.http, this.rootUrl, params, context);
+    return firstValueFrom(obs);
+  }
+
+  /**
+   * Rechazar denuncia.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `rechazarDenuncia$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  rechazarDenuncia(params: RechazarDenuncia$Params, context?: HttpContext): Promise<void> {
+    const resp = this.rechazarDenuncia$Response(params, context);
     return resp.then((r: StrictHttpResponse<void>): void => r.body);
   }
 

@@ -6,7 +6,7 @@ import { NivelAnonimatoEnum } from '../models/nivel-anonimato-enum';
 export interface CrearDenunciaRequest {
   categoriaDenuncia: CategoriaDenunciaEnum;
   descripcion: string;
-  evidenciasIds?: Array<string>;
+  evidenciasIds: Array<string>;
   latitud: number;
   longitud: number;
   nivelAnonimato: NivelAnonimatoEnum;
