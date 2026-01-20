@@ -116,10 +116,11 @@
                     </div>
                     }
 
+                    @if (isCitizen()) {
                     <div>
                         <div class="flex items-center gap-2 mb-3">
                             <span class="block text-sm font-bold text-slate-900">
-                                {{ isCitizen() ? 'Identificador Público' : 'Alias Público' }}
+                                Identificador Público
                             </span>
                         </div>
 
@@ -150,7 +151,7 @@
                                 @if(form.controls.alias.valid && form.controls.alias.dirty) {
                                 <span class="text-green-600 font-medium flex items-center gap-1">
                                     <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                                    {{ isCitizen() ? 'Identificador disponible' : 'Alias disponible' }}
+                                    Identificador disponible
                                 </span>
                                 } @else {
                                 <span class="text-slate-400">Requerido. 3–50 caracteres.</span>
@@ -160,7 +161,7 @@
                             </div>
 
                             <div class="mt-4 flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                                <button type="button"
+                                <button type="button" (click)="cancel()"
                                     class="px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-md transition-colors">
                                     Cancelar
                                 </button>
@@ -170,6 +171,7 @@
                             </div>
                         </form>
                     </div>
+                    }
                 </div>
             </div>
         </div>

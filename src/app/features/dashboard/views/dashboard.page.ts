@@ -6,7 +6,7 @@ import { ROLES } from '@/shared/constants/roles.const';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, effect, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -28,11 +28,22 @@ import { EstadisticasComponent } from '../ui/estadisticas/estadisticas.component
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class CiudadanoDashboardPage implements OnInit {
+export class CiudadanoDashboardPage {
     public denunciaService = inject(DenunciaFacade);
     private readonly router = inject(Router);
     private readonly authFacade = inject(AuthFacade);
     // private readonly notificacionFacade = inject(NotificacionFacade);
+
+    constructor() {
+        effect(() => {
+            const user = this.authFacade.currentUser();
+            if (user) {
+                untracked(() => {
+                    this.denunciaService.loadAll();
+                });
+            }
+        });
+    }
 
     public isLoading = computed(() =>
         this.denunciaService.loading() || this.authFacade.loading()
@@ -43,10 +54,6 @@ export class CiudadanoDashboardPage implements OnInit {
 
     userName = computed(() => this.authFacade.currentUser()?.nombre || "Usuario");
     showCreateButton = computed(() => this.authFacade.currentUser()?.rol === ROLES.CIUDADANO);
-
-    ngOnInit(): void {
-        this.denunciaService.loadAll();
-    }
 
     goToCreate(): void {
         this.router.navigate(['denuncias', 'nueva']);
