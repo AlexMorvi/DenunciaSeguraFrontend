@@ -6,6 +6,19 @@ import { LoggerService } from '@/core/service/logging/logger.service';
 import { FileUploadService } from '@/core/service/file-upload.service';
 
 
+import { CategoriaDenunciaEnum } from '@/core/api/denuncias/models/categoria-denuncia-enum';
+import { NivelAnonimatoEnum } from '@/core/api/denuncias/models/nivel-anonimato-enum';
+
+export interface CreacionDenunciaData {
+    titulo: string;
+    descripcion: string;
+    categoriaDenuncia: CategoriaDenunciaEnum;
+    nivelAnonimato: NivelAnonimatoEnum;
+    latitud: number;
+    longitud: number;
+    archivos?: File[];
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -157,29 +170,36 @@ export class DenunciaFacade {
             this._loading.set(false);
         }
     }
-    constructor() {
-        // Constructor sin carga automática: la carga se realizará desde un Resolver
-        // o desde el componente que necesite los datos. Evitamos auto-refresh aquí
-        // para prevenir llamadas duplicadas al entrar a rutas.
-    }
 
-    async crearDenuncia(datos: CrearDenunciaRequest, archivos: File[] = []) {
+    async crearDenuncia(datos: CreacionDenunciaData): Promise<void> {
         this._loading.set(true);
         this._error.set(null);
 
-        if (archivos && archivos.length > 0) {
+        try {
+            const { archivos, ...detallesDenuncia } = datos;
             const evidenciasIds: string[] = [];
-            // TODO: Ajustar subida con EvidenceFacade real si es necesario.
-            for (const archivo of archivos) {
-                const url = await this.uploadService.subirEvidencia(archivo);
-                evidenciasIds.push(url);
-            }
-            datos.evidenciasIds = datos.evidenciasIds || [];
-            datos.evidenciasIds.push(...evidenciasIds);
-        }
 
-        await this.denunciaService.crearDenuncia({ body: datos });
-        this.logger.logInfo('Denuncia creada exitosamente');
+            if (archivos && archivos.length > 0) {
+                for (const archivo of archivos) {
+                    const evidenciaId = await this.uploadService.subirEvidencia(archivo);
+                    evidenciasIds.push(evidenciaId);
+                }
+            }
+
+            const request: CrearDenunciaRequest = {
+                ...detallesDenuncia,
+                evidenciasIds
+            };
+
+            await this.denunciaService.crearDenuncia({ body: request });
+            this.logger.logInfo('Denuncia creada exitosamente');
+        } catch (error) {
+            this.logger.logError('Error creando denuncia', error);
+            this._error.set('No se pudo crear la denuncia.');
+            throw error;
+        } finally {
+            this._loading.set(false);
+        }
     }
 
 

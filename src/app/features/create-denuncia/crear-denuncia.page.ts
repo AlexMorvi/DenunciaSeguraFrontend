@@ -4,11 +4,10 @@ import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, view
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as L from 'leaflet';
 import { CategoriaDenunciaEnum } from '@/core/api/denuncias/models/categoria-denuncia-enum';
-import { IconDefinition, faRoad, faLightbulb, faTrashAlt, faShieldAlt, faTint, faSeedling, faEllipsisH, faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { CrearDenunciaRequest } from '@/core/api/denuncias/models/crear-denuncia-request';
+import { IconDefinition, faRoad, faLightbulb, faTrashAlt, faTint, faSeedling, faEllipsisH, faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { NIVEL_ANONIMATO_ENUM as NIVEL_ANONIMATO_ARRAY } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
 import { NIVEL_ANONIMATO } from '@/shared/constants/nivel-anonimato.const';
-import { DenunciaFacade } from '@/data/services/denuncia.facade';
+import { DenunciaFacade, CreacionDenunciaData } from '@/data/services/denuncia.facade';
 import { CategorySelectorComponent } from '@/shared/ui/category-selector/category-selector.component';
 import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.component';
 import { SelectComponent } from '@/shared/ui/select/select.component';
@@ -18,7 +17,7 @@ import { LoggerService } from '@/core/service/logging/logger.service';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { InputComponent } from '@/shared/ui/input/input.component';
-import { FileUploadService } from '@/core/service/file-upload.service';
+// import { FileUploadService } from '@/core/service/file-upload.service';
 import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
 
 const DEFAULT_ZOOM = 13;
@@ -52,7 +51,7 @@ export class CrearDenunciaComponent implements OnDestroy {
     private readonly toast = inject(ToastService);
     private readonly logger = inject(LoggerService);
     private readonly router = inject(Router);
-    private readonly fileService = inject(FileUploadService);
+    // private readonly fileService = inject(FileUploadService);
 
     evidencias = signal<File[]>([]);
 
@@ -70,13 +69,12 @@ export class CrearDenunciaComponent implements OnDestroy {
     readonly currentCoords = signal<{ lat: number; lng: number } | null>(null);
 
     readonly listadoCategorias: { value: CategoriaDenunciaEnum; label: string; icon: IconDefinition; colorClass: string }[] = [
-        { value: 'VIALIDAD' as CategoriaDenunciaEnum, label: 'Bacheo / Vialidad', icon: faRoad, colorClass: 'text-primary' },
-        { value: 'ILUMINACION' as CategoriaDenunciaEnum, label: 'Alumbrado', icon: faLightbulb, colorClass: 'text-yellow-500' },
-        { value: 'SANIDAD' as CategoriaDenunciaEnum, label: 'Basura / Limpieza', icon: faTrashAlt, colorClass: 'text-green-500' },
-        { value: 'SEGURIDAD' as CategoriaDenunciaEnum, label: 'Seguridad', icon: faShieldAlt, colorClass: 'text-red-500' },
-        { value: 'AGUA' as CategoriaDenunciaEnum, label: 'Agua', icon: faTint, colorClass: 'text-blue-500' },
-        { value: 'JARDINERIA' as CategoriaDenunciaEnum, label: 'Jardinería', icon: faSeedling, colorClass: 'text-emerald-500' },
-        { value: 'OTROS' as CategoriaDenunciaEnum, label: 'Otro', icon: faEllipsisH, colorClass: 'text-purple-500' }
+        { value: 'VIALIDAD', label: 'Bacheo / Vialidad', icon: faRoad, colorClass: 'text-primary' },
+        { value: 'ILUMINACION', label: 'Alumbrado', icon: faLightbulb, colorClass: 'text-yellow-500' },
+        { value: 'SANIDAD', label: 'Basura / Limpieza', icon: faTrashAlt, colorClass: 'text-green-500' },
+        { value: 'AGUA', label: 'Agua', icon: faTint, colorClass: 'text-blue-500' },
+        { value: 'JARDINERIA', label: 'Jardinería', icon: faSeedling, colorClass: 'text-emerald-500' },
+        { value: 'OTROS', label: 'Otro', icon: faEllipsisH, colorClass: 'text-purple-500' }
     ];
     readonly listadoAnonimato = NIVEL_ANONIMATO_ARRAY;
 
@@ -106,7 +104,6 @@ export class CrearDenunciaComponent implements OnDestroy {
         longitud: new FormControl<number | null>(null, {
             validators: [Validators.required]
         }),
-        evidenciasIds: this.fb.nonNullable.control([], [])
     });
 
     async guardarDenuncia() {
@@ -117,17 +114,21 @@ export class CrearDenunciaComponent implements OnDestroy {
 
         const rawData = this.form.getRawValue();
 
-        const request: CrearDenunciaRequest = {
+        const request: CreacionDenunciaData = {
             titulo: rawData.titulo.trim(),
             descripcion: rawData.descripcion.trim(),
             categoriaDenuncia: rawData.categoriaDenuncia!,
             nivelAnonimato: rawData.nivelAnonimato,
             latitud: rawData.latitud!,
-            longitud: rawData.longitud!,
+            longitud: rawData.longitud!
         };
 
+        if (this.evidencias().length > 0) {
+            request.archivos = this.evidencias();
+        }
+
         try {
-            await this.facade.crearDenuncia(request, this.evidencias());
+            await this.facade.crearDenuncia(request);
 
             this.toast.showSuccess('Denuncia enviada', 'Su denuncia ha sido registrada correctamente.');
             await this.router.navigate(['/dashboard']);
@@ -136,8 +137,11 @@ export class CrearDenunciaComponent implements OnDestroy {
         }
     }
 
-    uploadEvidenceStrategy = (file: File): Promise<string> => {
-        return this.fileService.subirEvidencia(file);
+    uploadEvidenceStrategy = (_file: File): Promise<string> => {
+        // Simular carga para la UI. La carga real de evidencias se realiza en el Facade al enviar el formulario.
+        return new Promise((resolve) => {
+            setTimeout(() => resolve(crypto.randomUUID()), 1000);
+        });
     }
 
     constructor() {
@@ -230,4 +234,4 @@ export class CrearDenunciaComponent implements OnDestroy {
         this.toast.showWarning(event.userMessage);
         this.logger.logError('Upload error in actions panel', { ...event.logData, code: 'UPLOAD_ERROR', timestamp: new Date().toISOString() });
     }
-}
+} 
