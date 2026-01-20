@@ -67,15 +67,16 @@ export class FileUploadService {
     }
 
     private async cargarArchivoEnNube(sessionData: { uploadUrl: string; uploadId: string; contentType: string; sizeBytes: number }, archivo: File): Promise<void> {
+        // Eliminamos 'Content-Length' (el navegador lo pone solo y es más seguro)
+        const headers = new HttpHeaders({
+            'Content-Type': sessionData.contentType
+        });
+
         await firstValueFrom(
             this.http.put(sessionData.uploadUrl, archivo, {
-                headers: new HttpHeaders({
-                    'Content-Type': sessionData.contentType,
-                    'Content-Length': sessionData.sizeBytes.toString()
-                }),
-                context: new HttpContext().set(SKIP_AUTH, true),
-                reportProgress: true,
-                observe: 'events'
+                headers: headers,
+                context: new HttpContext().set(SKIP_AUTH, true)
+                // Quitamos observe: 'events' y reportProgress: true
             }).pipe(
                 retry({ count: 2, delay: 1000 }),
                 timeout(120000)
