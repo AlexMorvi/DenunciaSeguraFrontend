@@ -51,7 +51,6 @@ export class PerfilPageComponent implements OnInit {
 
 
     ngOnInit(): void {
-        // TODO: Es muy ineficiente cargar todas las denuncias solo para contarlas, considerar un endpoint dedicado
         this.denunciaService.loadAll();
     }
 
@@ -63,15 +62,6 @@ export class PerfilPageComponent implements OnInit {
             Validators.pattern(/^[a-zA-Z0-9\s\-_]+$/)
         ]],
     });
-
-    constructor() {
-        effect(() => {
-            const user = this.currentUser();
-            if (user) {
-                // this.resetFormValues(user);
-            }
-        });
-    }
 
     async updateAlias(): Promise<void> {
         if (!this.isValidSubmission()) return;
