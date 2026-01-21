@@ -4,6 +4,7 @@
     </header>
 
     <form [formGroup]="form" (ngSubmit)="resolverDenunciaPorOperador()" class="space-y-5">
+        @if(isEnProceso()){
         <div>
             <div class="relative group">
                 <app-file-upload [uploadFn]="uploadEvidenceStrategy()" (fileUploaded)="agregarEvidencia($event)"
@@ -25,14 +26,19 @@
                 </div>
             </div>
         </div>
+        }
         <div class="flex gap-3">
+            @if(canIniciar()){
             <app-submit-button label="Iniciar proceso" [icon]="faPlay" [isLoading]="isLoading()"
                 [isDisabled]="isLoading()" btnType="button" (click)="iniciarDenunciaPorOperador()" class="w-full">
             </app-submit-button>
+            }
 
+            @if(isEnProceso()){
             <app-submit-button label="Resolver denuncia" [icon]="faCheck" [isLoading]="isLoading()"
                 [isDisabled]="form.invalid || isLoading()" btnType="submit" class="w-full">
             </app-submit-button>
+            }
         </div>
     </form>
 </div>

@@ -1,4 +1,4 @@
-import { Component, input, output, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, input, output, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { LoggerService } from '@/core/service/logging/logger.service';
@@ -40,7 +40,7 @@ export class ActionsOperadorComponent {
     // onSaveAssignment = output<string>();
 
     readonly form = this.fb.nonNullable.group({
-        evidenciasIds: new FormControl<string[]>([], { nonNullable: true }),
+        evidenciasIds: new FormControl<string[]>([], { nonNullable: true, validators: [Validators.required, Validators.minLength(1)] }),
         comentarioResolucion: new FormControl('', {
             nonNullable: true,
             validators: [
@@ -55,6 +55,18 @@ export class ActionsOperadorComponent {
     estadoOptions = ESTADO_DENUNCIA_ENUM;
 
     evidencias = signal<File[]>([]);
+
+    isEnProceso = computed(() => {
+        return this.currentDenuncia()?.estadoDenuncia === 'EN_PROCESO';
+    });
+
+    canResolve = computed(() => {
+        return this.isEnProceso() && this.form.valid;
+    });
+
+    canIniciar = computed(() => {
+        return this.currentDenuncia()?.estadoDenuncia === 'ASIGNADA';
+    });
 
 
     handleUploadError(event: FileUploadErrorEvent) {
