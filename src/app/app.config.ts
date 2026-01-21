@@ -12,36 +12,46 @@ import { ApiConfiguration as DenunciasConf } from '@/core/api/denuncias/api-conf
 import { ApiConfiguration as UsuariosConf } from '@/core/api/usuarios/api-configuration';
 import { ApiConfiguration as EvidenciasConf } from '@/core/api/evidencias/api-configuration';
 
+import { UsuariosFacade } from '@/data/services/usuarios.facade';
+import { AuthFacade } from '@/data/services/auth.facade';
+
 const authCodeFlowConfig: AuthConfig = {
-    // Url del servidor de identidad (pregúntale a Ander cual es el 'Issuer')
     issuer: 'http://localhost:9092',
 
-    // URL de tu Angular donde volverá el usuario tras loguearse
-    // redirectUri: window.location.origin + '/dashboard',
     redirectUri: 'http://localhost:4200/dashboard',
 
-    // El ID de cliente que Ander configuró en el backend para tu Angular
     clientId: 'ds-web',
 
-    // Permisos que pides (openid profile email offline_access, etc.)
     scope: 'openid profile',
 
     responseType: 'code',
     showDebugInformation: true,
     requireHttps: false, // false porque estás en localhost (http)
     strictDiscoveryDocumentValidation: false, // A veces necesario en dev local
-    // dummyClientSecret: '',
-
-    // Opcional: Asegura que el token endpoint use POST urlencoded
-    // (generalmente es el default, pero ayuda ser explícito)
-    // oidc: true
 };
 
-function initializeOAuth(oauthService: OAuthService) {
+function initializeApp(
+    oauthService: OAuthService,
+    usuariosFacade: UsuariosFacade,
+    authFacade: AuthFacade
+) {
     return async () => {
         oauthService.configure(authCodeFlowConfig);
         oauthService.setupAutomaticSilentRefresh();
-        await oauthService.loadDiscoveryDocumentAndTryLogin();
+        const isLoggedIn = await oauthService.loadDiscoveryDocumentAndTryLogin();
+
+        if (isLoggedIn || oauthService.hasValidAccessToken()) {
+            console.log('✅ User is logged in (or has valid token), fetching profile...');
+            try {
+                const user = await usuariosFacade.getProfile();
+                console.log('✅ User profile fetched successfully');
+                authFacade.updateAuthState(user);
+            } catch (error) {
+                console.error('Error initializing user session:', error);
+            }
+        } else {
+            console.log('ℹ️ User is NOT logged in or has expired token');
+        }
     };
 }
 
@@ -67,14 +77,16 @@ export const appConfig: ApplicationConfig = {
             denunciasConfig.rootUrl = `${environment.apiUrl}/api/denuncias`;
 
             const usuariosConfig = inject(UsuariosConf);
-            usuariosConfig.rootUrl = `${environment.apiUrl}/api/usuarios`;
+            usuariosConfig.rootUrl = `${environment.apiUrl}`;
 
             const evidenciasConfig = inject(EvidenciasConf);
-            evidenciasConfig.rootUrl = `${environment.apiUrl}/api/v1/evidencias`;
+            evidenciasConfig.rootUrl = `${environment.apiUrl}`;
 
             const oauthService = inject(OAuthService);
+            const usuariosFacade = inject(UsuariosFacade);
+            const authFacade = inject(AuthFacade);
 
-            return initializeOAuth(oauthService)();
+            return initializeApp(oauthService, usuariosFacade, authFacade)();
         })
     ],
 };

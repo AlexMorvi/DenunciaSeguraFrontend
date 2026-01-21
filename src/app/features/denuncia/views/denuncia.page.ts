@@ -66,6 +66,11 @@ export class DenunciaPageComponent {
 
     showActionsPanel = computed(() => {
         const denuncia = this.denuncia();
+
+        if (this.isSupervisor()) {
+            return false;
+        }
+
         if (denuncia?.estadoDenuncia === 'RESUELTA') {
             return false;
         }
@@ -82,7 +87,7 @@ export class DenunciaPageComponent {
             return false;
         }
 
-        return this.isJefe() || this.isSupervisor() || this.isOperador();
+        return this.isJefe() || this.isOperador();
     });
 
     uploadEvidenceStrategy = (file: File): Promise<string> => {

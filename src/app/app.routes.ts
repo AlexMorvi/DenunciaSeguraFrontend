@@ -34,7 +34,7 @@ export const routes: Routes = [
     },
     {
         path: '',
-        canMatch: [authGuard, roleMatchGuard(ROLES.OPERADOR_INTERNO)],
+        canMatch: [authGuard, roleMatchGuard(ROLES.OPERADOR_INTERNO, ROLES.OPERADOR_EXTERNO)],
         loadChildren: () => import('./features/operador/operador.routes').then(m => m.OPERADOR_ROUTES)
     },
     {

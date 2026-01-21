@@ -77,3 +77,26 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     // Si no hay token, mandamos la petición tal cual
     return next(req);
 };
+// export const authInterceptor: HttpInterceptorFn = (req, next) => {
+//     const oauthService = inject(OAuthService);
+
+
+//     if (req.url.includes('/oauth2/token')) {
+//         return next(req);
+//     }
+//     const tieneToken = oauthService.hasValidAccessToken();
+
+//     if (tieneToken) {
+//         const token = oauthService.getAccessToken();
+
+//         const authReq = req.clone({
+//             headers: req.headers.set('Authorization', `Bearer ${token}`)
+//         });
+//         return next(authReq);
+//     } else {
+//         // LOG DE DEPURACIÓN 4: Si entra aquí, es la causa del 401
+//         console.warn('⛔ La petición salió SIN token porque hasValidAccessToken() devolvió false.');
+//     }
+
+//     return next(req);
+// };

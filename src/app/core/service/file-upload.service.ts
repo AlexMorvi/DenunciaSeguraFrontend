@@ -1,7 +1,7 @@
 import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { LoggerService } from './logging/logger.service';
-import { firstValueFrom, retry, timeout } from 'rxjs';
+import { catchError, firstValueFrom, from, retry, throwError, timeout, timer } from 'rxjs';
 import { SKIP_AUTH } from '../http/http-context';
 import { EvidenceUploadError } from '../errors/create-denuncia.errors';
 import { InternoService } from '@/core/api/evidencias/services/interno.service';
@@ -52,7 +52,27 @@ export class FileUploadService {
             size: archivo.size
         };
 
+
         const response = await this.internoService.crearIntencionDeCarga(params);
+
+        // Envolvemos la llamada (que es una Promesa) en un Observable para usar los operadores de RxJS
+        // const response = await firstValueFrom(
+        //     from(this.internoService.crearIntencionDeCarga(params)).pipe(
+        //         // Configuración de Retry:
+        //         retry({
+        //             count: 2, // Reintentar 2 veces más (total 3 intentos)
+        //             delay: (error, retryCount) => {
+        //                 console.warn(`Intento de sesión fallido (${retryCount}). Reintentando...`, error);
+        //                 return timer(1000); // Esperar 1 segundo entre intentos
+        //             }
+        //         }),
+        //         // Timeout de seguridad por si el backend se queda colgado
+        //         timeout(10000),
+        //         catchError(err => {
+        //             return throwError(() => err);
+        //         })
+        //     )
+        // );
 
         if (!response.id || !response.url) {
             throw new Error('La sesión de carga no devolvió los datos requeridos (URL o ID faltantes).');

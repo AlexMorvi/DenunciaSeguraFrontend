@@ -6,9 +6,11 @@ import { EntidadResponsableEnum } from '../models/entidad-responsable-enum';
 import { EstadoDenunciaEnum } from '../models/estado-denuncia-enum';
 import { EvidenciaDto } from '../models/evidencia-dto';
 import { NivelAnonimatoEnum } from '../models/nivel-anonimato-enum';
+import { Reporter } from '../models/reporter';
 export interface DenunciaResponse {
   actualizadoEn?: string;
   categoriaDenuncia?: CategoriaDenunciaEnum;
+  ciudadano?: Reporter;
   ciudadanoId?: number;
   comentarioObservacion?: string;
   comentarioResolucion?: string;
@@ -19,10 +21,12 @@ export interface DenunciaResponse {
   evidenciaCreacionIds?: Array<EvidenciaDto>;
   evidenciasResolucionIds?: Array<EvidenciaDto>;
   id?: number;
+  jefe?: Reporter;
   jefeId?: number;
   latitud?: number;
   longitud?: number;
   nivelAnonimato?: NivelAnonimatoEnum;
+  operador?: Reporter;
   operadorId?: number;
   titulo?: string;
 }

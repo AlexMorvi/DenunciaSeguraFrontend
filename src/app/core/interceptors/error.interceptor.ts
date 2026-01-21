@@ -8,7 +8,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     const toast = inject(ToastService);
     const logger = inject(LoggerService);
 
-    return next(req).pipe(
+    return next(req);
+    /* return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
             if (req.url.includes('/oauth2/token')) {
                 return throwError(() => error);
@@ -37,5 +38,5 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
             return throwError(() => error);
         })
-    );
+    ) */;
 };
