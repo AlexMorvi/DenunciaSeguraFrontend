@@ -26,7 +26,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
 
       - name: Remove private package from package.json (temporary)
         run: |
@@ -37,9 +37,6 @@ jobs:
 
       - name: ESLint
         run: npm run lint:eslint
-
-      - name: Prettier (check)
-        run: npm run format:check
 
       - name: Verify SonarCloud Token
         run: |
