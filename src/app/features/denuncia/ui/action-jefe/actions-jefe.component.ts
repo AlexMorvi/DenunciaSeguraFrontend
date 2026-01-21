@@ -27,7 +27,7 @@ export class ActionsJefeComponent {
     protected readonly faTimes = faTimesCircle;
 
     // onAssignmentComplete = output<void>();
-    validar = output<{ aprobada: boolean, comentario?: string }>();
+    validar = output<{ aprobada: boolean, comentarioObservacion: string }>();
     asignar = output<{ idOperador: number }>();
 
     // TODO: Eliminar el signal true y utilizar el dinámico
@@ -86,9 +86,7 @@ export class ActionsJefeComponent {
     }
 
     async validarDenunciaPorJefe(aprobada = true) {
-        if (this.form.invalid) return;
-
         const comentarioObservacion = this.form.controls['comentarioObservacion'].value ?? '';
-        this.validar.emit({ aprobada, comentario: comentarioObservacion });
+        this.validar.emit({ aprobada, comentarioObservacion });
     }
 }

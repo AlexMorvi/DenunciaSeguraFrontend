@@ -29,9 +29,15 @@
         }
         <div class="flex gap-3">
             @if(canIniciar()){
-            <app-submit-button label="Iniciar proceso" [icon]="faPlay" [isLoading]="isLoading()"
-                [isDisabled]="isLoading()" btnType="button" (click)="iniciarDenunciaPorOperador()" class="w-full">
-            </app-submit-button>
+            <div class="w-full space-y-2">
+                <span class="block text-xs text-slate-500 text-center font-medium">
+                    <fa-icon [icon]="faInfoCircle" class="mr-1"></fa-icon>
+                    Presione el botón para empezar a trabajar en la denuncia.
+                </span>
+                <app-submit-button label="Iniciar proceso" [icon]="faPlay" [isLoading]="isLoading()"
+                    [isDisabled]="isLoading()" btnType="button" (click)="iniciarDenunciaPorOperador()" class="w-full">
+                </app-submit-button>
+            </div>
             }
 
             @if(isEnProceso()){

@@ -151,6 +151,21 @@
         </div>
         }
 
+        @if (denuncia()?.comentarioObservacion) {
+        <div class="mb-6">
+            <div class="flex items-center gap-2 mb-2">
+                <fa-icon [icon]="faCircleExclamation" class="text-xs text-amber-500"></fa-icon>
+                <span appText="caption" class="font-medium text-slate-500">Observación de Supervisión</span>
+            </div>
+
+            <div class="relative pl-4 py-3 pr-4 bg-slate-50 rounded-r-lg border-l-4 border-amber-500 shadow-sm">
+                <p class="text-sm text-slate-700 leading-relaxed italic">
+                    "{{ denuncia()?.comentarioObservacion }}"
+                </p>
+            </div>
+        </div>
+        }
+
         <div>
             <span appText="caption" class="block text-left mb-2">Evidencia de Resolución</span>
             <div class="h-64 w-full relative overflow-hidden rounded-lg">

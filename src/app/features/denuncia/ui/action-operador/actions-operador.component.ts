@@ -9,13 +9,14 @@ import { InputComponent } from '@/shared/ui/input/input.component';
 import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.component';
 import { ENTIDAD_ENUM } from '@/core/api/usuarios/models/entidad-enum-array';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
-import { faSave, faComment, faPlay, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faComment, faPlay, faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FileUploadErrorEvent } from '@/core/model/file-upload.event';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
     selector: 'app-actions-operador',
     standalone: true,
-    imports: [ReactiveFormsModule, UiStyleDirective, SubmitButtonComponent, FileUploadComponent, InputComponent],
+    imports: [ReactiveFormsModule, UiStyleDirective, SubmitButtonComponent, FileUploadComponent, InputComponent, FontAwesomeModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './actions-operador.component.html'
 })
@@ -28,6 +29,7 @@ export class ActionsOperadorComponent {
     protected readonly faComment = faComment;
     protected readonly faPlay = faPlay;
     protected readonly faCheck = faCheck;
+    protected readonly faInfoCircle = faInfoCircle;
 
     // TODO: Utilizar el tipo correcto una vez corregido el contrato
     // currentDenuncia = input.required<DenunciaStaffViewResponse>();

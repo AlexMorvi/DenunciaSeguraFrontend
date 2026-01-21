@@ -65,6 +65,15 @@ export class DenunciaPageComponent {
     });
 
     showActionsPanel = computed(() => {
+        const denuncia = this.denuncia();
+        if (denuncia?.estadoDenuncia === 'RESUELTA') {
+            return false;
+        }
+
+        if (denuncia?.estadoDenuncia === 'ASIGNADA' && this.isJefe()) {
+            return false;
+        }
+
         return this.isJefe() || this.isSupervisor() || this.isOperador();
     });
 
@@ -90,12 +99,11 @@ export class DenunciaPageComponent {
 
     async iniciarDenunciaPorOperador(payload: { idDenuncia: number }) {
         try {
-            //TODO: Crear método en el facade para iniciar el proceso
             await this.denunciaService.iniciarDenunciaPorOperador(
                 payload.idDenuncia
             );
             this.toast.showSuccess('Éxito', 'Denuncia iniciada correctamente');
-            await this.router.navigate(['/dashboard']);
+            await this.denunciaService.obtenerDenunciaPorId(payload.idDenuncia);
         } catch (error: any) {
             this.toast.showError(error.message || 'No se pudo iniciar la denuncia. Intente nuevamente.');
         }
@@ -128,16 +136,18 @@ export class DenunciaPageComponent {
         }
     }
 
-    async validarDenunciaPorJefe(payload: { aprobada: boolean, comentarioObservacion?: string }) {
+    async validarDenunciaPorJefe(payload: { aprobada: boolean, comentarioObservacion: string }) {
         try {
-            await this.denunciaService.validarDenunciaPorSupervisor(payload.aprobada, payload.comentarioObservacion);
             if (payload.aprobada) {
+                await this.denunciaService.validarDenunciaPorSupervisor(true, payload.comentarioObservacion);
                 this.toast.showSuccess('Éxito', 'Denuncia validada correctamente');
             } else {
+                await this.denunciaService.rechazarDenuncia(payload.comentarioObservacion);
                 this.toast.showSuccess('Éxito', 'Denuncia rechazada correctamente');
             }
+            await this.router.navigate(['/dashboard']);
         } catch (error: any) {
-            this.toast.showError(error.message || 'No se pudo validar la denuncia. Intente nuevamente.');
+            this.toast.showError(error.message || 'No se pudo procesar la denuncia. Intente nuevamente.');
         }
     }
 }
