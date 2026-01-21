@@ -50,12 +50,12 @@ export class ForgotPasswordComponent {
         try {
             await this.authFacade.forgotPassword(cedula);
             this.toast.showSuccess('Éxito',
-                'Si tu correo electrónico está registrado, recibirás un enlace para restablecer tu contraseña.'
+                'Si tu cédula está registrada, recibirás un enlace para restablecer tu contraseña.'
             );
             this.form.reset();
         } catch {
             this.toast.showSuccess('Éxito',
-                'Si tu correo electrónico está registrado, recibirás un enlace para restablecer tu contraseña.'
+                'Si tu cédula está registrada, recibirás un enlace para restablecer tu contraseña.'
             );
         }
     }

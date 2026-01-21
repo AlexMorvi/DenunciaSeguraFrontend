@@ -7,37 +7,17 @@
         </div>
 
         <h1 appText="h1">Bienvenido de nuevo</h1>
-        <p appText="light-body">Inicia sesión en tu cuenta</p>
+        <p appText="light-body">Inicia sesión en tu cuenta con tu cédula</p>
     </div>
 
-    <form [formGroup]="form" class="space-y-5" novalidate>
-        <!-- <form [formGroup]="form" (ngSubmit)="login()" class="space-y-5" novalidate></form> -->
-
-        <div>
-            <label appText="label" for="login-email">Correo electrónico</label>
-            <app-input id="login-email" formControlName="email" type="email" inputmode="email" autocomplete="username"
-                placeholder="ejemplo@email.com" [icon]="faEnvelope" [maxlength]="254" [autofocus]="true" />
-        </div>
-
-        <div>
-            <label appText="label" for="login-password">Contraseña</label>
-            <app-input id="login-password" formControlName="password" type="password" autocomplete="current-password"
-                placeholder="••••••••••••••" [icon]="faLock" [maxlength]="128" />
-        </div>
-
-        <app-submit-button [variant]="'full'" [isLoading]="isLoading()" [isDisabled]="form.invalid"
-            label="Iniciar sesión" loadingLabel="Iniciando..." [icon]="faArrowRight">
-        </app-submit-button>
-    </form>
-
-    <div class="relative my-5">
+    <!-- <div class="relative my-5">
         <div class="absolute inset-0 flex items-center">
             <div class="w-full border-t border-gray-200"></div>
         </div>
         <div class="relative flex justify-center text-sm">
             <span class="bg-white px-2 text-gray-500">¿O prefieres?</span>
         </div>
-    </div>
+    </div> -->
 
     <button type="button" (click)="ingresar()"
         class="w-full mb-5 flex justify-center items-center gap-2 px-4 py-3 bg-white border-2 border-slate-100 rounded-xl text-slate-600 font-medium hover:bg-slate-50 hover:border-slate-200 transition-all duration-200">
