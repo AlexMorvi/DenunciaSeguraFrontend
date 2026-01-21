@@ -77,8 +77,8 @@
                     <tr
                         class="group hover:bg-gray-50/80 transition-colors duration-200 border-l-4 border-transparent hover:border-blue-500">
 
-                        <td class="px-4 py-3 whitespace-nowrap text-left">
-                            <button type="button" class="w-full text-left" (click)="navigateToDenuncia(denuncia.id)"
+                        <td class="px-4 py-3 whitespace-nowrap text-center">
+                            <button type="button" class="w-full text-center" (click)="navigateToDenuncia(denuncia.id)"
                                 [attr.aria-label]="'Ver denuncia ' + (denuncia.titulo || '')">
                                 <div
                                     class="text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors">
@@ -87,10 +87,10 @@
                             </button>
                         </td>
 
-                        <td class="px-4 py-3 whitespace-nowrap text-left">
-                            <div class="text-sm text-gray-500 flex items-center justify-start gap-2"> <span
+                        <td class="px-4 py-3 whitespace-nowrap text-center">
+                            <div class="text-sm text-gray-500 flex items-center justify-center gap-2"> <span
                                     class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
-                                {{ denuncia.categoriaDenuncia }}
+                                {{ getCategoriaLabel(denuncia.categoriaDenuncia) }}
                             </div>
                         </td>
 
@@ -99,7 +99,7 @@
                         </td>
 
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center">
-                            {{ denuncia.entidadResponsable || '-' }}
+                            {{ getEntidadLabel(denuncia.entidadResponsable) }}
                         </td>
 
                         <td class="px-4 py-3 whitespace-nowrap text-center">

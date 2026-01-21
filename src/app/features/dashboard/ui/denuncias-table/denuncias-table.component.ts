@@ -142,4 +142,28 @@ export class DenunciasTableComponent {
             return String(value);
         }
     }
+
+    getEntidadLabel(entidad?: string | null): string {
+        if (!entidad) return '-';
+        const map: Record<string, string> = {
+            'MUNICIPIO': 'Municipio',
+            'EMPRESA_ELECTRICA': 'Empresa Eléctrica',
+            'EMPRESA_AGUA_POTABLE': 'Empresa de Agua Potable'
+        };
+        return map[entidad] || entidad;
+    }
+
+    getCategoriaLabel(categoria?: string | null): string {
+        if (!categoria) return '-';
+        // 'VIALIDAD' | 'SANIDAD' | 'ILUMINACION' | 'JARDINERIA' | 'AGUA' | 'OTROS'
+        const map: Record<string, string> = {
+            'VIALIDAD': 'Vialidad',
+            'SANIDAD': 'Sanidad',
+            'ILUMINACION': 'Iluminación',
+            'JARDINERIA': 'Jardinería',
+            'AGUA': 'Agua Potable',
+            'OTROS': 'Otros'
+        };
+        return map[categoria] || categoria;
+    }
 }

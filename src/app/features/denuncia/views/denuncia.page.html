@@ -32,7 +32,8 @@
         @case (isOperador()) {
         @defer (on idle) {
         <app-actions-operador [currentDenuncia]="denuncia" [uploadEvidenceStrategy]="uploadEvidenceStrategy"
-            [isLoading]="isLoading()" (save)="resolverDenunciaPorOperador($event)" />
+            [isLoading]="isLoading()" (save)="resolverDenunciaPorOperador($event)"
+            (iniciar)="iniciarDenunciaPorOperador($event)" />
         } @placeholder {
         <div class=" h-full w-full bg-slate-100 animate-pulse rounded-lg min-h-[200px]">
         </div>
