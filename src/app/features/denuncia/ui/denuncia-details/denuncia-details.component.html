@@ -60,7 +60,7 @@
 
             <div class="flex-1 min-h-0 w-full">
                 <app-evidencia-viewer class="block h-full w-full" [evidencias]="evidencias()"
-                    [emptyStateKey]="'ciudadano'" (imageError)="propagateError($event)">
+                    [emptyStateKey]="'ciudadano'">
                 </app-evidencia-viewer>
             </div>
         </div>
@@ -165,7 +165,7 @@
             <span appText="caption" class="block text-left mb-2">Evidencia de Resolución</span>
             <div class="h-64 w-full relative overflow-hidden rounded-lg">
                 <app-evidencia-viewer class="block h-full w-full" [evidencias]="evidenciasResolucion()"
-                    [emptyStateKey]="'operador'" (imageError)="propagateError($event)">
+                    [emptyStateKey]="'operador'">
                 </app-evidencia-viewer>
             </div>
         </div>

@@ -2,7 +2,6 @@ import { Component, input, ChangeDetectionStrategy, computed, output } from '@an
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faImages, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { SecureImageComponent } from '@/shared/ui/img/img.component';
-import { ImgEvent } from '@/core/model/app.event';
 import { EvidenciaDto } from '@/core/api/denuncias/models';
 export type EvidenceEmptyKey = 'ciudadano' | 'operador';
 
@@ -14,7 +13,6 @@ export type EvidenceEmptyKey = 'ciudadano' | 'operador';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EvidenciaViewerComponent {
-    imageError = output<ImgEvent>();
     evidencias = input<EvidenciaDto[] | undefined>([]);
     emptyStateKey = input<EvidenceEmptyKey>('ciudadano');
 
@@ -25,10 +23,6 @@ export class EvidenciaViewerComponent {
         'ciudadano': 'El ciudadano/a no adjuntó fotografías al momento de crear la denuncia. La denuncia se sustenta en la descripción proporcionada.',
         'operador': 'El operador/a no adjuntó fotografías al momento de resolver la denuncia.',
     };
-
-    propagateError(event: ImgEvent) {
-        this.imageError.emit(event);
-    }
 
     emptyStateMessage = computed(() => {
         const key = this.emptyStateKey();

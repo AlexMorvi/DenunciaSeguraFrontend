@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular/build:application",
                     "options": {
-                        "outputPath": "dist/frontend",
+                        "outputPath": "dist/DenunciaSeguraFrontend",
                         "index": "public/index.html",
                         "browser": "src/main.ts",
                         "polyfills": [

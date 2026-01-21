@@ -7,8 +7,7 @@
 
         @if (evidencia.contentType?.includes('image')) {
         <app-secure-image [src]="evidencia.url"
-            class="block w-full h-full transform transition-transform duration-500 group-hover:scale-105"
-            (uploadError)="propagateError($event)" />
+            class="block w-full h-full transform transition-transform duration-500 group-hover:scale-105" />
         } @else {
         <div class="flex flex-col items-center justify-center h-full w-full text-slate-400 bg-slate-50">
             <fa-icon [icon]="faVideo" class="text-3xl mb-2 text-blue-500"></fa-icon>
