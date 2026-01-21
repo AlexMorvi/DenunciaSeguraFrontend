@@ -51,7 +51,7 @@
         "@fortawesome/fontawesome-free": "^7.1.0",
         "@fortawesome/fontawesome-svg-core": "^7.1.0",
         "@fortawesome/free-solid-svg-icons": "^7.1.0",
-        "@jotavalla/denunciasegura-openapi": "^0.1.4",
+
         "@types/leaflet": "^1.9.21",
         "angular-oauth2-oidc": "^20.0.2",
         "leaflet": "^1.9.4",
