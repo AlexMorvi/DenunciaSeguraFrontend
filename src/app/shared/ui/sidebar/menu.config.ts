@@ -1,6 +1,6 @@
 import { ROLES } from "@/shared/constants/roles.const";
 import { MenuItem } from "./menu.types";
-import { faBell, faUser, faUsers, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faUsers, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 
 export const MENU_ITEMS: MenuItem[] = [
     {
