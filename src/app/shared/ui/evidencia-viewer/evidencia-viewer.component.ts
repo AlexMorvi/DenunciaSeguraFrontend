@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy, computed, output } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy, computed } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faImages, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { SecureImageComponent } from '@/shared/ui/img/img.component';
