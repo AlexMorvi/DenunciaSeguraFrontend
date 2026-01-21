@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { InternoService } from '@/core/api/usuarios/services/interno.service';
 import { PerfilService } from '@/core/api/usuarios/services/perfil.service';
 import { UsuarioResponse } from '@/core/api/usuarios/models/usuario-response';

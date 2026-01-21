@@ -155,7 +155,6 @@ export class DenunciasTableComponent {
 
     getCategoriaLabel(categoria?: string | null): string {
         if (!categoria) return '-';
-        // 'VIALIDAD' | 'SANIDAD' | 'ILUMINACION' | 'JARDINERIA' | 'AGUA' | 'OTROS'
         const map: Record<string, string> = {
             'VIALIDAD': 'Vialidad',
             'SANIDAD': 'Sanidad',
