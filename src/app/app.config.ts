@@ -112,7 +112,7 @@ const authCodeFlowConfig: AuthConfig = {
     issuer: environment.authIssuer, // Lee del environment
 
     // TRUCO PRO: Esto detecta automáticamente si estás en localhost o en Azure
-    redirectUri: window.location.origin + '/dashboard',
+    redirectUri: globalThis.location.origin + '/dashboard',
 
     clientId: 'ds-web',
     scope: 'openid profile',
