@@ -6,12 +6,12 @@ import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.c
 import { DenunciaFacade } from '@/data/services/denuncia.facade';
 import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { IconDefinition, faSave } from '@fortawesome/free-solid-svg-icons';
 import { ESTADOS_DENUNCIA } from '@/shared/constants/estados.const';
 import { EstadoDenunciaEnum } from '@/core/api/denuncias/models';
 import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
 import { UsuarioResponse } from '@/core/api/usuarios/models';
+import { UsuariosFacade } from '@/data/services/usuarios.facade';
 
 @Component({
     selector: 'app-perfil-page',
@@ -21,10 +21,11 @@ import { UsuarioResponse } from '@/core/api/usuarios/models';
 })
 export class PerfilPageComponent implements OnInit {
     private readonly fb = inject(FormBuilder);
-    private readonly router = inject(Router);
+    // private readonly router = inject(Router);
     private readonly authService = inject(AuthFacade);
     private readonly denunciaService = inject(DenunciaFacade);
     private readonly toast = inject(ToastService);
+    private readonly usuariosFacade = inject(UsuariosFacade);
 
     // Signals del Facade
     readonly currentUser = this.authService.currentUser;
@@ -49,6 +50,14 @@ export class PerfilPageComponent implements OnInit {
     readonly isCitizen = computed(() => this.currentUser()?.rol === ROLES.CIUDADANO);
     readonly isStaff = computed(() => this.currentUser()?.rol !== ROLES.CIUDADANO);
 
+    constructor() {
+        effect(() => {
+            const user = this.currentUser();
+            if (user) {
+                this.resetFormValues(user);
+            }
+        });
+    }
 
     ngOnInit(): void {
         this.denunciaService.loadAll();
@@ -65,11 +74,20 @@ export class PerfilPageComponent implements OnInit {
 
     async updateAlias(): Promise<void> {
         if (!this.isValidSubmission()) return;
+        const user = this.authService.currentUser();
+        if (!user || !user.id) return;
 
         const { alias: newAlias } = this.form.getRawValue();
 
         try {
-            await this.authService.updateMyAlias(newAlias);
+            await this.usuariosFacade.updateAlias({
+                id: user.id,
+                body: {
+                    aliasPublico: newAlias
+                }
+            });
+            // Recargar perfil si es necesario, o confiar en la actualización optimista del facade
+            // await this.usuariosFacade.getProfile(); 
             this.handleUpdateSuccess(newAlias);
 
         } catch {
@@ -78,8 +96,8 @@ export class PerfilPageComponent implements OnInit {
     }
 
     cancel(): void {
-        // const user = this.currentUser();
-        // if (user) this.resetFormValues(user);
+        const user = this.currentUser();
+        if (user) this.resetFormValues(user);
     }
 
     // --- Métodos Privados (Helpers & Business Logic) ---
@@ -113,5 +131,29 @@ export class PerfilPageComponent implements OnInit {
 
         this.form.controls.alias.setValue(newAlias);
         this.form.markAsPristine();
+    }
+
+    getRolLabel(rol?: string): string {
+        if (!rol) return '';
+        const roles: Record<string, string> = {
+            'ADMIN': 'Administrador',
+            'SUPERVISOR': 'Supervisor',
+            'JEFE_OP_INT': 'Jefe Operativo Interno',
+            'JEFE_OP_EXT': 'Jefe Operativo Externo',
+            'OP_INT': 'Operador Interno',
+            'OP_EXT': 'Operador Externo',
+            'CIUDADANO': 'Ciudadano'
+        };
+        return roles[rol] || rol;
+    }
+
+    getEntidadLabel(entidad?: string): string {
+        if (!entidad) return '';
+        const entidades: Record<string, string> = {
+            'MUNICIPIO': 'Municipio',
+            'EMPRESA_ELECTRICA': 'Empresa Eléctrica',
+            'EMPRESA_AGUA_POTABLE': 'Empresa de Agua Potable'
+        };
+        return entidades[entidad] || entidad;
     }
 }

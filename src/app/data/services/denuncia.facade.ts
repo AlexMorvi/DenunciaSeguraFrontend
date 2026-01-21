@@ -1,4 +1,4 @@
-import { CrearDenunciaRequest, DenunciaResponse, DenunciaListadoResponse, EntidadResponsableEnum } from '@/core/api/denuncias/models';
+import { CrearDenunciaRequest, DenunciaResponse, DenunciaListadoResponse, EntidadResponsableEnum, DenunciaEstadoHistorialResponse } from '@/core/api/denuncias/models';
 import { DenunciasService } from '@/core/api/denuncias/services/denuncias.service';
 import { WorkflowService } from '@/core/api/denuncias/services/workflow.service';
 import { Injectable, inject, signal } from '@angular/core';
@@ -38,6 +38,9 @@ export class DenunciaFacade {
 
     private readonly _currentDenuncia = signal<DenunciaResponse | null>(null);
     public currentDenuncia = this._currentDenuncia.asReadonly();
+
+    private readonly _historialEstados = signal<DenunciaEstadoHistorialResponse | null>(null);
+    public historialEstados = this._historialEstados.asReadonly();
 
     async loadAll(): Promise<void> {
         this._loading.set(true);
@@ -166,6 +169,54 @@ export class DenunciaFacade {
             });
         } catch {
             this._error.set('Error al validar la denuncia.');
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+
+    async rechazarDenuncia(motivo: string): Promise<void> {
+        console.log('DenunciaFacade: Iniciando rechazo de denuncia. Motivo:', motivo);
+        this._loading.set(true);
+        this._error.set(null);
+
+        const denunciaId = this._currentDenuncia()?.id;
+        console.log('DenunciaFacade: ID Denuncia:', denunciaId);
+
+        if (!denunciaId) {
+            console.error('DenunciaFacade: No se encontró ID de denuncia para rechazar');
+            this._error.set('No hay denuncia seleccionada para rechazar.');
+            this._loading.set(false);
+            return;
+        }
+
+        try {
+            console.log('DenunciaFacade: Enviando petición de rechazo al workflow service...');
+            await this.workflowService.rechazarDenuncia({
+                denunciaId: denunciaId,
+                body: { motivo }
+            });
+            console.log('DenunciaFacade: Respuesta exitosa del servicio');
+            this.logger.logInfo(`Denuncia ${denunciaId} rechazada`);
+            await this.obtenerDenunciaPorId(denunciaId);
+        } catch (error) {
+            console.error('DenunciaFacade: Error capturado al rechazar denuncia:', error);
+            this.logger.logError('Error al rechazar la denuncia', error);
+            this._error.set('Error al rechazar la denuncia.');
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async obtenerHistorialEstados(idDenuncia: number): Promise<void> {
+        this._loading.set(true);
+        this._historialEstados.set(null);
+
+        try {
+            const data = await this.workflowService.denunciaHistorialEstados({ denunciaId: idDenuncia });
+            this._historialEstados.set(data);
+        } catch (error) {
+            this.logger.logError('Error obteniendo historial de estados', error);
         } finally {
             this._loading.set(false);
         }

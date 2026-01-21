@@ -19,7 +19,6 @@ import { EvidenciaViewerComponent } from '@/shared/ui/evidencia-viewer/evidencia
 import { LocationEvent, SecurityEvent, SystemEvent } from '@/core/model/app.event';
 import { DenunciaResponse, EvidenciaDto } from '@/core/api/denuncias/models';
 import { EvidenceFacade } from '@/data/services/evidence.facade';
-import { UsuariosFacade } from '@/data/services/usuarios.facade';
 
 @Component({
     selector: 'app-denuncia-details',
@@ -33,7 +32,6 @@ import { UsuariosFacade } from '@/data/services/usuarios.facade';
 export class DenunciaDetailsComponent {
     errorEvent = output<SecurityEvent>();
     private readonly evidenceFacade = inject(EvidenceFacade);
-    private readonly usuariosFacade = inject(UsuariosFacade);
 
     // Signal para almacenar evidencias completas con URL
     protected evidencias = signal<EvidenciaDto[]>([]);
@@ -101,21 +99,16 @@ export class DenunciaDetailsComponent {
             if (!currentDenuncia?.id) {
                 this.evidencias.set([]);
                 this.evidenciasResolucion.set([]);
-                this.nombreReportado.set('Anónimo');
+                // this.nombreReportado.set('Anónimo');
                 return;
             }
 
-            // Lógica de nombre reportado
-            if (currentDenuncia.nivelAnonimato === 'REAL' && currentDenuncia.ciudadanoId) {
-                try {
-                    const user = await this.usuariosFacade.findUsuarioById(currentDenuncia.ciudadanoId);
-                    this.nombreReportado.set(user.nombre || 'Desconocido');
-                } catch {
-                    this.nombreReportado.set('Error obteniendo nombre');
-                }
+            if (currentDenuncia.nivelAnonimato === 'REAL') {
+                this.nombreReportado.set(currentDenuncia.ciudadano?.nombre || 'Desconocido');
+            } else if (currentDenuncia.nivelAnonimato === 'PSEUDOANONIMO') {
+                this.nombreReportado.set(currentDenuncia.ciudadano?.alias || 'PSEUDOANONIMO');
             } else {
-                // PSEUDOANONIMO (Default)
-                this.nombreReportado.set(String(currentDenuncia.ciudadanoId || 'ID Oculto'));
+                this.nombreReportado.set('Anónimo');
             }
 
             try {
@@ -204,5 +197,28 @@ export class DenunciaDetailsComponent {
             };
             this.propagateError(event);
         }
+    }
+
+    getEntidadLabel(entidad?: string | null): string {
+        if (!entidad) return 'No asignada';
+        const map: Record<string, string> = {
+            'MUNICIPIO': 'Municipio',
+            'EMPRESA_ELECTRICA': 'Empresa Eléctrica',
+            'EMPRESA_AGUA_POTABLE': 'Empresa de Agua Potable'
+        };
+        return map[entidad] || entidad;
+    }
+
+    getCategoriaLabel(categoria?: string | null): string {
+        if (!categoria) return '-';
+        const map: Record<string, string> = {
+            'VIALIDAD': 'Vialidad',
+            'SANIDAD': 'Sanidad',
+            'ILUMINACION': 'Iluminación',
+            'JARDINERIA': 'Jardinería',
+            'AGUA': 'Agua Potable',
+            'OTROS': 'Otros'
+        };
+        return map[categoria] || categoria;
     }
 }

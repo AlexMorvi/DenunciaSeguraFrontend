@@ -11,10 +11,8 @@ import { PasswordResetRequest } from '@/core/api/auth/models/password-reset-requ
 import { PasswordForgotRequest } from '@/core/api/auth/models/password-forgot-request';
 
 import { UsuarioResponse } from '@/core/api/usuarios/models/usuario-response';
-import { ActualizarAliasRequest } from '@/core/api/usuarios/models/actualizar-alias-request';
 import { ROL_ENUM } from '@/core/api/usuarios/models/rol-enum-array';
 import { ENTIDAD_ENUM } from '@/core/api/usuarios/models/entidad-enum-array';
-import { RolEnum } from '@/core/api/usuarios/models/rol-enum';
 
 
 @Injectable({ providedIn: 'root' })
@@ -155,31 +153,6 @@ export class AuthFacade {
         return await this.adminService.registrarStaff({ body: request });
     }
 
-    async updateMyAlias(alias: string): Promise<void> {
-        const userId = this.currentUser()?.id;
-        if (!userId) {
-            this.logger.logError('AuthFacade', 'Intento de actualizar alias sin usuario autenticado');
-            return;
-        }
-
-        const body: ActualizarAliasRequest = { aliasPublico: alias };
-        this._loading.set(true);
-
-        try {
-            await this.usuariosInternoService.actualizarAlias({ id: userId, body });
-            this._currentUser.update((currentUser) => {
-                if (!currentUser) return null;
-                return {
-                    ...currentUser,
-                    aliasPublico: alias,
-                };
-            });
-        } finally {
-            this._loading.set(false);
-        }
-    }
-
-    // TODO: manejar errores
     async logout(): Promise<void> {
         try {
             // await firstValueFrom(logout(this.http, this.config.rootUrl));

@@ -74,6 +74,14 @@ export class DenunciaPageComponent {
             return false;
         }
 
+        if (denuncia?.estadoDenuncia === 'EN_PROCESO' && this.isJefe()) {
+            return false;
+        }
+
+        if (denuncia?.estadoDenuncia === 'EN_VALIDACION' && this.isOperador()) {
+            return false;
+        }
+
         return this.isJefe() || this.isSupervisor() || this.isOperador();
     });
 
@@ -139,10 +147,10 @@ export class DenunciaPageComponent {
     async validarDenunciaPorJefe(payload: { aprobada: boolean, comentarioObservacion: string }) {
         try {
             if (payload.aprobada) {
-                await this.denunciaService.validarDenunciaPorSupervisor(true, payload.comentarioObservacion);
+                await this.denunciaService.validarDenunciaPorSupervisor(payload.aprobada, payload.comentarioObservacion);
                 this.toast.showSuccess('Éxito', 'Denuncia validada correctamente');
             } else {
-                await this.denunciaService.rechazarDenuncia(payload.comentarioObservacion);
+                await this.denunciaService.validarDenunciaPorSupervisor(payload.aprobada, payload.comentarioObservacion);
                 this.toast.showSuccess('Éxito', 'Denuncia rechazada correctamente');
             }
             await this.router.navigate(['/dashboard']);

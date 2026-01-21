@@ -35,7 +35,7 @@
             <span class=" text-xs text-slate-500 font-medium block text-left mb-1">Categoría</span>
             <div class="font-semibold text-slate-700 flex items-center gap-2">
                 <fa-icon [icon]="faLayerGroup" class="text-slate-500"></fa-icon>
-                {{ denuncia()?.categoriaDenuncia }}
+                {{ getCategoriaLabel(denuncia()?.categoriaDenuncia) }}
             </div>
         </div>
 
@@ -113,19 +113,19 @@
             <div>
                 <span appText="caption" class="block text-left mb-1">Entidad Encargada</span>
                 <div class="font-semibold text-slate-700">
-                    {{ denuncia()?.entidadResponsable }}
+                    {{ getEntidadLabel(denuncia()?.entidadResponsable) }}
                 </div>
             </div>
             <div>
                 <span appText="caption" class="block text-left mb-1">Jefe Encargado</span>
                 <div class="font-semibold text-slate-700">
-                    {{ denuncia()?.jefeId || 'No asignado' }}
+                    {{ denuncia()?.jefe?.nombre || denuncia()?.jefe?.alias || 'No asignado' }}
                 </div>
             </div>
             <div>
                 <span appText="caption" class="block text-left mb-1">Operador Encargado</span>
                 <div class="font-semibold text-slate-700">
-                    {{ denuncia()?.operadorId || 'No asignado' }}
+                    {{ denuncia()?.operador?.nombre || denuncia()?.operador?.alias || 'No asignado' }}
                 </div>
             </div>
         </div>
