@@ -5,7 +5,6 @@ import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angu
 import * as L from 'leaflet';
 import { CategoriaDenunciaEnum } from '@/core/api/denuncias/models/categoria-denuncia-enum';
 import { IconDefinition, faRoad, faLightbulb, faTrashAlt, faTint, faSeedling, faEllipsisH, faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { NIVEL_ANONIMATO_ENUM as NIVEL_ANONIMATO_ARRAY } from '@/core/api/denuncias/models/nivel-anonimato-enum-array';
 import { NIVEL_ANONIMATO } from '@/shared/constants/nivel-anonimato.const';
 import { DenunciaFacade, CreacionDenunciaData } from '@/data/services/denuncia.facade';
 import { CategorySelectorComponent } from '@/shared/ui/category-selector/category-selector.component';
@@ -13,18 +12,15 @@ import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.compone
 import { SelectComponent } from '@/shared/ui/select/select.component';
 import { SubmitButtonComponent } from '@/shared/ui/submit-button/submit-button.component';
 import { ToastService } from '@/core/service/toast/toast.service';
-import { LoggerService } from '@/core/service/logging/logger.service';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { InputComponent } from '@/shared/ui/input/input.component';
-// import { FileUploadService } from '@/core/service/file-upload.service';
 import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
 
 const DEFAULT_ZOOM = 13;
 const DEFAULT_COORDS = { lat: -0.1807, lng: -78.4678 }; // Quito
 const FOCUSED_ZOOM = 15;
 
-// Configuración de iconos Leaflet (fuera de la clase para no recrear)
 const ICON_RED_CONFIG = L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -49,9 +45,7 @@ export class CrearDenunciaComponent implements OnDestroy {
     protected readonly faTimes = faTimes;
 
     private readonly toast = inject(ToastService);
-    private readonly logger = inject(LoggerService);
     private readonly router = inject(Router);
-    // private readonly fileService = inject(FileUploadService);
 
     evidencias = signal<File[]>([]);
 
@@ -76,7 +70,7 @@ export class CrearDenunciaComponent implements OnDestroy {
         { value: 'JARDINERIA', label: 'Jardinería', icon: faSeedling, colorClass: 'text-emerald-500' },
         { value: 'OTROS', label: 'Otro', icon: faEllipsisH, colorClass: 'text-purple-500' }
     ];
-    readonly listadoAnonimato = NIVEL_ANONIMATO_ARRAY;
+    readonly listadoAnonimato: string[] = ['PSEUDOANONIMO', 'REAL'];
 
     private map: L.Map | undefined;
     private marker: L.Marker | undefined;
@@ -138,7 +132,6 @@ export class CrearDenunciaComponent implements OnDestroy {
     }
 
     uploadEvidenceStrategy = (_file: File): Promise<string> => {
-        // Simular carga para la UI. La carga real de evidencias se realiza en el Facade al enviar el formulario.
         return new Promise((resolve) => {
             setTimeout(() => resolve(crypto.randomUUID()), 1000);
         });
@@ -229,9 +222,7 @@ export class CrearDenunciaComponent implements OnDestroy {
         this.form.get('latitud')?.markAsTouched();
     }
 
-    // TODO: enviar el logger correctamente
     handleUploadError(event: FileUploadErrorEvent) {
         this.toast.showWarning(event.userMessage);
-        this.logger.logError('Upload error in actions panel', { ...event.logData, code: 'UPLOAD_ERROR', timestamp: new Date().toISOString() });
     }
 } 

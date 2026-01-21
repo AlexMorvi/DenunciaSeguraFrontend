@@ -49,14 +49,9 @@ export class LoggerService {
             level,
             message,
             timestamp: new Date().toISOString(),
-            url: this.isBrowser ? window.location.href : 'SSR',
+            url: this.isBrowser ? globalThis.location.href : 'SSR',
             extraInfo: this.sanitizeData(details)
         };
-
-        if (isDevMode()) {
-            const color = level === 'ERROR' ? 'color: red; font-weight: bold' : 'color: blue';
-            console.log(`%c[${level}] ${message}`, color, details);
-        }
 
         this.logQueue.push(entry);
 
@@ -118,7 +113,7 @@ export class LoggerService {
 
         if (this.isBrowser) {
             this.ngZone.runOutsideAngular(() => {
-                window.addEventListener('visibilitychange', () => {
+                globalThis.addEventListener('visibilitychange', () => {
                     if (document.visibilityState === 'hidden') {
                         this.flushOnExit();
                     }

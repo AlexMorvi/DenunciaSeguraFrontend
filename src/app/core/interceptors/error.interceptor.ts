@@ -1,12 +1,6 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { catchError, throwError } from 'rxjs';
-import { ToastService } from '../service/toast/toast.service';
-import { LoggerService } from '../service/logging/logger.service';
+import { HttpInterceptorFn } from '@angular/common/http';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-    const toast = inject(ToastService);
-    const logger = inject(LoggerService);
 
     return next(req);
     /* return next(req).pipe(

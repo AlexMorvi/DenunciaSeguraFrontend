@@ -33,7 +33,6 @@ export class DenunciaDetailsComponent {
     errorEvent = output<SecurityEvent>();
     private readonly evidenceFacade = inject(EvidenceFacade);
 
-    // Signal para almacenar evidencias completas con URL
     protected evidencias = signal<EvidenciaDto[]>([]);
     protected evidenciasResolucion = signal<EvidenciaDto[]>([]);
     protected nombreReportado = signal<string>('Anónimo');
@@ -43,7 +42,6 @@ export class DenunciaDetailsComponent {
     }
 
     private readonly destroyRef = inject(DestroyRef);
-    // Tipo OpenAPI para evitar `any` y fortalecer el contrato de datos
     denuncia = input.required<DenunciaResponse | null>();
 
     protected readonly faMapMarkerAlt = faMapMarkerAlt;
@@ -78,7 +76,6 @@ export class DenunciaDetailsComponent {
     private marker: L.Marker | undefined;
     private readonly mapContainer = viewChild.required<ElementRef>('mapContainer');
 
-    // Icon config reused from crear-denuncia to avoid missing default markers
     private static readonly ICON_RED_CONFIG = L.icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -93,13 +90,11 @@ export class DenunciaDetailsComponent {
             this.initMapIfCoords();
         });
 
-        // Efecto para cargar evidencias cuando cambia la denuncia
         effect(async () => {
             const currentDenuncia = this.denuncia();
             if (!currentDenuncia?.id) {
                 this.evidencias.set([]);
                 this.evidenciasResolucion.set([]);
-                // this.nombreReportado.set('Anónimo');
                 return;
             }
 
@@ -116,10 +111,8 @@ export class DenunciaDetailsComponent {
                     tipo: 'DENUNCIA',
                     id: currentDenuncia.id
                 });
-                // Mapeamos o casteamos porque EvidenciaInternaResponse es compatible con EvidenciaDto
                 this.evidencias.set(results as unknown as EvidenciaDto[]);
             } catch {
-                // El error ya es manejado/logueado en el facade, pero aseguramos estado limpio
                 this.evidencias.set([]);
             }
 

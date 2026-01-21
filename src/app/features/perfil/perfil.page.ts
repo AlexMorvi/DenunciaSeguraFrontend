@@ -75,7 +75,7 @@ export class PerfilPageComponent implements OnInit {
     async updateAlias(): Promise<void> {
         if (!this.isValidSubmission()) return;
         const user = this.authService.currentUser();
-        if (!user || !user.id) return;
+        if (!user?.id) return;
 
         const { alias: newAlias } = this.form.getRawValue();
 

@@ -1,5 +1,4 @@
 import { Component, inject, computed, input, effect, untracked, ChangeDetectionStrategy, numberAttribute } from '@angular/core';
-// import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models/denuncia-staff-view-response';
 import { DenunciaLayoutComponent } from '@/core/layout/denuncia-layout/denuncia-layout.component';
 import { ROLES } from '@/shared/constants/roles.const';
 import { DenunciaDetailsComponent } from '../ui/denuncia-details/denuncia-details.component';
@@ -35,7 +34,6 @@ export class DenunciaPageComponent {
 
     constructor() {
         effect(() => {
-            // TODO: Validar el formato del id 
             const currentId = this.id();
             if (currentId) {
                 untracked(() => {
@@ -94,7 +92,6 @@ export class DenunciaPageComponent {
         return this.fileService.subirEvidencia(file);
     }
 
-    //TODO: Revisar si después de iniciar el proceso se puede resolver la denuncia 
     async resolverDenunciaPorOperador(payload: { idDenuncia: number; comentario: string; evidenciasIds: string[] }) {
         try {
             await this.denunciaService.resolverDenunciaPorOperador(
@@ -103,7 +100,6 @@ export class DenunciaPageComponent {
                 payload.evidenciasIds
             );
             this.toast.showSuccess('Éxito', 'Denuncia resuelta correctamente');
-            // TODO: Cambiar ruta al operador
             await this.router.navigate(['/dashboard']);
         } catch (error: any) {
             this.toast.showError(error.message || 'No se pudo resolver la denuncia. Intente nuevamente.');
@@ -136,7 +132,6 @@ export class DenunciaPageComponent {
 
     async asignarJefePorSupervisor(payload: { idDenuncia: number, entidadId: number }) {
         try {
-            //TODO: Crear método en el facade para iniciar el proceso
             await this.denunciaService.asignarJefePorSupervisor(
                 payload.idDenuncia,
                 payload.entidadId

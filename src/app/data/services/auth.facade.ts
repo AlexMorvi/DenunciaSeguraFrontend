@@ -2,7 +2,6 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { AdminService } from '@/core/api/auth/services/admin.service';
 import { PublicoService } from '@/core/api/auth/services/publico.service';
 import { InternoService as UsuariosInternoService } from '@/core/api/usuarios/services/interno.service';
-import { LoggerService } from '@/core/service/logging/logger.service';
 
 import { RegistroStaffAuthRequest } from '@/core/api/auth/models/registro-staff-auth-request';
 import { RegistroCiudadanoAuthRequest } from '@/core/api/auth/models/registro-ciudadano-auth-request';
@@ -20,22 +19,6 @@ export class AuthFacade {
     private readonly adminService = inject(AdminService);
     private readonly publicoService = inject(PublicoService);
     private readonly usuariosInternoService = inject(UsuariosInternoService);
-    private readonly logger = inject(LoggerService);
-
-    // TODO: Temporal hardcoded user until backend endpoint is available
-    // private readonly _currentUser = signal<UsuarioResponse | null>({
-    //     id: 1,
-    //     nombre: 'Usuario Temporal',
-    //     email: 'temporal@example.com',
-    //     rol: 'CIUDADANO',
-    //     // rol: 'ADMIN',
-    //     // rol: 'SUPERVISOR',
-    //     // rol: 'JEFE_OP_EXT',
-    //     // rol: 'OPERADOR_INTERNO',
-    //     aliasPublico: undefined,
-    //     publicCitizenId: 'temp-0001',
-
-    // });
 
     private readonly _currentUser = signal<UsuarioResponse | null>(null);
     public readonly currentUser = this._currentUser.asReadonly();
@@ -67,18 +50,11 @@ export class AuthFacade {
     public updateAuthState(user: UsuarioResponse | null): void {
         if (user === null) {
             this._currentUser.set(null);
-            this.logger.logInfo('AuthFacade', 'Sesión de usuario limpiada');
             return;
         }
 
-        if (!this.isValidUser(user)) {
-            this.logger.logError('AuthFacade', 'Intento de actualizar estado con datos corruptos', {
-                receivedData: user,
-            });
-        }
 
         this._currentUser.set(user);
-        this.logger.logInfo('AuthFacade', 'Estado de usuario actualizado', { userId: user.id });
     }
 
     private isValidUser(user: any): user is UsuarioResponse {
@@ -89,20 +65,10 @@ export class AuthFacade {
     // Métodos Públicos (Sin Autenticación)
     // =============================================================================
 
-    // async login(request: LoginRequest): Promise<AuthResponse> {
-    //     this._loading.set(true);
-    //     try {
-    //         return await this.publicoService.login({ body: request });
-    //     } finally {
-    //         this._loading.set(false);
-    //     }
-    // }
-
     async registerCitizen(request: RegistroCiudadanoAuthRequest): Promise<void> {
         this._loading.set(true);
         try {
-            const response = await this.publicoService.registrarCiudadano({ body: request });
-            this.logger.logInfo('RegisterComponent', 'Registro exitoso', { userId: response.id });
+            await this.publicoService.registrarCiudadano({ body: request });
         } finally {
             this._loading.set(false);
         }

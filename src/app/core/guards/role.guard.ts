@@ -7,12 +7,6 @@ export const roleMatchGuard = (...allowedRoles: string[]): CanMatchFn => {
         const authFacade = inject(AuthFacade);
         const user = authFacade.currentUser();
 
-        console.log('[RoleGuard] Access check:', {
-            hasUser: !!user,
-            userRole: user?.rol,
-            requiredRoles: allowedRoles
-        });
-
         if (!user?.rol) return false;
         return allowedRoles.includes(user.rol);
     };

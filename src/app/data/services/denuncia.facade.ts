@@ -44,14 +44,11 @@ export class DenunciaFacade {
 
     async loadAll(): Promise<void> {
         this._loading.set(true);
-        console.log('DenunciaFacade: Iniciando carga de denuncias...');
 
         try {
             const data = await this.denunciaService.listarDenuncias();
-            console.log('DenunciaFacade: Denuncias obtenidas:', data);
             this._denuncias.set(data || []);
-        } catch (err) {
-            console.error('DenunciaFacade: Error al cargar denuncias:', err);
+        } catch {
             this._error.set("No se pudo cargar las denuncias.");
             this._denuncias.set([]);
         } finally {
@@ -176,32 +173,24 @@ export class DenunciaFacade {
 
 
     async rechazarDenuncia(motivo: string): Promise<void> {
-        console.log('DenunciaFacade: Iniciando rechazo de denuncia. Motivo:', motivo);
         this._loading.set(true);
         this._error.set(null);
 
         const denunciaId = this._currentDenuncia()?.id;
-        console.log('DenunciaFacade: ID Denuncia:', denunciaId);
 
         if (!denunciaId) {
-            console.error('DenunciaFacade: No se encontró ID de denuncia para rechazar');
             this._error.set('No hay denuncia seleccionada para rechazar.');
             this._loading.set(false);
             return;
         }
 
         try {
-            console.log('DenunciaFacade: Enviando petición de rechazo al workflow service...');
             await this.workflowService.rechazarDenuncia({
                 denunciaId: denunciaId,
                 body: { motivo }
             });
-            console.log('DenunciaFacade: Respuesta exitosa del servicio');
-            this.logger.logInfo(`Denuncia ${denunciaId} rechazada`);
             await this.obtenerDenunciaPorId(denunciaId);
-        } catch (error) {
-            console.error('DenunciaFacade: Error capturado al rechazar denuncia:', error);
-            this.logger.logError('Error al rechazar la denuncia', error);
+        } catch {
             this._error.set('Error al rechazar la denuncia.');
         } finally {
             this._loading.set(false);
@@ -215,8 +204,8 @@ export class DenunciaFacade {
         try {
             const data = await this.workflowService.denunciaHistorialEstados({ denunciaId: idDenuncia });
             this._historialEstados.set(data);
-        } catch (error) {
-            this.logger.logError('Error obteniendo historial de estados', error);
+        } catch {
+            // Error silently ignored or handled by UI state if needed
         } finally {
             this._loading.set(false);
         }
@@ -243,9 +232,7 @@ export class DenunciaFacade {
             };
 
             await this.denunciaService.crearDenuncia({ body: request });
-            this.logger.logInfo('Denuncia creada exitosamente');
         } catch (error) {
-            this.logger.logError('Error creando denuncia', error);
             this._error.set('No se pudo crear la denuncia.');
             throw error;
         } finally {

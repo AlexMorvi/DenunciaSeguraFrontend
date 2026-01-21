@@ -1,48 +1,27 @@
 import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { LoggerService } from './logging/logger.service';
-import { catchError, firstValueFrom, from, retry, throwError, timeout, timer } from 'rxjs';
+import { firstValueFrom, retry, timeout } from 'rxjs';
 import { SKIP_AUTH } from '../http/http-context';
-import { EvidenceUploadError } from '../errors/create-denuncia.errors';
 import { InternoService } from '@/core/api/evidencias/services/interno.service';
 import { CrearIntencionDeCarga$Params } from '@/core/api/evidencias/fn/interno/crear-intencion-de-carga';
 
-type UploadPhase = 'INICIO' | 'SESION' | 'CARGA_NUBE' | 'CONFIRMACION';
 
 @Injectable({ providedIn: 'root' })
 export class FileUploadService {
     private readonly http = inject(HttpClient);
-    private readonly logger = inject(LoggerService);
     private readonly internoService = inject(InternoService);
 
     async subirEvidencia(archivo: File): Promise<string> {
-        let currentStep: UploadPhase = 'INICIO';
         let sessionData: { uploadUrl: string; uploadId: string; contentType: string; sizeBytes: number } | null = null;
 
-        try {
-            currentStep = 'SESION';
-            sessionData = await this.iniciarSesionCarga(archivo);
+        sessionData = await this.iniciarSesionCarga(archivo);
 
-            currentStep = 'CARGA_NUBE';
-            await this.cargarArchivoEnNube(sessionData, archivo);
+        await this.cargarArchivoEnNube(sessionData, archivo);
 
-            currentStep = 'CONFIRMACION';
-            await this.confirmarSubida(sessionData.uploadId);
+        await this.confirmarSubida(sessionData.uploadId);
 
-            return sessionData.uploadId;
+        return sessionData.uploadId;
 
-        } catch (error) {
-            const errorDetails = this.extractErrorMessage(error);
-
-            this.logger.logError(`Fallo en orquestación (${currentStep})`, {
-                fileName: archivo.name,
-                fileSize: archivo.size,
-                uploadId: sessionData?.uploadId ?? 'N/A',
-                errorRaw: errorDetails
-            });
-
-            throw this.handleUploadError(currentStep, errorDetails);
-        }
     }
 
     private async iniciarSesionCarga(archivo: File) {
@@ -108,21 +87,7 @@ export class FileUploadService {
         await this.internoService.confirmarCarga({ id: uploadId });
     }
 
-    private handleUploadError(fase: UploadPhase, _detalles: string): EvidenceUploadError {
-        switch (fase) {
-            case 'SESION':
-                return new EvidenceUploadError('El sistema no pudo autorizar la carga. Verifique el formato del archivo.');
 
-            case 'CARGA_NUBE':
-                return new EvidenceUploadError('Se interrumpió la conexión al subir el archivo. Verifique su internet e intente de nuevo.');
-
-            case 'CONFIRMACION':
-                return new EvidenceUploadError('El archivo se subió, pero hubo un error al validarlo. Por favor intente guardar nuevamente.');
-
-            default:
-                return new EvidenceUploadError('Error inesperado al procesar la evidencia.');
-        }
-    }
 
     private extractErrorMessage(e: unknown): string {
         try {

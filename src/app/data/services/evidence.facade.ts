@@ -80,7 +80,6 @@ export class EvidenceFacade {
             return result;
         } catch (error: any) {
             const msg = error?.message || 'Error fetching evidences';
-            this.logger.logError('EvidenceFacade', msg, { error });
             this._error.set(msg);
             throw error;
         } finally {

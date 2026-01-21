@@ -1,8 +1,6 @@
 import { Component, input, output, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastService } from '@/core/service/toast/toast.service';
-import { LoggerService } from '@/core/service/logging/logger.service';
-// import { DenunciaStaffViewResponse } from '@/core/api/denuncias/models';
 import { ESTADO_DENUNCIA_ENUM } from '@/core/api/denuncias/models/estado-denuncia-enum-array';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { InputComponent } from '@/shared/ui/input/input.component';
@@ -21,9 +19,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     templateUrl: './actions-operador.component.html'
 })
 export class ActionsOperadorComponent {
-    private fb = inject(FormBuilder);
-    private toast = inject(ToastService);
-    private logger = inject(LoggerService);
+    private readonly fb = inject(FormBuilder);
+    private readonly toast = inject(ToastService);
 
     protected readonly faSave = faSave;
     protected readonly faComment = faComment;
@@ -31,15 +28,12 @@ export class ActionsOperadorComponent {
     protected readonly faCheck = faCheck;
     protected readonly faInfoCircle = faInfoCircle;
 
-    // TODO: Utilizar el tipo correcto una vez corregido el contrato
-    // currentDenuncia = input.required<DenunciaStaffViewResponse>();
     currentDenuncia = input.required<any>();
     uploadEvidenceStrategy = input.required<(file: File) => Promise<string>>();
     public isLoading = input<boolean>(false);
 
     iniciar = output<{ idDenuncia: number }>();
     save = output<{ idDenuncia: number, comentario: string, evidenciasIds: string[] }>();
-    // onSaveAssignment = output<string>();
 
     readonly form = this.fb.nonNullable.group({
         evidenciasIds: new FormControl<string[]>([], { nonNullable: true, validators: [Validators.required, Validators.minLength(1)] }),
@@ -73,12 +67,11 @@ export class ActionsOperadorComponent {
 
     handleUploadError(event: FileUploadErrorEvent) {
         this.toast.showWarning(event.userMessage);
-        this.logger.logError('Upload error in actions panel', { ...event.logData, code: 'UPLOAD_ERROR', timestamp: new Date().toISOString() });
     }
 
     async resolverDenunciaPorOperador() {
         const denuncia = this.currentDenuncia();
-        if (!denuncia || !denuncia.id) return;
+        if (!denuncia?.id) return;
 
         if (!this.form.valid) {
             this.form.markAllAsTouched();
@@ -97,7 +90,7 @@ export class ActionsOperadorComponent {
 
     iniciarDenunciaPorOperador() {
         const denuncia = this.currentDenuncia();
-        if (!denuncia || !denuncia.id) return;
+        if (!denuncia?.id) return;
 
         this.iniciar.emit({
             idDenuncia: denuncia.id,

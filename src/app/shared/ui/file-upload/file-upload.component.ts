@@ -31,12 +31,12 @@ export interface FileItem {
     templateUrl: './file-upload.component.html'
 })
 export class FileUploadComponent {
-    private destroyRef = inject(DestroyRef);
+    private readonly destroyRef = inject(DestroyRef);
 
     // === CONFIGURACIÓN ===
     maxSizeBytes = input<number>(MAX_FILE_SIZE_BYTES);
     allowedMimeTypes = input<string[]>(ALLOWED_MIME_TYPES);
-    maxFilesCount = input<number>(2);
+    maxFilesCount = input<number>(3);
     uploadFn = input.required<(file: File) => Promise<string>>();
 
     // === OUTPUTS ===
@@ -49,7 +49,7 @@ export class FileUploadComponent {
     isDragging = signal(false);
     globalError = signal<string | null>(null);
 
-    private uploadIntervals = new Map<string, any>();
+    private readonly uploadIntervals = new Map<string, any>();
 
     maxFileSizeMB = computed(() => Math.round(this.maxSizeBytes() / 1024 / 1024));
 
@@ -168,12 +168,10 @@ export class FileUploadComponent {
 
             if (errorEvent) {
                 this.uploadError.emit(errorEvent);
+            } else if (this.uploadFn()) {
+                this.realUpload(itemId, file);
             } else {
-                if (this.uploadFn()) {
-                    this.realUpload(itemId, file);
-                } else {
-                    this.simulateUpload(itemId);
-                }
+                this.simulateUpload(itemId);
             }
         });
 

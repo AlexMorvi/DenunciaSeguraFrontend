@@ -25,7 +25,7 @@ const authCodeFlowConfig: AuthConfig = {
     scope: 'openid profile',
 
     responseType: 'code',
-    showDebugInformation: true,
+    showDebugInformation: false,
     requireHttps: false, // false porque estás en localhost (http)
     strictDiscoveryDocumentValidation: false, // A veces necesario en dev local
 };
@@ -41,17 +41,14 @@ function initializeApp(
         const isLoggedIn = await oauthService.loadDiscoveryDocumentAndTryLogin();
 
         if (isLoggedIn || oauthService.hasValidAccessToken()) {
-            console.log('✅ User is logged in (or has valid token), fetching profile...');
             try {
                 const user = await usuariosFacade.getProfile();
-                console.log('✅ User profile fetched successfully');
                 authFacade.updateAuthState(user);
-            } catch (error) {
-                console.error('Error initializing user session:', error);
+            } catch {
+                // Error silencioso: Fallo al cargar perfil durante inicialización se ignora
             }
-        } else {
-            console.log('ℹ️ User is NOT logged in or has expired token');
         }
+
     };
 }
 

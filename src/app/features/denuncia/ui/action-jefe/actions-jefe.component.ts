@@ -26,11 +26,9 @@ export class ActionsJefeComponent {
     protected readonly faUsers = faUsers;
     protected readonly faTimes = faTimesCircle;
 
-    // onAssignmentComplete = output<void>();
     validar = output<{ aprobada: boolean, comentarioObservacion: string }>();
     asignar = output<{ idOperador: number }>();
 
-    // TODO: Eliminar el signal true y utilizar el dinámico
     isEnValidacion = computed(() => this.currentDenuncia().estadoDenuncia === 'EN_VALIDACION');
 
     operadores = computed(() =>
@@ -51,10 +49,6 @@ export class ActionsJefeComponent {
             if (denuncia?.entidadResponsable) {
                 this.staffFacade.loadAllOperadoresPorEntidad(denuncia.entidadResponsable);
             }
-        });
-
-        effect(() => {
-            console.log('Operadores cargados:', this.operadores());
         });
     }
 

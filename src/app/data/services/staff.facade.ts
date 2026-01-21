@@ -2,7 +2,6 @@ import { Injectable, inject, signal } from '@angular/core';
 import { InternoService } from '@/core/api/usuarios/services/interno.service';
 import { AdminService } from '@/core/api/usuarios/services/admin.service';
 import { UsuarioResponse } from '@/core/api/usuarios/models/usuario-response';
-import { LoggerService } from '@/core/service/logging/logger.service';
 import { EntidadResponsableEnum } from '@/core/api/denuncias/models/entidad-responsable-enum';
 import { EntidadEnum } from '@/core/api/usuarios/models/entidad-enum';
 
@@ -12,7 +11,6 @@ import { EntidadEnum } from '@/core/api/usuarios/models/entidad-enum';
 export class StaffFacade {
     private readonly internoService = inject(InternoService);
     private readonly adminService = inject(AdminService);
-    private readonly logger = inject(LoggerService);
 
     private readonly _loading = signal(false);
     readonly loading = this._loading.asReadonly();
@@ -34,8 +32,7 @@ export class StaffFacade {
             const entidadUsuario = entidad as unknown as EntidadEnum;
             const data = await this.internoService.usuarioInternoObtenerOperadoresPorEntidad({ entidad: entidadUsuario });
             this._operadores.set(data);
-        } catch (error) {
-            this.logger.logError('StaffFacade: Error cargando operadores', error);
+        } catch {
             this._operadores.set([]);
         } finally {
             this._loading.set(false);
@@ -52,8 +49,7 @@ export class StaffFacade {
             const entidadUsuario = entidad as unknown as EntidadEnum;
             const data = await this.internoService.usuarioInternoObtenerJefePorEntidad({ entidad: entidadUsuario });
             this._jefe.set(data);
-        } catch (error) {
-            this.logger.logError('StaffFacade: Error cargando jefe', error);
+        } catch {
             this._jefe.set(null);
         } finally {
             this._loading.set(false);
@@ -70,8 +66,7 @@ export class StaffFacade {
             const entidadUsuario = entidad as unknown as EntidadEnum;
             const data = await this.adminService.usuarioAdminObtenerOperadoresPorEntidad({ entidad: entidadUsuario });
             this._operadores.set(data);
-        } catch (error) {
-            this.logger.logError('StaffFacade: Error cargando operadores (Admin)', error);
+        } catch {
             this._operadores.set([]);
         } finally {
             this._loading.set(false);
@@ -88,8 +83,7 @@ export class StaffFacade {
             const entidadUsuario = entidad as unknown as EntidadEnum;
             const data = await this.adminService.usuarioAdminObtenerJefePorEntidad({ entidad: entidadUsuario });
             this._jefe.set(data);
-        } catch (error) {
-            this.logger.logError('StaffFacade: Error cargando jefe (Admin)', error);
+        } catch {
             this._jefe.set(null);
         } finally {
             this._loading.set(false);
@@ -106,32 +100,24 @@ export class StaffFacade {
         try {
             const entidadUsuario = entidad as unknown as EntidadEnum;
 
-            // Ejecutamos ambas peticiones en paralelo y controlamos errores individualmente
-            // para que si una falla (ej. permisos), obtengamos al menos los resultados de la otra.
             const [interno, admin] = await Promise.all([
                 this.internoService.usuarioInternoObtenerOperadoresPorEntidad({ entidad: entidadUsuario })
-                    .catch(err => {
-                        this.logger.logError('StaffFacade: Fallo cargando operadores internos (ignorable si es admin)', err);
+                    .catch(() => {
                         return [] as UsuarioResponse[];
                     }),
                 this.adminService.usuarioAdminObtenerOperadoresPorEntidad({ entidad: entidadUsuario })
-                    .catch(err => {
-                        this.logger.logError('StaffFacade: Fallo cargando operadores admin (ignorable si es interno)', err);
+                    .catch(() => {
                         return [] as UsuarioResponse[];
                     })
             ]);
 
-            // Combinar arrays
             const todos = [...interno, ...admin];
 
             // Eliminar duplicados por ID
             const unicos = Array.from(new Map(todos.map(op => [op.id, op])).values());
 
-            console.log('StaffFacade: Operadores cargados', unicos);
             this._operadores.set(unicos);
-        } catch (error) {
-            // Este catch global solo saltaría si algo mas grave ocurre fuera de las promesas controladas
-            this.logger.logError('StaffFacade: Error crítico cargando todos los operadores', error);
+        } catch {
             this._operadores.set([]);
         } finally {
             this._loading.set(false);

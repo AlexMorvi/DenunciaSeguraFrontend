@@ -22,7 +22,6 @@ export class SecureImageComponent {
 
     private readonly validationResult = computed(() => {
         const rawUrl = this.src();
-        console.log('UPDAATED IMG URL:', rawUrl);
 
         if (!rawUrl) {
             return {
