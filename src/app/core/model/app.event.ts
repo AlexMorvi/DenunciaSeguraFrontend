@@ -5,11 +5,6 @@ export interface OperationEvent<T> {
     logData: T;
 }
 
-export interface ImgLogData {
-    // format: string;
-    // url?: string;
-}
-
 export interface FileLogData {
     fileSize: number;
     mimeType: string;
@@ -27,9 +22,8 @@ export interface SystemLogData {
     denuncia_id?: string | number;
 }
 
-export type ImgEvent = OperationEvent<ImgLogData>;
 export type FileEvent = OperationEvent<FileLogData>;
 export type LocationEvent = OperationEvent<LocationLogData>;
 export type SystemEvent = OperationEvent<SystemLogData>;
 
-export type SecurityEvent = ImgEvent | FileEvent | LocationEvent | SystemEvent;
+export type SecurityEvent = FileEvent | LocationEvent | SystemEvent;

@@ -1,6 +1,5 @@
-import { Component, input, computed, signal, effect, untracked, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, computed, signal, effect, untracked, ChangeDetectionStrategy } from '@angular/core';
 import { NgOptimizedImage, CommonModule } from '@angular/common';
-import { ImgEvent } from '@/core/model/app.event';
 
 const ALLOWED_DOMAINS = ['tu-bucket.s3.amazonaws.com', 'wgqripvsznlcmrgitkqp.supabase.co', 'storage.googleapis.com'];
 
@@ -16,7 +15,6 @@ export class SecureImageComponent {
     width = input<number>(160);
     height = input<number>(160);
 
-    uploadError = output<ImgEvent>();
 
     private readonly browserLoadError = signal<string | null>(null);
 
@@ -78,14 +76,7 @@ export class SecureImageComponent {
             untracked(() => {
                 if (result.isValid) {
                     this.browserLoadError.set(null);
-                    return;
                 }
-                this.emitErrorEvent(
-                    result.userMsg!,
-                    result.techMsg!,
-                    result.reason!,
-                    this.src() ?? ''
-                );
             });
         });
     }
@@ -93,19 +84,5 @@ export class SecureImageComponent {
     handleLoadError() {
         const msg = 'Imagen no disponible';
         this.browserLoadError.set(msg);
-        this.emitErrorEvent(msg, 'Image Resource Not Found (404/Network)', 'network_error', this.src() ?? '');
-    }
-
-    private emitErrorEvent(userMsg: string, techMsg: string, reason: string, url: string) {
-        const event: ImgEvent = {
-            userMessage: userMsg,
-            technicalMessage: techMsg,
-            severity: 'WARNING',
-            logData: {
-                format: reason,
-                url: url
-            }
-        };
-        this.uploadError.emit(event);
     }
 }
