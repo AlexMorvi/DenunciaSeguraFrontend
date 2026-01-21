@@ -1,0 +1,9 @@
+[build]
+  # Asegúrate de que esto coincida con tu outputPath en angular.json
+  publish = "dist/DenunciaSeguraFronted"
+  command = "ng build"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
