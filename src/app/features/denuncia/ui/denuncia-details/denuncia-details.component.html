@@ -74,7 +74,7 @@
                 @if (googleMapsUrl(); as url) {
                 <a [href]="url" target="_blank" rel="noopener noreferrer"
                     class="text-blue-600 hover:underline flex items-center gap-2 text-sm"
-                    aria-label="Abrir ubicación de la denuncia en Google Maps">
+                    aria-label="Ver en Google Maps la ubicación de la denuncia">
                     Ver en Google Maps
                 </a>
                 }
@@ -82,9 +82,10 @@
 
             <div class="flex-1 min-h-0 w-full relative">
                 @if (googleMapsUrl(); as url) {
-                <div #mapContainer
+                <section #mapContainer
                     class="w-full h-full box-border bg-gray-100 rounded-lg border-2 border-slate-300 overflow-hidden"
-                    role="region" aria-label="Mapa de la denuncia"></div>
+                    aria-label="Mapa de la denuncia">
+                </section>
                 } @else {
                 <div
                     class="w-full h-full bg-gray-100 rounded-lg border border-emerald-100 flex items-center justify-center">

@@ -35,7 +35,8 @@
                     Presione el botón para empezar a trabajar en la denuncia.
                 </span>
                 <app-submit-button label="Iniciar proceso" [icon]="faPlay" [isLoading]="isLoading()"
-                    [isDisabled]="isLoading()" btnType="button" (click)="iniciarDenunciaPorOperador()" class="w-full">
+                    [isDisabled]="isLoading()" btnType="button" (click)="iniciarDenunciaPorOperador()"
+                    (keydown.enter)="iniciarDenunciaPorOperador()" class="w-full">
                 </app-submit-button>
             </div>
             }

@@ -122,62 +122,62 @@ export class FileUploadComponent {
     }
 
 
-    private processFiles(fileList: FileList) {
-        const newItems: FileItem[] = [];
-
-        Array.from(fileList).forEach(file => {
-            const itemId = crypto.randomUUID();
-            let errorEvent: FileUploadErrorEvent | null = null;
-
-            try {
-                this.validarArchivo(file);
-
-                if (ALLOWED_MIME_TYPES.includes(file.type)) {
-                    this.procesarPrevisualizacion(file, itemId);
-                }
-
-            } catch (err: any) {
-                const isSizeError = err instanceof FileTooLargeError;
-                const isTypeError = err instanceof UnsupportedFileTypeError;
-
-                const userMsg = isSizeError || isTypeError
-                    ? err.message
-                    : 'El archivo no pudo ser procesado. Verifique el formato e intente nuevamente.';
-
-                errorEvent = {
-                    userMessage: userMsg,
-                    technicalMessage: 'File Validation Failed',
-                    severity: 'WARNING',
-                    logData: {
-                        fileName: file.name,
-                        fileType: file.type,
-                        fileSize: file.size,
-                        reason: isSizeError ? 'SIZE_LIMIT' : (isTypeError ? 'INVALID_TYPE' : 'UNKNOWN'),
-                        originalError: !isSizeError && !isTypeError ? err.toString() : null
+    /*     private processFiles(fileList: FileList) {
+            const newItems: FileItem[] = [];
+    
+            Array.from(fileList).forEach(file => {
+                const itemId = crypto.randomUUID();
+                let errorEvent: FileUploadErrorEvent | null = null;
+    
+                try {
+                    this.validarArchivo(file);
+    
+                    if (ALLOWED_MIME_TYPES.includes(file.type)) {
+                        this.procesarPrevisualizacion(file, itemId);
                     }
-                };
-            }
-
-            newItems.push({
-                id: itemId,
-                file: file,
-                previewUrl: null,
-                error: errorEvent?.userMessage ?? null,
-                progress: errorEvent ? 0 : 0
+    
+                } catch (err: any) {
+                    const isSizeError = err instanceof FileTooLargeError;
+                    const isTypeError = err instanceof UnsupportedFileTypeError;
+    
+                    const userMsg = isSizeError || isTypeError
+                        ? err.message
+                        : 'El archivo no pudo ser procesado. Verifique el formato e intente nuevamente.';
+    
+                    errorEvent = {
+                        userMessage: userMsg,
+                        technicalMessage: 'File Validation Failed',
+                        severity: 'WARNING',
+                        logData: {
+                            fileName: file.name,
+                            fileType: file.type,
+                            fileSize: file.size,
+                            reason: isSizeError ? 'SIZE_LIMIT' : (isTypeError ? 'INVALID_TYPE' : 'UNKNOWN'),
+                            originalError: !isSizeError && !isTypeError ? err.toString() : null
+                        }
+                    };
+                }
+    
+                newItems.push({
+                    id: itemId,
+                    file: file,
+                    previewUrl: null,
+                    error: errorEvent?.userMessage ?? null,
+                    progress: errorEvent ? 0 : 0
+                });
+    
+                if (errorEvent) {
+                    this.uploadError.emit(errorEvent);
+                } else if (this.uploadFn()) {
+                    this.realUpload(itemId, file);
+                } else {
+                    this.simulateUpload(itemId);
+                }
             });
-
-            if (errorEvent) {
-                this.uploadError.emit(errorEvent);
-            } else if (this.uploadFn()) {
-                this.realUpload(itemId, file);
-            } else {
-                this.simulateUpload(itemId);
-            }
-        });
-
-        this.files.update(current => [...current, ...newItems]);
-        this.emitValidFiles();
-    }
+    
+            this.files.update(current => [...current, ...newItems]);
+            this.emitValidFiles();
+        } */
 
     private validarArchivo(file: File): void {
         if (file.size > this.maxSizeBytes()) {
@@ -192,6 +192,7 @@ export class FileUploadComponent {
             throw new UnsupportedFileTypeError(`Por seguridad, no se admiten archivos SVG.`);
         }
     }
+
     private procesarPrevisualizacion(file: File, itemId: string): void {
         if (file.size > this.maxSizeBytes()) return;
 
@@ -315,12 +316,92 @@ export class FileUploadComponent {
         this.uploadIntervals.set(itemId, interval);
     }
 
-    // === UI UTILS ===
     formatBytes(bytes: number): string {
         if (bytes === 0) return '0 B';
         const k = 1024;
         const sizes = ['B', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+
+        // CAMBIO AQUÍ: Usar Number.parseFloat
+        return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    // === UI UTILS ===
+    private processFiles(fileList: FileList) {
+        const newItems: FileItem[] = [];
+
+        Array.from(fileList).forEach(file => {
+            const itemId = crypto.randomUUID();
+            let errorEvent: FileUploadErrorEvent | null = null;
+
+            try {
+                this.validarArchivo(file);
+                if (ALLOWED_MIME_TYPES.includes(file.type)) {
+                    this.procesarPrevisualizacion(file, itemId);
+                }
+            } catch (err: any) {
+                // Extraemos la lógica compleja a una función auxiliar
+                errorEvent = this.generateErrorEvent(file, err);
+            }
+
+            newItems.push({
+                id: itemId,
+                file: file,
+                previewUrl: null,
+                error: errorEvent?.userMessage ?? null, // Simplificado
+                progress: 0 // Si hay error o no, inicia en 0
+            });
+
+            this.handleUploadTrigger(itemId, file, errorEvent);
+        });
+
+        this.files.update(current => [...current, ...newItems]);
+        this.emitValidFiles();
+    }
+
+    // ---------------------------------------------------------
+    // Nuevos métodos auxiliares (Helpers)
+    // ---------------------------------------------------------
+
+    private generateErrorEvent(file: File, err: any): FileUploadErrorEvent {
+        const isSizeError = err instanceof FileTooLargeError;
+        const isTypeError = err instanceof UnsupportedFileTypeError;
+        const isKnownError = isSizeError || isTypeError;
+
+        // Resolvemos el mensaje de usuario
+        const userMsg = isKnownError
+            ? err.message
+            : 'El archivo no pudo ser procesado. Verifique el formato e intente nuevamente.';
+
+        // Resolvemos la razón técnica (Adiós al ternario anidado)
+        let reason = 'UNKNOWN';
+        if (isSizeError) reason = 'SIZE_LIMIT';
+        else if (isTypeError) reason = 'INVALID_TYPE';
+
+        return {
+            userMessage: userMsg,
+            technicalMessage: 'File Validation Failed',
+            severity: 'WARNING',
+            logData: {
+                fileName: file.name,
+                fileType: file.type,
+                fileSize: file.size,
+                reason: reason,
+                originalError: isKnownError ? null : err.toString()
+            }
+        };
+    }
+
+    private handleUploadTrigger(itemId: string, file: File, errorEvent: FileUploadErrorEvent | null) {
+        if (errorEvent) {
+            this.uploadError.emit(errorEvent);
+            return;
+        }
+
+        if (this.uploadFn()) {
+            this.realUpload(itemId, file);
+        } else {
+            this.simulateUpload(itemId);
+        }
     }
 }

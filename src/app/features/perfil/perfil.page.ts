@@ -13,6 +13,12 @@ import { UiStyleDirective } from "@/shared/style/ui-styles.directive";
 import { UsuarioResponse } from '@/core/api/usuarios/models';
 import { UsuariosFacade } from '@/data/services/usuarios.facade';
 
+const IN_PROGRESS_STATES = new Set([
+    ESTADOS_DENUNCIA.ASIGNADA,
+    ESTADOS_DENUNCIA.EN_PROCESO,
+    ESTADOS_DENUNCIA.EN_VALIDACION
+]);
+
 @Component({
     selector: 'app-perfil-page',
     standalone: true,
@@ -21,32 +27,23 @@ import { UsuariosFacade } from '@/data/services/usuarios.facade';
 })
 export class PerfilPageComponent implements OnInit {
     private readonly fb = inject(FormBuilder);
-    // private readonly router = inject(Router);
     private readonly authService = inject(AuthFacade);
     private readonly denunciaService = inject(DenunciaFacade);
     private readonly toast = inject(ToastService);
     private readonly usuariosFacade = inject(UsuariosFacade);
 
-    // Signals del Facade
     readonly currentUser = this.authService.currentUser;
     readonly isLoading = this.authService.loading;
     readonly save: IconDefinition = faSave;
     protected readonly denuncias = this.denunciaService.denuncias;
 
-
     readonly denunciasCount = computed(() => this.denunciaService.denuncias()?.length ?? 0);
     readonly resolvedCount = computed(() => (this.denunciaService.denuncias() || []).filter(d => d.estadoDenuncia === ESTADOS_DENUNCIA.RESUELTA).length);
     readonly inProgressCount = computed(() => {
         const list = this.denunciaService.denuncias() || [];
-        const inProgressStates = [
-            ESTADOS_DENUNCIA.ASIGNADA,
-            ESTADOS_DENUNCIA.EN_PROCESO,
-            ESTADOS_DENUNCIA.EN_VALIDACION
-        ];
-        return list.filter(d => inProgressStates.includes(d.estadoDenuncia as EstadoDenunciaEnum)).length;
+        return list.filter(d => IN_PROGRESS_STATES.has(d.estadoDenuncia as EstadoDenunciaEnum)).length;
     });
 
-    // Computados para lógica de vista
     readonly isCitizen = computed(() => this.currentUser()?.rol === ROLES.CIUDADANO);
     readonly isStaff = computed(() => this.currentUser()?.rol !== ROLES.CIUDADANO);
 
