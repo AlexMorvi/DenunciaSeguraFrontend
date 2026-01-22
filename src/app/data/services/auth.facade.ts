@@ -8,6 +8,7 @@ import { RegistroCiudadanoAuthRequest } from '@/core/api/auth/models/registro-ci
 import { RegistroUsuarioResponse } from '@/core/api/auth/models/registro-usuario-response';
 import { PasswordResetRequest } from '@/core/api/auth/models/password-reset-request';
 import { PasswordForgotRequest } from '@/core/api/auth/models/password-forgot-request';
+import { PasswordResetResponse } from '@/core/api/auth/models/password-reset-response';
 
 import { UsuarioResponse } from '@/core/api/usuarios/models/usuario-response';
 import { ROL_ENUM } from '@/core/api/usuarios/models/rol-enum-array';
@@ -26,9 +27,7 @@ export class AuthFacade {
     private readonly _loading = signal(false);
     readonly loading = this._loading.asReadonly();
 
-    // Expose constants for UI consumption
     readonly availableRoles = ROL_ENUM;
-    // readonly availableEntities = ENTIDAD_ENUM;
     private readonly _entities = signal(ENTIDAD_ENUM);
     readonly uiEntities = computed(() => {
         return this._entities().map((entity) => ({
@@ -52,8 +51,6 @@ export class AuthFacade {
             this._currentUser.set(null);
             return;
         }
-
-
         this._currentUser.set(user);
     }
 
@@ -65,20 +62,20 @@ export class AuthFacade {
     // Métodos Públicos (Sin Autenticación)
     // =============================================================================
 
-    async registerCitizen(request: RegistroCiudadanoAuthRequest): Promise<void> {
+    async registerCitizen(request: RegistroCiudadanoAuthRequest): Promise<RegistroUsuarioResponse> {
         this._loading.set(true);
         try {
-            await this.publicoService.registrarCiudadano({ body: request });
+            return await this.publicoService.registrarCiudadano({ body: request });
         } finally {
             this._loading.set(false);
         }
     }
 
-    async forgotPassword(cedula: string): Promise<void> {
+    async forgotPassword(cedula: string): Promise<PasswordResetResponse> {
         this._loading.set(true);
         try {
             const body: PasswordForgotRequest = { cedula };
-            await this.publicoService.forgot({ body });
+            return await this.publicoService.forgot({ body });
         } finally {
             this._loading.set(false);
         }
@@ -96,24 +93,6 @@ export class AuthFacade {
     // =============================================================================
     // Métodos Privados (Requieren Autenticación)
     // =============================================================================
-
-    /* public setMockUser(): void {
-         this.updateAuthState({
-            id: 1,
-            nombre: 'Usuario Temporal',
-            email: 'temporal@example.com',
-            rol: 'CIUDADANO' as RolEnum,
-            aliasPublico: null,
-            publicCitizenId: 'temp-0001',
-        });
-    } */
-
-    /* async getMe(): Promise<void> {
-        if (this.currentUser()) {
-            return;
-        }
-        // ... (Not implemented due to missing model)
-    } */
 
     async registerStaff(request: RegistroStaffAuthRequest): Promise<RegistroUsuarioResponse> {
         return await this.adminService.registrarStaff({ body: request });
