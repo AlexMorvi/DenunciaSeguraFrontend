@@ -32,7 +32,7 @@ export class UsuariosFacade {
             const result: UsuarioResponse = {
                 id: 1,
                 aliasPublico: 'CiudadanoMock',
-                cedula: '0999999999',
+                cedula: '0503099533',
                 email: 'ciudadano@mock.com',
                 estado: 'ACTIVO',
                 nombre: 'Ciudadano de Prueba',
