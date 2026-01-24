@@ -35,9 +35,13 @@ function initializeApp(
     authFacade: AuthFacade
 ) {
     return async () => {
+        console.log('[AppConfig] initializeApp: Iniciando configuración...');
         oauthService.configure(authCodeFlowConfig);
-        oauthService.setupAutomaticSilentRefresh();
+        console.log('[AppConfig] initializeApp: OAuth configurado con issuer:', authCodeFlowConfig.issuer);
 
+        oauthService.setupAutomaticSilentRefresh();
+        console.log('[AppConfig] initializeApp: setupAutomaticSilentRefresh terminado');
+        await oauthService.loadDiscoveryDocumentAndTryLogin();
         // try {
         //     const isLoggedIn = await oauthService.loadDiscoveryDocumentAndTryLogin();
         //     if (isLoggedIn || oauthService.hasValidAccessToken()) {
@@ -69,17 +73,23 @@ export const appConfig: ApplicationConfig = {
         ),
 
         provideAppInitializer(() => {
+            console.log('[AppConfig] provideAppInitializer: Configurando servicios API...');
+
             const authConfig = inject(AuthConf);
             authConfig.rootUrl = `${environment.apiUrl}/api/v1/auth`;
+            console.log('[AppConfig] Auth API URL:', authConfig.rootUrl);
 
             const denunciasConfig = inject(DenunciasConf);
             denunciasConfig.rootUrl = `${environment.apiUrl}/api/denuncias`;
+            console.log('[AppConfig] Denuncias API URL:', denunciasConfig.rootUrl);
 
             const usuariosConfig = inject(UsuariosConf);
             usuariosConfig.rootUrl = `${environment.apiUrl}`;
+            console.log('[AppConfig] Usuarios API URL:', usuariosConfig.rootUrl);
 
             const evidenciasConfig = inject(EvidenciasConf);
             evidenciasConfig.rootUrl = `${environment.apiUrl}`;
+            console.log('[AppConfig] Evidencias API URL:', evidenciasConfig.rootUrl);
 
             const oauthService = inject(OAuthService);
             const usuariosFacade = inject(UsuariosFacade);
