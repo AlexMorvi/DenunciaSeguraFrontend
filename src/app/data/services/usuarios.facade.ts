@@ -28,18 +28,6 @@ export class UsuariosFacade {
         try {
             const result = await this.perfilService.obtenerPerfil();
 
-            // TODO: Eliminar usuario quemado y descomentar línea anterior
-            // const result: UsuarioResponse = {
-            //     id: 1,
-            //     aliasPublico: 'CiudadanoMock',
-            //     cedula: '0503099533',
-            //     email: 'ciudadano@mock.com',
-            //     estado: 'ACTIVO',
-            //     nombre: 'Ciudadano de Prueba',
-            //     rol: 'CIUDADANO',
-            //     publicCitizenId: 'PUB-MOCK-123'
-            // };
-
             this._currentUser.set(result);
             this._error.set(null);
             return result;
