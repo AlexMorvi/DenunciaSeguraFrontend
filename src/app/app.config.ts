@@ -15,19 +15,17 @@ import { ApiConfiguration as EvidenciasConf } from '@/core/api/evidencias/api-co
 import { UsuariosFacade } from '@/data/services/usuarios.facade';
 import { AuthFacade } from '@/data/services/auth.facade';
 
-// 1. CONFIGURACIÓN DINÁMICA DE OAUTH
 const authCodeFlowConfig: AuthConfig = {
-    issuer: environment.authIssuer, // Lee del environment
+    issuer: environment.authIssuer,
 
-    // TRUCO PRO: Esto detecta automáticamente si estás en localhost o en Azure
     redirectUri: globalThis.location.origin + '/dashboard',
 
     clientId: 'ds-web',
     scope: 'openid profile',
     responseType: 'code',
 
-    showDebugInformation: environment.showDebugInformation, // Lee del environment
-    requireHttps: environment.requireHttps, // Lee del environment
+    showDebugInformation: environment.showDebugInformation,
+    requireHttps: environment.requireHttps,
     strictDiscoveryDocumentValidation: false,
 };
 
@@ -40,20 +38,19 @@ function initializeApp(
         oauthService.configure(authCodeFlowConfig);
         oauthService.setupAutomaticSilentRefresh();
 
-        // Manejo de errores en loadDiscovery para que no rompa la app si el Auth Server está caído
-        try {
-            const isLoggedIn = await oauthService.loadDiscoveryDocumentAndTryLogin();
-            if (isLoggedIn || oauthService.hasValidAccessToken()) {
-                try {
-                    const user = await usuariosFacade.getProfile();
-                    authFacade.updateAuthState(user);
-                } catch (e) {
-                    console.warn('Error cargando perfil de usuario', e);
-                }
-            }
-        } catch (e) {
-            console.error('Error conectando con el servidor de identidad (Issuer)', e);
-        }
+        // try {
+        //     const isLoggedIn = await oauthService.loadDiscoveryDocumentAndTryLogin();
+        //     if (isLoggedIn || oauthService.hasValidAccessToken()) {
+        //         try {
+        //             const user = await usuariosFacade.getProfile();
+        //             authFacade.updateAuthState(user);
+        //         } catch (e) {
+        //             console.warn('Error cargando perfil de usuario', e);
+        //         }
+        //     }
+        // } catch (e) {
+        //     console.error('Error conectando con el servidor de identidad (Issuer)', e);
+        // }
     };
 }
 
@@ -72,8 +69,6 @@ export const appConfig: ApplicationConfig = {
         ),
 
         provideAppInitializer(() => {
-            // 2. INYECCIÓN DE URLS PARA NG-OPENAPI
-            // Esto ya lo tenías bien, solo asegúrate que environment.apiUrl sea correcto en prod
             const authConfig = inject(AuthConf);
             authConfig.rootUrl = `${environment.apiUrl}/api/v1/auth`;
 
