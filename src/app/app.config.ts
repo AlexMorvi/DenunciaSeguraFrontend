@@ -235,7 +235,7 @@ export const appConfig: ApplicationConfig = {
             console.log('[AppConfig] Denuncias API URL:', denunciasConfig.rootUrl);
 
             const usuariosConfig = inject(UsuariosConf);
-            usuariosConfig.rootUrl = `${environment.apiUrl}/usuarios`;
+            usuariosConfig.rootUrl = `${environment.apiUrl}`;
             console.log('[AppConfig] Usuarios API URL:', usuariosConfig.rootUrl);
 
             const evidenciasConfig = inject(EvidenciasConf);
