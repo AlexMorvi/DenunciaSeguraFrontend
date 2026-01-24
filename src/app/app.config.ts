@@ -15,6 +15,7 @@ import { ApiConfiguration as UsuariosConf } from '@/core/api/usuarios/api-config
 import { ApiConfiguration as EvidenciasConf } from '@/core/api/evidencias/api-configuration';
 import { UsuariosFacade } from '@/data/services/usuarios.facade';
 import { AuthFacade } from '@/data/services/auth.facade';
+import { stripTrailingSlashInterceptor } from './core/http/strip-slash.interceptor';
 
 // Configuración de Auth con tus parches temporales
 const authCodeFlowConfig: AuthConfig = {
@@ -101,7 +102,7 @@ export const appConfig: ApplicationConfig = {
 
         provideHttpClient(
             withFetch(),
-            withInterceptors([authInterceptor, errorInterceptor])
+            withInterceptors([authInterceptor, errorInterceptor, stripTrailingSlashInterceptor,])
         ),
 
         provideAppInitializer(() => {
@@ -112,7 +113,7 @@ export const appConfig: ApplicationConfig = {
             console.log('[AppConfig] Auth API URL:', authConfig.rootUrl);
 
             const denunciasConfig = inject(DenunciasConf);
-            denunciasConfig.rootUrl = `${environment.apiUrl}/api/denuncias/`;
+            denunciasConfig.rootUrl = `${environment.apiUrl}/api/denuncias`;
             console.log('[AppConfig] Denuncias API URL:', denunciasConfig.rootUrl);
 
             const usuariosConfig = inject(UsuariosConf);
