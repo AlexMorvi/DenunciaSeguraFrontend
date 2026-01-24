@@ -27,6 +27,7 @@ const authCodeFlowConfig: AuthConfig = {
     showDebugInformation: environment.showDebugInformation,
     requireHttps: environment.requireHttps,
     strictDiscoveryDocumentValidation: false,
+    skipIssuerCheck: true,
 };
 
 function initializeApp(
