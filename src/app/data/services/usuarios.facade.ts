@@ -30,7 +30,7 @@ export class UsuariosFacade {
 
             // TODO: Eliminar usuario quemado y descomentar línea anterior
             const result: UsuarioResponse = {
-                id: 999,
+                id: 1,
                 aliasPublico: 'CiudadanoMock',
                 cedula: '0999999999',
                 email: 'ciudadano@mock.com',
