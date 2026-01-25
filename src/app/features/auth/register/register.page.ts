@@ -17,7 +17,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { AuthFacade } from '@/data/services/auth.facade';
-import { RegistroCiudadanoAuthRequest } from '@/core/api/auth/models';
+import { RegistroCiudadanoAuthRequest } from '@/core/api/auth/models/registro-ciudadano-auth-request';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { numericValidator } from '@/shared/validators/numeric.validator';
 
@@ -31,7 +31,6 @@ import { numericValidator } from '@/shared/validators/numeric.validator';
         SubmitButtonComponent,
         FontAwesomeModule,
         UiStyleDirective,
-        ReactiveFormsModule,
     ],
     templateUrl: './register.page.html',
     styles: [`
@@ -51,14 +50,14 @@ export class RegisterComponent {
     private readonly fb = inject(FormBuilder);
     private readonly router = inject(Router);
     private readonly authFacade = inject(AuthFacade);
-    private toast = inject(ToastService);
+    private readonly toast = inject(ToastService);
 
     message = signal<string | null>(null);
     messageClass = signal<'success' | 'error' | 'info' | null>(null);
     submitting = signal(false);
 
     form = this.fb.nonNullable.group({
-        nombre: ['', [Validators.required, Validators.minLength(2)]],
+        nombre: ['', [Validators.required, Validators.minLength(3)]],
         cedula: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), numericValidator()]],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(8)]]
@@ -77,11 +76,11 @@ export class RegisterComponent {
         const request: RegistroCiudadanoAuthRequest = this.form.getRawValue();
 
         try {
-            await this.authFacade.registerCitizen(request);
+            const response = await this.authFacade.registerCitizen(request);
 
-            this.message.set('¡Registro exitoso! Serás redirigido para iniciar sesión.');
+            this.message.set(response.mensaje || '¡Registro exitoso! Serás redirigido para iniciar sesión.');
             this.messageClass.set('success');
-            this.toast.showSuccess('¡Registro exitoso!', 'Por favor inicia sesión con tus credenciales.');
+            this.toast.showSuccess(response.mensaje || '¡Registro exitoso!', 'Por favor inicia sesión con tus credenciales.');
 
             this.form.reset();
             this.router.navigate(['/login']);
