@@ -6,8 +6,7 @@ import { environment } from '../environments/environment';
 
 import { authInterceptor } from '@/core/http/auth.interceptor';
 import { errorInterceptor } from '@/core/interceptors/error.interceptor';
-// ✅ AGREGADO: Importa OAuthErrorEvent para que no de error el log
-import { provideOAuthClient, AuthConfig, OAuthService, OAuthErrorEvent } from 'angular-oauth2-oidc';
+import { provideOAuthClient, AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 
 import { ApiConfiguration as AuthConf } from '@/core/api/auth/api-configuration';
 import { ApiConfiguration as DenunciasConf } from '@/core/api/denuncias/api-configuration';
@@ -40,41 +39,26 @@ function initializeApp(
     authFacade: AuthFacade
 ) {
     return async () => {
-        console.log('[AppConfig] initializeApp: Iniciando configuración...');
-
         // 1. Configurar
         oauthService.configure(authCodeFlowConfig);
-        console.log('[AppConfig] initializeApp: OAuth configurado con issuer:', authCodeFlowConfig.issuer);
 
-        // 2. ✅ LOGS DE DEBUG (Movido aquí para que funcione sin constructor)
-        oauthService.events.subscribe(e => {
-            console.log('OAuth Event:', e.type); // Imprime el tipo de evento
-            if (e instanceof OAuthErrorEvent) {
-                console.error('OAuth Error (Detallado):', e);
-            }
-        });
-
-        // 3. Setup refresh
+        // 2. Setup refresh
         oauthService.setupAutomaticSilentRefresh();
-        console.log('[AppConfig] initializeApp: setupAutomaticSilentRefresh terminado');
 
-        // 4. Intentar Login
-        // He descomentado el bloque try/catch para que sea funcional
+        // 3. Intentar Login
         try {
-            // Esto carga el discovery document Y mira si hay un token en la URL (callback)
             const isLoggedIn = await oauthService.loadDiscoveryDocumentAndTryLogin();
 
             if (isLoggedIn || oauthService.hasValidAccessToken()) {
-                console.log('✅ Usuario logueado, cargando perfil...');
                 try {
                     const user = await usuariosFacade.getProfile();
                     authFacade.updateAuthState(user);
-                } catch (e) {
-                    console.warn('Error cargando perfil de usuario (pero el token es válido)', e);
+                } catch {
+                    // Ignorar error de carga de perfil
                 }
             }
-        } catch (e) {
-            console.error('❌ Error CRÍTICO conectando con el servidor de identidad:', e);
+        } catch {
+            // Manejo silencioso de errores de inicialización de Auth
         }
     };
 }
@@ -94,7 +78,7 @@ export const appConfig: ApplicationConfig = {
                 allowedUrls: [
                     'https://gateway.orangestone-4ddca4b7.eastus2.azurecontainerapps.io',
                     // Agrega tu localhost si estás probando local
-                    // 'http://localhost:8080' 
+                    'http://localhost:8081'
                 ],
                 sendAccessToken: true
             }
@@ -106,23 +90,17 @@ export const appConfig: ApplicationConfig = {
         ),
 
         provideAppInitializer(() => {
-            console.log('[AppConfig] provideAppInitializer: Configurando servicios API...');
-
             const authConfig = inject(AuthConf);
             authConfig.rootUrl = `${environment.apiUrl}/api/v1/auth`;
-            console.log('[AppConfig] Auth API URL:', authConfig.rootUrl);
 
             const denunciasConfig = inject(DenunciasConf);
             denunciasConfig.rootUrl = `${environment.apiUrl}/api/denuncias`;
-            console.log('[AppConfig] Denuncias API URL:', denunciasConfig.rootUrl);
 
             const usuariosConfig = inject(UsuariosConf);
             usuariosConfig.rootUrl = `${environment.apiUrl}`;
-            console.log('[AppConfig] Usuarios API URL:', usuariosConfig.rootUrl);
 
             const evidenciasConfig = inject(EvidenciasConf);
             evidenciasConfig.rootUrl = `${environment.apiUrl}`;
-            console.log('[AppConfig] Evidencias API URL:', evidenciasConfig.rootUrl);
 
             const oauthService = inject(OAuthService);
             const usuariosFacade = inject(UsuariosFacade);
