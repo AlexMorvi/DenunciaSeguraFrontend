@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgxSonnerToaster } from 'ngx-sonner';
+import { inject } from '@vercel/analytics'; 
 
 @Component({
     selector: 'app-root',
@@ -25,6 +26,10 @@ import { NgxSonnerToaster } from 'ngx-sonner';
     styles: []
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
     title = 'DenunciaSegura';
+
+    ngOnInit() {
+        inject();
+    }
 }
