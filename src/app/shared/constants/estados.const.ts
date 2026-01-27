@@ -39,4 +39,22 @@ export const ESTADO_BADGE_CLASSES: Record<string, string> = {
     RECHAZADA: 'bg-red-100 text-red-800'
 };
 
+export const ESTADO_RING_CLASSES: Record<string, string> = {
+    RECIBIDA: 'bg-yellow-100 border-yellow-200',
+    ASIGNADA: 'bg-indigo-100 border-indigo-200',
+    EN_PROCESO: 'bg-blue-100 border-blue-200',
+    EN_VALIDACION: 'bg-purple-100 border-purple-200',
+    RESUELTA: 'bg-green-100 border-green-200',
+    RECHAZADA: 'bg-red-100 border-red-200'
+};
+
+export const ESTADO_DOT_CLASSES: Record<string, string> = {
+    RECIBIDA: 'bg-yellow-600',
+    ASIGNADA: 'bg-indigo-600',
+    EN_PROCESO: 'bg-blue-600',
+    EN_VALIDACION: 'bg-purple-600',
+    RESUELTA: 'bg-green-600',
+    RECHAZADA: 'bg-red-600'
+};
+
 export default ESTADOS_DENUNCIA;

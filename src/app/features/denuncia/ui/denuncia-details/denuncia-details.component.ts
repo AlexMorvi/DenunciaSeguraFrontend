@@ -1,5 +1,5 @@
 import { Component, input, ChangeDetectionStrategy, computed, afterNextRender, viewChild, ElementRef, ViewEncapsulation, inject, DestroyRef, output, signal, effect } from '@angular/core';
-import { TitleCasePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -19,11 +19,12 @@ import { EvidenciaViewerComponent } from '@/shared/ui/evidencia-viewer/evidencia
 import { LocationEvent, SecurityEvent, SystemEvent } from '@/core/model/app.event';
 import { DenunciaResponse, EvidenciaDto } from '@/core/api/denuncias/models';
 import { EvidenceFacade } from '@/data/services/evidence.facade';
+import { ESTADO_BADGE_CLASSES } from '@/shared/constants/estados.const';
 
 @Component({
     selector: 'app-denuncia-details',
     standalone: true,
-    imports: [TitleCasePipe, UiStyleDirective, FontAwesomeModule, EvidenciaViewerComponent],
+    imports: [CommonModule, UiStyleDirective, FontAwesomeModule, EvidenciaViewerComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './denuncia-details.component.html',
     styleUrls: ['./denuncia-details.component.scss'],
@@ -54,6 +55,10 @@ export class DenunciaDetailsComponent {
     protected readonly faClipboardCheck = faClipboardCheck;
     protected readonly faFileAlt = faFileAlt;
     protected readonly faWrench = faWrench;
+
+    getStatusClass(estado?: string | null): string {
+        return ESTADO_BADGE_CLASSES[estado as string] || 'bg-gray-100 text-gray-800';
+    }
 
     googleMapsUrl = computed(() => {
         const d = this.denuncia();

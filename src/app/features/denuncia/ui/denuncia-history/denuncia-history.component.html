@@ -21,9 +21,9 @@
                     <div class="relative flex space-x-3">
                         <!-- Dot -->
                         <div>
-                            <span
-                                class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center ring-8 ring-white border border-blue-200">
-                                <span class="h-2.5 w-2.5 rounded-full bg-blue-600"></span>
+                            <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white border"
+                                [ngClass]="getRingClass(item.estadoNuevo)">
+                                <span class="h-2.5 w-2.5 rounded-full" [ngClass]="getDotClass(item.estadoNuevo)"></span>
                             </span>
                         </div>
 
@@ -31,15 +31,9 @@
                         <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                             <div>
                                 <p class="text-sm text-gray-500">
-                                    <span class="font-medium text-gray-900 block">
-                                        {{ item.estadoNuevo }}
-                                    </span>
-                                    <span class="text-xs">
-                                        @if(item.estadoAnterior) {
-                                        Previamente: {{ item.estadoAnterior }}
-                                        } @else {
-                                        Estado inicial
-                                        }
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium"
+                                        [ngClass]="getBadgeClass(item.estadoNuevo)">
+                                        {{ item.estadoNuevo | titlecase }}
                                     </span>
                                 </p>
                             </div>

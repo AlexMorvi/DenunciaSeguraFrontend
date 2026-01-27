@@ -2,7 +2,7 @@ import { Component, input, inject, ChangeDetectionStrategy, signal, computed } f
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { DenunciaListadoResponse, EstadoDenunciaEnum } from '@/core/api/denuncias/models';
-import { ESTADOS_UI_OPTIONS } from '@/shared/constants/estados.const';
+import { ESTADOS_UI_OPTIONS, ESTADO_BADGE_CLASSES } from '@/shared/constants/estados.const';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSearch, faChevronDown, faCalendarAlt, faInfoCircle, faImage, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -118,18 +118,9 @@ export class DenunciasTableComponent {
     getStatusClasses(estado?: EstadoDenunciaEnum | null): string {
         const base = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full';
 
-        const colors: Record<string, string> = {
-            'RECIBIDA': 'bg-yellow-100 text-yellow-800',
-            'ASIGNADA': 'bg-indigo-100 text-indigo-800',
-            'EN_PROCESO': 'bg-blue-100 text-blue-800',
-            'EN_VALIDACION': 'bg-purple-100 text-purple-800',
-            'RESUELTA': 'bg-green-100 text-green-800',
-            'RECHAZADA': 'bg-red-100 text-red-800'
-        };
-
         if (!estado) return `${base} bg-gray-100 text-gray-800`;
 
-        return `${base} ${colors[estado] || 'bg-gray-100 text-gray-800'}`;
+        return `${base} ${ESTADO_BADGE_CLASSES[estado] || 'bg-gray-100 text-gray-800'}`;
     }
 
     getFechaFormatted(value?: string | null): string {
