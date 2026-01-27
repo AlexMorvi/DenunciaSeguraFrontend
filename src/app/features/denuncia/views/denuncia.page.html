@@ -1,16 +1,13 @@
 @if (denuncia(); as denuncia) {
 
-<app-denuncia-layout [hasActionsPanel]="showActionsPanel()">
+<app-denuncia-layout [hasActionsPanel]="true">
 
     <app-denuncia-details slot="details" [denuncia]="denuncia">
     </app-denuncia-details>
 
-    <app-denuncia-history slot="details" [historial]="historialEstados()" [isLoading]="isLoading()">
-    </app-denuncia-history>
 
-    @if (showActionsPanel()) {
-    <div slot="actions" class="h-full">
-
+    <div slot="actions" class="h-full flex flex-col gap-4">
+        @if (showActionsPanel()) {
         @switch (true) {
 
         @case (isJefe()) {
@@ -44,8 +41,11 @@
         }
         }
         }
+        }
+
+        <app-denuncia-history [historial]="historialEstados()" [isLoading]="isLoading()">
+        </app-denuncia-history>
     </div>
-    }
 
 </app-denuncia-layout>
 
