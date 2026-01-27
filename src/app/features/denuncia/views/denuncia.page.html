@@ -5,6 +5,8 @@
     <app-denuncia-details slot="details" [denuncia]="denuncia">
     </app-denuncia-details>
 
+    <app-denuncia-history slot="details" [historial]="historialEstados()" [isLoading]="isLoading()">
+    </app-denuncia-history>
 
     @if (showActionsPanel()) {
     <div slot="actions" class="h-full">
@@ -44,7 +46,6 @@
         }
     </div>
     }
-    hola
 
 </app-denuncia-layout>
 

@@ -11,11 +11,12 @@ import { Router } from '@angular/router';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { FileUploadService } from '@/core/service/file-upload.service';
 import { SkeletonLoaderComponent } from '@/shared/components/skeleton-loader/skeleton-loader';
+import { DenunciaHistoryComponent } from '../ui/denuncia-history/denuncia-history.component';
 
 @Component({
     selector: 'app-denuncia-page',
     standalone: true,
-    imports: [DenunciaLayoutComponent, SkeletonLoaderComponent, DenunciaDetailsComponent, ActionsSupervisorComponent, ActionsJefeComponent, ActionsOperadorComponent],
+    imports: [DenunciaLayoutComponent, SkeletonLoaderComponent, DenunciaDetailsComponent, ActionsSupervisorComponent, ActionsJefeComponent, ActionsOperadorComponent, DenunciaHistoryComponent],
     templateUrl: './denuncia.page.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -28,6 +29,7 @@ export class DenunciaPageComponent {
 
     public currentUser = this.authService.currentUser;
     public denuncia = this.denunciaService.currentDenuncia;
+    public historialEstados = this.denunciaService.historialEstados;
     protected readonly isLoading = this.denunciaService.loading;
 
     id = input(undefined, { transform: numberAttribute });
@@ -38,6 +40,7 @@ export class DenunciaPageComponent {
             if (currentId) {
                 untracked(() => {
                     this.denunciaService.obtenerDenunciaPorId(currentId);
+                    this.denunciaService.obtenerHistorialEstados(currentId);
                 });
             }
         });

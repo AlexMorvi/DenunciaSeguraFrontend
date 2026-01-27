@@ -1,0 +1,63 @@
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
+    <h3 appText="h3" class="mb-6">Historial de Procesamiento</h3>
+
+    @if (isLoading()) {
+    <div class="space-y-4 animate-pulse">
+        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+    </div>
+    } @else {
+    <div class="flow-root">
+        <ul class="-mb-8">
+            @for (item of historial()?.items; track $index) {
+            <li>
+                <div class="relative pb-8">
+                    <!-- Line connector -->
+                    @if (!$last) {
+                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                    }
+
+                    <div class="relative flex space-x-3">
+                        <!-- Dot -->
+                        <div>
+                            <span
+                                class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center ring-8 ring-white border border-blue-200">
+                                <span class="h-2.5 w-2.5 rounded-full bg-blue-600"></span>
+                            </span>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+                            <div>
+                                <p class="text-sm text-gray-500">
+                                    <span class="font-medium text-gray-900 block">
+                                        {{ item.estadoNuevo }}
+                                    </span>
+                                    <span class="text-xs">
+                                        @if(item.estadoAnterior) {
+                                        Previamente: {{ item.estadoAnterior }}
+                                        } @else {
+                                        Estado inicial
+                                        }
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="whitespace-nowrap text-right text-xs text-gray-500">
+                                <div appText="caption" class="text-left text-slate-500">
+                                    Reportado el {{item.ocurridoEn }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            } @empty {
+            <div class="text-center py-4">
+                <p class="text-gray-500 text-sm">No hay registros de cambios de estado.</p>
+            </div>
+            }
+        </ul>
+    </div>
+    }
+</div>

@@ -203,12 +203,13 @@ export class DenunciaFacade {
     async obtenerHistorialEstados(idDenuncia: number): Promise<void> {
         this._loading.set(true);
         this._historialEstados.set(null);
+        this._error.set(null);
 
         try {
             const data = await this.workflowService.denunciaHistorialEstados({ denunciaId: idDenuncia });
             this._historialEstados.set(data);
         } catch {
-            // Error silently ignored or handled by UI state if needed
+            this._error.set('No se pudo cargar el historial de la denuncia.');
         } finally {
             this._loading.set(false);
         }
