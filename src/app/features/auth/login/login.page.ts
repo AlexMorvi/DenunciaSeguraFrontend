@@ -5,6 +5,7 @@ import { IconDefinition, faEnvelope, faLock, faArrowRight, faUsers, faKey, faChe
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { environment } from 'src/environments/environment.prod';
 
 declare let turnstile: any;
 
@@ -36,16 +37,15 @@ export class LoginComponent implements AfterViewInit {
     captchaToken = signal<string | null>(null);
 
     ngAfterViewInit() {
-        // 3. Renderizamos el widget de Cloudflare
         if (this.captchaContainer()) {
             turnstile.render(this.captchaContainer()?.nativeElement, {
-                sitekey: 'TU_SITE_KEY_DE_CLOUDFLARE', // <--- Poner tu Key pública aquí
+                sitekey: environment.captchaSiteKey,
                 theme: 'light',
                 callback: (token: string) => {
-                    this.captchaToken.set(token); // Guardamos el token
+                    this.captchaToken.set(token);
                 },
                 'expired-callback': () => {
-                    this.captchaToken.set(null); // Reseteamos si expira
+                    this.captchaToken.set(null);
                 }
             });
         }

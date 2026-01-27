@@ -3,5 +3,6 @@ export const environment = {
     apiUrl: 'https://gateway.orangestone-4ddca4b7.eastus2.azurecontainerapps.io',
     authIssuer: 'https://gateway.orangestone-4ddca4b7.eastus2.azurecontainerapps.io/auth',
     requireHttps: true,
-    showDebugInformation: false
+    showDebugInformation: false,
+    captchaSiteKey: '0x4AAAAAACSWm0oq-kwrBij2'
 };
