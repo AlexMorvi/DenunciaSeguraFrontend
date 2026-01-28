@@ -15,23 +15,29 @@
 //     return router.createUrlTree(['/login']);
 // };
 import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router'; // Usamos CanActivateFn, es más estándar para seguridad
+import { CanActivateFn, Router } from '@angular/router'; // Usamos CanActivateFn, es más estándar para seguridad
 import { OAuthService } from 'angular-oauth2-oidc';
+import { AuthFacade } from '@/data/services/auth.facade';
+import { UsuariosFacade } from '@/data/services/usuarios.facade';
 
-export const authGuard: CanActivateFn = (_route, _state) => {
+export const authGuard: CanActivateFn = async (_route, _state) => {
     const oauthService = inject(OAuthService);
+    const authFacade = inject(AuthFacade);
+    const usuariosFacade = inject(UsuariosFacade);
+    const router = inject(Router);
 
-    // 1. Preguntamos directamente: ¿Tienes el pase (token) en la mano?
-    // Esto es instantáneo y no depende de peticiones al backend.
-    const hasToken = oauthService.hasValidAccessToken();
-
-    if (hasToken) {
-        return true; // ¡Adelante!
+    // 1. Si ya tenemos usuario en estado, dejamos pasar
+    if (authFacade.currentUser()) {
+        return true;
     }
 
-    // 2. Si no tiene token, NO lo mandamos a una ruta interna.
-    // Lo mandamos al issuer del gateway.
-    oauthService.initLoginFlow();
-
-    return false; // Bloqueamos la navegación actual mientras se redirige
+    // 2. Intentar obtener el perfil usando las cookies (gateway añade Authorization)
+    try {
+        const user = await usuariosFacade.getProfile();
+        authFacade.updateAuthState(user);
+        return true;
+    } catch {
+        // 3. Si falla (401), mandamos a la página de login (el botón inicia el flujo OIDC)
+        return router.createUrlTree(['/login']);
+    }
 };

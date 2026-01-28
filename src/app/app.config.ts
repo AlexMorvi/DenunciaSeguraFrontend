@@ -16,7 +16,7 @@ import { UsuariosFacade } from '@/data/services/usuarios.facade';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { stripTrailingSlashInterceptor } from './core/http/strip-slash.interceptor';
 
-// Configuración de Auth con tus parches temporales
+// Configuración de Auth con parches diferenciados por entorno
 const authCodeFlowConfig: AuthConfig = {
     issuer: environment.authIssuer,
     redirectUri: globalThis.location.origin + '/dashboard',
@@ -26,10 +26,11 @@ const authCodeFlowConfig: AuthConfig = {
     showDebugInformation: environment.showDebugInformation,
     requireHttps: environment.requireHttps,
 
-    // ✅ TUS PARCHES (Mantener mientras arreglas el backend)
-    strictDiscoveryDocumentValidation: false,
-    skipIssuerCheck: true,
+    clearHashAfterLogin: true,
     clockSkewInSec: 30,
+    // Prod: validaciones estrictas; Dev: flexible
+    strictDiscoveryDocumentValidation: environment.production ? true : false,
+    skipIssuerCheck: environment.production ? false : true,
 };
 
 // Función de inicialización
@@ -39,23 +40,23 @@ function initializeApp(
     authFacade: AuthFacade
 ) {
     return async () => {
+        // 0. Usar sessionStorage para conservar state/nonce entre el redirect de login
+        oauthService.setStorage(sessionStorage);
+
         // 1. Configurar
         oauthService.configure(authCodeFlowConfig);
 
-        // 2. Setup refresh
-        oauthService.setupAutomaticSilentRefresh();
+        // 2. Sin refresh automático (el gateway maneja cookies/tokens)
 
         // 3. Intentar Login
         try {
-            const isLoggedIn = await oauthService.loadDiscoveryDocumentAndTryLogin();
-
-            if (isLoggedIn || oauthService.hasValidAccessToken()) {
-                try {
-                    const user = await usuariosFacade.getProfile();
-                    authFacade.updateAuthState(user);
-                } catch {
-                    // Ignorar error de carga de perfil
-                }
+            await oauthService.loadDiscoveryDocumentAndTryLogin();
+            // Con cookies HttpOnly no dependemos de hasValidAccessToken; probamos cargar perfil
+            try {
+                const user = await usuariosFacade.getProfile();
+                authFacade.updateAuthState(user);
+            } catch {
+                // Ignorar error de carga de perfil (401 => no autenticado)
             }
         } catch {
             // Manejo silencioso de errores de inicialización de Auth
@@ -80,6 +81,7 @@ export const appConfig: ApplicationConfig = {
                     // Agrega tu localhost si estás probando local
                     'http://localhost:8081'
                 ],
+                // Enviamos Authorization si hay token (fallback a cookies del gateway)
                 sendAccessToken: true
             }
         }),

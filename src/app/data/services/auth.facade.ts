@@ -105,12 +105,10 @@ export class AuthFacade {
     }
 
     async logout(): Promise<void> {
-        const refreshToken = this.oauthService.getRefreshToken() || null;
-
         try {
             await firstValueFrom(this.http.post(
                 `${environment.apiUrl}/auth/logout`,
-                { refreshToken },
+                {}, // El backend toma refreshToken de la cookie
                 {
                     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
                     withCredentials: true
