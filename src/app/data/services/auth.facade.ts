@@ -1,4 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { environment } from 'src/environments/environment';
+import { firstValueFrom } from 'rxjs';
 import { AdminService } from '@/core/api/auth/services/admin.service';
 import { PublicoService } from '@/core/api/auth/services/publico.service';
 import { InternoService as UsuariosInternoService } from '@/core/api/usuarios/services/interno.service';
@@ -9,8 +13,6 @@ import { RegistroUsuarioResponse } from '@/core/api/auth/models/registro-usuario
 import { PasswordResetRequest } from '@/core/api/auth/models/password-reset-request';
 import { PasswordForgotRequest } from '@/core/api/auth/models/password-forgot-request';
 import { PasswordResetResponse } from '@/core/api/auth/models/password-reset-response';
-import { LogoutRequest } from '@/core/api/auth/models/logout-request';
-import { OAuthService } from 'angular-oauth2-oidc';
 
 import { UsuarioResponse } from '@/core/api/usuarios/models/usuario-response';
 import { ROL_ENUM } from '@/core/api/usuarios/models/rol-enum-array';
@@ -22,6 +24,7 @@ export class AuthFacade {
     private readonly adminService = inject(AdminService);
     private readonly publicoService = inject(PublicoService);
     private readonly usuariosInternoService = inject(UsuariosInternoService);
+    private readonly http = inject(HttpClient);
     private readonly oauthService = inject(OAuthService);
 
     private readonly _currentUser = signal<UsuarioResponse | null>(null);
@@ -102,12 +105,22 @@ export class AuthFacade {
     }
 
     async logout(): Promise<void> {
+        const refreshToken = this.oauthService.getRefreshToken() || null;
+
         try {
-            // await this.publicoService.logout();
+            await firstValueFrom(this.http.post(
+                `${environment.apiUrl}/auth/logout`,
+                { refreshToken },
+                {
+                    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+                    withCredentials: true
+                }
+            ));
         } catch {
-            // manejar mejor
+            // Ignorar errores de logout para no bloquear la salida
         } finally {
-            this.oauthService.logOut();
+            // Limpieza local: tokens y estado de usuario
+            this.oauthService.logOut(true); // true => sin redirigir al end_session
             this._currentUser.set(null);
         }
     }

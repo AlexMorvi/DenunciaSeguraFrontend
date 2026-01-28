@@ -6,6 +6,9 @@ import { CrearCiudadano$Params } from '@/core/api/usuarios/fn/interno/crear-ciud
 import { CrearStaff$Params } from '@/core/api/usuarios/fn/interno/crear-staff';
 import { ActualizarAlias$Params } from '@/core/api/usuarios/fn/interno/actualizar-alias';
 import { AuthFacade } from './auth.facade';
+import { PublicoService } from '@/core/api/auth/services/publico.service';
+import { RegistroCiudadanoAuthRequest } from '@/core/api/auth/models/registro-ciudadano-auth-request';
+import { RegistroUsuarioResponse } from '@/core/api/auth/models/registro-usuario-response';
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +17,7 @@ export class UsuariosFacade {
     private readonly internoService = inject(InternoService);
     private readonly perfilService = inject(PerfilService);
     private readonly authFacade = inject(AuthFacade);
+    private readonly publicoService = inject(PublicoService);
 
     // State
     private readonly _currentUser = signal<UsuarioResponse | null>(null);
@@ -107,6 +111,21 @@ export class UsuariosFacade {
             return result;
         } catch (err: any) {
             const msg = err?.message || 'Error al crear staff';
+            this._error.set(msg);
+            throw err;
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async registerCitizen(request: RegistroCiudadanoAuthRequest): Promise<RegistroUsuarioResponse> {
+        this._loading.set(true);
+        try {
+            const result = await this.publicoService.registrarCiudadano({ body: request });
+            this._error.set(null);
+            return result;
+        } catch (err: any) {
+            const msg = err?.message || 'Error al registrar ciudadano';
             this._error.set(msg);
             throw err;
         } finally {

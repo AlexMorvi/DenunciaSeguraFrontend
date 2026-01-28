@@ -16,7 +16,7 @@ import {
     faAddressCard
 } from '@fortawesome/free-solid-svg-icons';
 import { UiStyleDirective } from '@/shared/style/ui-styles.directive';
-import { AuthFacade } from '@/data/services/auth.facade';
+import { UsuariosFacade } from '@/data/services/usuarios.facade';
 import { RegistroCiudadanoAuthRequest } from '@/core/api/auth/models/registro-ciudadano-auth-request';
 import { ToastService } from '@/core/service/toast/toast.service';
 import { numericValidator } from '@/shared/validators/numeric.validator';
@@ -49,7 +49,7 @@ export class RegisterComponent {
 
     private readonly fb = inject(FormBuilder);
     private readonly router = inject(Router);
-    private readonly authFacade = inject(AuthFacade);
+    private readonly usuariosFacade = inject(UsuariosFacade);
     private readonly toast = inject(ToastService);
 
     message = signal<string | null>(null);
@@ -76,7 +76,7 @@ export class RegisterComponent {
         const request: RegistroCiudadanoAuthRequest = this.form.getRawValue();
 
         try {
-            const response = await this.authFacade.registerCitizen(request);
+            const response = await this.usuariosFacade.registerCitizen(request);
 
             this.message.set(response.mensaje || '¡Registro exitoso! Serás redirigido para iniciar sesión.');
             this.messageClass.set('success');
