@@ -14,6 +14,7 @@ import { ESTADO_BADGE_CLASSES, ESTADO_DOT_CLASSES, ESTADO_RING_CLASSES } from '@
 export class DenunciaHistoryComponent {
     historial = input<DenunciaEstadoHistorialResponse | null>(null);
     isLoading = input<boolean>(false);
+    currentStatus = input<string | undefined>(undefined);
 
     getBadgeClass(estado?: string): string {
         return ESTADO_BADGE_CLASSES[estado as string] || 'bg-gray-100 text-gray-800';

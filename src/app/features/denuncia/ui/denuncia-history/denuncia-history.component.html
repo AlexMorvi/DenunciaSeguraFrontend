@@ -35,6 +35,12 @@
                                         [ngClass]="getBadgeClass(item.estadoNuevo)">
                                         {{ item.estadoNuevo | titlecase }}
                                     </span>
+                                    @if (item.estadoNuevo === currentStatus()) {
+                                    <span
+                                        class="ml-2 inline-flex items-center text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                                        Actual
+                                    </span>
+                                    }
                                 </p>
                             </div>
                             <div class="whitespace-nowrap text-right text-xs text-gray-500">
