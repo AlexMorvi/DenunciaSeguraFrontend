@@ -107,10 +107,14 @@ export class DenunciaDetailsComponent {
                 return;
             }
 
-            if (currentDenuncia.nivelAnonimato === 'PSEUDOANONIMO') {
-                this.nombreReportado.set(currentDenuncia.ciudadano?.alias || 'Pseudoanónimo');
-            } else if (currentDenuncia.nivelAnonimato === 'REAL') {
-                this.nombreReportado.set(currentDenuncia.ciudadano?.nombre || 'Desconocido');
+            if (currentDenuncia.ciudadano) {
+                if (currentDenuncia.nivelAnonimato === 'PSEUDOANONIMO') {
+                    this.nombreReportado.set(currentDenuncia.ciudadano.alias || 'Pseudoanónimo');
+                } else if (currentDenuncia.nivelAnonimato === 'REAL') {
+                    this.nombreReportado.set(currentDenuncia.ciudadano.nombre || 'Desconocido');
+                } else {
+                    this.nombreReportado.set('Anónimo');
+                }
             } else {
                 this.nombreReportado.set('Anónimo');
             }
