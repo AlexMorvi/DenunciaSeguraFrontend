@@ -36,7 +36,7 @@ export class DenunciaDetailsComponent {
 
     protected evidencias = signal<EvidenciaDto[]>([]);
     protected evidenciasResolucion = signal<EvidenciaDto[]>([]);
-    protected nombreReportado = signal<string>('Anónimo');
+    protected nombreReportado = signal<string>('Pseudoanonimo');
 
     propagateError(event: SecurityEvent) {
         this.errorEvent.emit(event);
@@ -107,10 +107,10 @@ export class DenunciaDetailsComponent {
                 return;
             }
 
-            if (currentDenuncia.nivelAnonimato === 'REAL') {
+            if (currentDenuncia.nivelAnonimato === 'PSEUDOANONIMO') {
+                this.nombreReportado.set(currentDenuncia.ciudadano?.alias || 'Pseudoanónimo');
+            } else if (currentDenuncia.nivelAnonimato === 'REAL') {
                 this.nombreReportado.set(currentDenuncia.ciudadano?.nombre || 'Desconocido');
-            } else if (currentDenuncia.nivelAnonimato === 'PSEUDOANONIMO') {
-                this.nombreReportado.set(currentDenuncia.ciudadano?.alias || 'PSEUDOANONIMO');
             } else {
                 this.nombreReportado.set('Anónimo');
             }
