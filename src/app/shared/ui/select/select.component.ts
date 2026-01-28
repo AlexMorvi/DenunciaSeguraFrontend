@@ -27,19 +27,16 @@ export class SelectComponent implements ControlValueAccessor {
     }
 
     // TODO: Eliminar este computed y obtener los operadores del back
-    optionPairs = computed(() => {
-        console.log('Opciones de anonimato (debug):', this.options());
-        return this.options().map(opt => {
-            if (typeof opt === 'string') {
-                return { value: opt, label: this.formatOptionLabel(opt) };
-            }
+    optionPairs = computed(() => this.options().map(opt => {
+        if (typeof opt === 'string') {
+            return { value: opt, label: this.formatOptionLabel(opt) };
+        }
 
-            const o = opt as OptionObject;
-            const value = o.value ?? (o.id !== undefined ? String(o.id) : String(o));
-            const label = o.label ?? this.formatOptionLabel(String(value));
-            return { value, label };
-        })
-    });
+        const o = opt as OptionObject;
+        const value = o.value ?? (o.id !== undefined ? String(o.id) : String(o));
+        const label = o.label ?? this.formatOptionLabel(String(value));
+        return { value, label };
+    }));
     value = signal<string>('');
     disabled = signal(false);
 
