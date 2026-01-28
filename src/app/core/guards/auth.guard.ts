@@ -30,7 +30,7 @@ export const authGuard: CanActivateFn = (_route, _state) => {
     }
 
     // 2. Si no tiene token, NO lo mandamos a una ruta interna.
-    // Lo mandamos al viaje hacia el puerto 9092.
+    // Lo mandamos al issuer del gateway.
     oauthService.initLoginFlow();
 
     return false; // Bloqueamos la navegación actual mientras se redirige

@@ -1,4 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { environment } from 'src/environments/environment';
+import { firstValueFrom } from 'rxjs';
 import { AdminService } from '@/core/api/auth/services/admin.service';
 import { PublicoService } from '@/core/api/auth/services/publico.service';
 import { InternoService as UsuariosInternoService } from '@/core/api/usuarios/services/interno.service';
@@ -20,6 +24,8 @@ export class AuthFacade {
     private readonly adminService = inject(AdminService);
     private readonly publicoService = inject(PublicoService);
     private readonly usuariosInternoService = inject(UsuariosInternoService);
+    private readonly http = inject(HttpClient);
+    private readonly oauthService = inject(OAuthService);
 
     private readonly _currentUser = signal<UsuarioResponse | null>(null);
     public readonly currentUser = this._currentUser.asReadonly();
@@ -99,10 +105,22 @@ export class AuthFacade {
     }
 
     async logout(): Promise<void> {
+        const refreshToken = this.oauthService.getRefreshToken() || null;
+
         try {
-            // await firstValueFrom(logout(this.http, this.config.rootUrl));
-            // For now just clear local state since logout endpoint is missing/not implemented in facade via service
+            await firstValueFrom(this.http.post(
+                `${environment.apiUrl}/auth/logout`,
+                { refreshToken },
+                {
+                    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+                    withCredentials: true
+                }
+            ));
+        } catch {
+            // Ignorar errores de logout para no bloquear la salida
         } finally {
+            // Limpieza local: tokens y estado de usuario
+            this.oauthService.logOut(true); // true => sin redirigir al end_session
             this._currentUser.set(null);
         }
     }

@@ -5,7 +5,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const oauthService = inject(OAuthService);
 
-    if (req.url.includes('/oauth2/token')) {
+    if (req.url.includes('/oauth2/token') || req.url.includes('/auth/logout')) {
         return next(req);
     }
 

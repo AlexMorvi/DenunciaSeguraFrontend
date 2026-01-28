@@ -91,7 +91,8 @@ export const appConfig: ApplicationConfig = {
 
         provideAppInitializer(() => {
             const authConfig = inject(AuthConf);
-            authConfig.rootUrl = `${environment.apiUrl}/api/v1/auth`;
+            // El gateway expone ms-auth bajo /auth
+            authConfig.rootUrl = `${environment.apiUrl}/auth`;
 
             const denunciasConfig = inject(DenunciasConf);
             denunciasConfig.rootUrl = `${environment.apiUrl}/api/denuncias`;
