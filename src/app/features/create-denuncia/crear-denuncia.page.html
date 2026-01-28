@@ -52,7 +52,7 @@
                         Nivel de Privacidad
                     </label>
                     <app-select id="nivelAnonimato" label="Nivel de Anonimato" [options]="listadoAnonimato()"
-                        formControlName="nivelAnonimato" placeholder="Seleccione cómo desea enviar este reporte">
+                        formControlName="nivelAnonimato" placeholder="Selecciona el nivel de anonimato">
                     </app-select>
 
                     @if (form.get('nivelAnonimato')?.invalid && form.get('nivelAnonimato')?.touched) {

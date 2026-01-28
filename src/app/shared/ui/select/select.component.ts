@@ -49,8 +49,8 @@ export class SelectComponent implements ControlValueAccessor {
     onChange: (value: string) => void = (value: string) => { void value; };
     onTouched: () => void = () => undefined;
 
-    writeValue(val: string): void {
-        this.value.set(val);
+    writeValue(val: string | null): void {
+        this.value.set(val ?? '');
     }
 
     registerOnChange(fn: (value: string) => void): void {
