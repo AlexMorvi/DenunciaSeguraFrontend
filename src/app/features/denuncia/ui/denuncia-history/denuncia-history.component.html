@@ -33,7 +33,7 @@
                                 <p class="text-sm text-gray-500">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium"
                                         [ngClass]="getBadgeClass(item.estadoNuevo)">
-                                        {{ item.estadoNuevo | titlecase }}
+                                        {{ getStatusLabel(item.estadoNuevo) }}
                                     </span>
                                     @if (item.estadoNuevo === currentStatus()) {
                                     <span

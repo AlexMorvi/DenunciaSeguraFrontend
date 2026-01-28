@@ -3,7 +3,7 @@
         <div>
             <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-md text-xs font-medium mb-2"
                 [ngClass]="getStatusClass(denuncia()?.estadoDenuncia)">
-                {{ denuncia()?.estadoDenuncia | titlecase }}
+                {{ getStatusLabel(denuncia()?.estadoDenuncia) }}
             </span>
             <h1 appText="h1">{{ denuncia()?.titulo }}</h1>
             <div appText="caption" class="text-left text-slate-500">
@@ -108,7 +108,7 @@
             <div>
                 <span appText="caption" class="block text-left mb-1">Estado Actual</span>
                 <div class="font-semibold text-slate-700">
-                    {{ denuncia()?.estadoDenuncia| titlecase }}
+                    {{ getStatusLabel(denuncia()?.estadoDenuncia) }}
                 </div>
             </div>
             <div>

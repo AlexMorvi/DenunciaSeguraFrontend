@@ -57,4 +57,13 @@ export const ESTADO_DOT_CLASSES: Record<string, string> = {
     RECHAZADA: 'bg-red-600'
 };
 
+export const ESTADO_LABELS: Record<string, string> = {
+    RECIBIDA: 'Recibida',
+    ASIGNADA: 'Asignada',
+    EN_PROCESO: 'En Proceso',
+    EN_VALIDACION: 'En Validación',
+    RESUELTA: 'Resuelta',
+    RECHAZADA: 'Rechazada'
+};
+
 export default ESTADOS_DENUNCIA;

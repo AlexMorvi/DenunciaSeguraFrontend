@@ -19,7 +19,7 @@ import { EvidenciaViewerComponent } from '@/shared/ui/evidencia-viewer/evidencia
 import { LocationEvent, SecurityEvent, SystemEvent } from '@/core/model/app.event';
 import { DenunciaResponse, EvidenciaDto } from '@/core/api/denuncias/models';
 import { EvidenceFacade } from '@/data/services/evidence.facade';
-import { ESTADO_BADGE_CLASSES } from '@/shared/constants/estados.const';
+import { ESTADO_BADGE_CLASSES, ESTADO_LABELS } from '@/shared/constants/estados.const';
 
 @Component({
     selector: 'app-denuncia-details',
@@ -58,6 +58,10 @@ export class DenunciaDetailsComponent {
 
     getStatusClass(estado?: string | null): string {
         return ESTADO_BADGE_CLASSES[estado as string] || 'bg-gray-100 text-gray-800';
+    }
+
+    getStatusLabel(estado?: string | null): string {
+        return ESTADO_LABELS[estado as string] || estado || 'Desconocido';
     }
 
     googleMapsUrl = computed(() => {
