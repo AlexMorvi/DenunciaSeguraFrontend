@@ -115,7 +115,8 @@ export class DenunciaPageComponent {
                 payload.idDenuncia
             );
             this.toast.showSuccess('Éxito', 'Denuncia iniciada correctamente');
-            await this.denunciaService.obtenerDenunciaPorId(payload.idDenuncia);
+            // await this.denunciaService.obtenerDenunciaPorId(payload.idDenuncia);
+            await this.router.navigate(['/dashboard']);
         } catch (error: any) {
             this.toast.showError(error.message || 'No se pudo iniciar la denuncia. Intente nuevamente.');
         }

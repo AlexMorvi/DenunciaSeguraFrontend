@@ -35,7 +35,7 @@
                                         [ngClass]="getBadgeClass(item.estadoNuevo)">
                                         {{ getStatusLabel(item.estadoNuevo) }}
                                     </span>
-                                    @if (item.estadoNuevo === currentStatus()) {
+                                    @if ($last) {
                                     <span
                                         class="ml-2 inline-flex items-center text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
                                         Actual
