@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { FileUploadErrorEvent } from '@/core/model/file-upload.event';
-import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, viewChild, ViewEncapsulation } from '@angular/core';
+import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, viewChild, ViewEncapsulation, computed } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as L from 'leaflet';
 import { CategoriaDenunciaEnum } from '@/core/api/denuncias/models/categoria-denuncia-enum';
 import { IconDefinition, faRoad, faLightbulb, faTrashAlt, faTint, faSeedling, faEllipsisH, faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { NIVEL_ANONIMATO } from '@/shared/constants/nivel-anonimato.const';
 import { DenunciaFacade, CreacionDenunciaData } from '@/data/services/denuncia.facade';
+import { AuthFacade } from '@/data/services/auth.facade';
 import { CategorySelectorComponent } from '@/shared/ui/category-selector/category-selector.component';
 import { FileUploadComponent } from '@/shared/ui/file-upload/file-upload.component';
 import { SelectComponent } from '@/shared/ui/select/select.component';
@@ -51,6 +52,7 @@ export class CrearDenunciaComponent implements OnDestroy {
 
     private readonly fb = inject(FormBuilder);
     private readonly facade = inject(DenunciaFacade);
+    private readonly authFacade = inject(AuthFacade);
 
     private readonly mapContainer = viewChild.required<ElementRef>('mapContainer');
     private readonly scrollArea = viewChild.required<ElementRef>('scrollArea');
@@ -70,7 +72,13 @@ export class CrearDenunciaComponent implements OnDestroy {
         { value: 'JARDINERIA', label: 'Jardinería', icon: faSeedling, colorClass: 'text-emerald-500' },
         { value: 'OTROS', label: 'Otro', icon: faEllipsisH, colorClass: 'text-purple-500' }
     ];
-    readonly listadoAnonimato: string[] = ['PSEUDOANONIMO', 'REAL'];
+    readonly listadoAnonimato = computed(() => {
+        const user = this.authFacade.currentUser();
+        if (user?.aliasPublico) {
+            return ['PSEUDOANONIMO', 'REAL'];
+        }
+        return ['REAL'];
+    });
 
     private map: L.Map | undefined;
     private marker: L.Marker | undefined;

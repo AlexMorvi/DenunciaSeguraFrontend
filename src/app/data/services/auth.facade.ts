@@ -103,9 +103,7 @@ export class AuthFacade {
 
     async logout(): Promise<void> {
         try {
-            const refreshToken = this.oauthService.getRefreshToken();
-            const body: LogoutRequest = { refreshToken: refreshToken || undefined };
-            await this.publicoService.logout({ body });
+            // await this.publicoService.logout();
         } catch {
             // manejar mejor
         } finally {

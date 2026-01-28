@@ -34,11 +34,11 @@
                 {{ getRolLabel(user.rol) }}
             </span>
 
-            @if (isCitizen() && user.publicCitizenId) {
+            @if (isCitizen() && user.aliasPublico) {
             <span
                 class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap"
                 title="Identificador Público Ciudadano">
-                {{ user.publicCitizenId }}
+                {{ user.aliasPublico }}
             </span>
             }
         </div>

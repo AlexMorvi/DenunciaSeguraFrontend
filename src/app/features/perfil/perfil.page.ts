@@ -101,7 +101,7 @@ export class PerfilPageComponent implements OnInit {
 
     private resetFormValues(user: UsuarioResponse): void {
         const currentAlias = this.isCitizen()
-            ? user.publicCitizenId
+            ? user.aliasPublico
             : user.aliasPublico;
 
         this.form.controls.alias.setValue(currentAlias || '');

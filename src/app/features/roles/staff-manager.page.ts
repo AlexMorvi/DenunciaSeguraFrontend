@@ -98,7 +98,6 @@ export class StaffManagerPage {
             cedula: this.form.value.cedula!,
             rol: this.form.value.rol as RolEnum,
             entidad: this.form.value.entidad as EntidadEnum,
-            aliasPublico: this.form.value.aliasPublico || undefined
         };
 
         try {
