@@ -5,6 +5,7 @@ import { UsuarioResponse } from '@/core/api/usuarios/models/usuario-response';
 import { CrearCiudadano$Params } from '@/core/api/usuarios/fn/interno/crear-ciudadano';
 import { CrearStaff$Params } from '@/core/api/usuarios/fn/interno/crear-staff';
 import { ActualizarAlias$Params } from '@/core/api/usuarios/fn/interno/actualizar-alias';
+import { AuthFacade } from './auth.facade';
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +13,7 @@ import { ActualizarAlias$Params } from '@/core/api/usuarios/fn/interno/actualiza
 export class UsuariosFacade {
     private readonly internoService = inject(InternoService);
     private readonly perfilService = inject(PerfilService);
+    private readonly authFacade = inject(AuthFacade);
 
     // State
     private readonly _currentUser = signal<UsuarioResponse | null>(null);
@@ -105,6 +107,32 @@ export class UsuariosFacade {
             return result;
         } catch (err: any) {
             const msg = err?.message || 'Error al crear staff';
+            this._error.set(msg);
+            throw err;
+        } finally {
+            this._loading.set(false);
+        }
+    }
+
+    async updateCitizenAlias(alias: string) {
+        this._loading.set(true);
+        try {
+            const result = await this.perfilService.actualizarAliasCiudadano({
+                body: { aliasPublico: alias }
+            });
+
+            const currentUser = this.authFacade.currentUser();
+            if (currentUser) {
+                this.authFacade.updateAuthState({
+                    ...currentUser,
+                    aliasPublico: result.aliasPublico
+                });
+            }
+
+            this._error.set(null);
+            return result;
+        } catch (err: any) {
+            const msg = err?.message || 'Error al actualizar alias';
             this._error.set(msg);
             throw err;
         } finally {

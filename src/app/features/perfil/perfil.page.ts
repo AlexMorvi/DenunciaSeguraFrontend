@@ -71,20 +71,11 @@ export class PerfilPageComponent implements OnInit {
 
     async updateAlias(): Promise<void> {
         if (!this.isValidSubmission()) return;
-        const user = this.authService.currentUser();
-        if (!user?.id) return;
 
         const { alias: newAlias } = this.form.getRawValue();
 
         try {
-            await this.usuariosFacade.updateAlias({
-                id: user.id,
-                body: {
-                    aliasPublico: newAlias
-                }
-            });
-            // Recargar perfil si es necesario, o confiar en la actualización optimista del facade
-            // await this.usuariosFacade.getProfile(); 
+            await this.usuariosFacade.updateCitizenAlias(newAlias);
             this.handleUpdateSuccess(newAlias);
 
         } catch {
