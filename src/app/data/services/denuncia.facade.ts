@@ -43,15 +43,12 @@ export class DenunciaFacade {
     public historialEstados = this._historialEstados.asReadonly();
 
     async loadAll(): Promise<void> {
-        console.log('[DenunciaFacade] loadAll: Iniciando carga de denuncias...');
         this._loading.set(true);
 
         try {
             const data = await this.denunciaService.listarDenuncias();
-            console.log('[DenunciaFacade] Denuncias cargadas:', data);
             this._denuncias.set(data || []);
-        } catch (error) {
-            console.error('[DenunciaFacade] Error cargando denuncias:', error);
+        } catch {
             this._error.set("No se pudo cargar las denuncias.");
             this._denuncias.set([]);
         } finally {

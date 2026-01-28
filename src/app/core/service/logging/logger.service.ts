@@ -90,8 +90,8 @@ export class LoggerService {
             const blob = new Blob([JSON.stringify(this.logQueue)], { type: 'application/json' });
             const success = navigator.sendBeacon(this.apiUrl, blob);
             if (success) this.logQueue = [];
-        } catch (e) {
-            console.error('LoggerService: Beacon failed', e);
+        } catch {
+            // mejorar
         }
     }
 
