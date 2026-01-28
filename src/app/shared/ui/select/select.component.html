@@ -10,7 +10,7 @@
             [attr.aria-describedby]="showError() ? id() + '-error' : null">
             <option value="" disabled selected>{{ placeholder() }}</option>
             @for (opt of optionPairs(); track opt) {
-            <option [value]="opt.value">{{ opt.label | titlecase }} )</option>
+            <option [value]="opt.value">{{ opt.label | titlecase }}</option>
             }
         </select>
 
