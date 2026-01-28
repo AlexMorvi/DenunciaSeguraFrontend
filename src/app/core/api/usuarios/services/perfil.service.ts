@@ -9,6 +9,9 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
+import { actualizarAliasCiudadano } from '../fn/perfil/actualizar-alias-ciudadano';
+import { ActualizarAliasCiudadano$Params } from '../fn/perfil/actualizar-alias-ciudadano';
+import { AliasResponse } from '../models/alias-response';
 import { obtenerPerfil } from '../fn/perfil/obtener-perfil';
 import { ObtenerPerfil$Params } from '../fn/perfil/obtener-perfil';
 import { UsuarioResponse } from '../models/usuario-response';
@@ -54,6 +57,39 @@ export class PerfilService extends BaseService {
   obtenerPerfil(params?: ObtenerPerfil$Params, context?: HttpContext): Promise<UsuarioResponse> {
     const resp = this.obtenerPerfil$Response(params, context);
     return resp.then((r: StrictHttpResponse<UsuarioResponse>): UsuarioResponse => r.body);
+  }
+
+  /** Path part for operation `actualizarAliasCiudadano()` */
+  static readonly ActualizarAliasCiudadanoPath = '/usuarios/alias';
+
+  /**
+   * Actualizar alias del ciudadano autenticado.
+   *
+   * Requiere rol CIUDADANO
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `actualizarAliasCiudadano()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  actualizarAliasCiudadano$Response(params: ActualizarAliasCiudadano$Params, context?: HttpContext): Promise<StrictHttpResponse<AliasResponse>> {
+    const obs = actualizarAliasCiudadano(this.http, this.rootUrl, params, context);
+    return firstValueFrom(obs);
+  }
+
+  /**
+   * Actualizar alias del ciudadano autenticado.
+   *
+   * Requiere rol CIUDADANO
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `actualizarAliasCiudadano$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  actualizarAliasCiudadano(params: ActualizarAliasCiudadano$Params, context?: HttpContext): Promise<AliasResponse> {
+    const resp = this.actualizarAliasCiudadano$Response(params, context);
+    return resp.then((r: StrictHttpResponse<AliasResponse>): AliasResponse => r.body);
   }
 
 }

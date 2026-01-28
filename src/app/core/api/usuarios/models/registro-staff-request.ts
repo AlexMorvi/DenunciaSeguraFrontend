@@ -4,7 +4,6 @@
 import { EntidadEnum } from '../models/entidad-enum';
 import { RolEnum } from '../models/rol-enum';
 export interface RegistroStaffRequest {
-  aliasPublico?: string;
 
   /**
    * Cedula ecuatoriana (validador custom en código)

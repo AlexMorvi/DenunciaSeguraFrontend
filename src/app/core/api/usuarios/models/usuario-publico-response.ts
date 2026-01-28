@@ -7,6 +7,5 @@ export interface UsuarioPublicoResponse {
   aliasPublico?: string;
   entidad?: EntidadEnum;
   id?: number;
-  publicCitizenId?: string;
   rol?: RolEnum;
 }

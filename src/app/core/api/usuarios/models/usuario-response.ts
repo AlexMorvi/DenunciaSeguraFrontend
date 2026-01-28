@@ -12,6 +12,5 @@ export interface UsuarioResponse {
   estado?: EstadoUsuarioEnum;
   id?: number;
   nombre?: string;
-  publicCitizenId?: string;
   rol?: RolEnum;
 }

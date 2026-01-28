@@ -11,6 +11,9 @@ import { StrictHttpResponse } from '../strict-http-response';
 
 import { forgot } from '../fn/publico/forgot';
 import { Forgot$Params } from '../fn/publico/forgot';
+import { logout } from '../fn/publico/logout';
+import { Logout$Params } from '../fn/publico/logout';
+import { LogoutResponse } from '../models/logout-response';
 import { PasswordResetResponse } from '../models/password-reset-response';
 import { registrarCiudadano } from '../fn/publico/registrar-ciudadano';
 import { RegistrarCiudadano$Params } from '../fn/publico/registrar-ciudadano';
@@ -125,6 +128,39 @@ export class PublicoService extends BaseService {
   reset(params: Reset$Params, context?: HttpContext): Promise<void> {
     const resp = this.reset$Response(params, context);
     return resp.then((r: StrictHttpResponse<void>): void => r.body);
+  }
+
+  /** Path part for operation `logout()` */
+  static readonly LogoutPath = '/auth/logout';
+
+  /**
+   * Cerrar sesión y revocar refresh token.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `logout()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  logout$Response(params: Logout$Params, context?: HttpContext): Promise<StrictHttpResponse<LogoutResponse>> {
+    const obs = logout(this.http, this.rootUrl, params, context);
+    return firstValueFrom(obs);
+  }
+
+  /**
+   * Cerrar sesión y revocar refresh token.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `logout$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  logout(params: Logout$Params, context?: HttpContext): Promise<LogoutResponse> {
+    const resp = this.logout$Response(params, context);
+    return resp.then((r: StrictHttpResponse<LogoutResponse>): LogoutResponse => r.body);
   }
 
 }

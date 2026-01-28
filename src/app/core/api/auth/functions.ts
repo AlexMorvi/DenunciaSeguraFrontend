@@ -7,5 +7,7 @@ export type { Forgot$Params as Forgot$Params } from './fn/publico/forgot';
 export { forgot as forgot } from './fn/publico/forgot';
 export type { Reset$Params as Reset$Params } from './fn/publico/reset';
 export { reset as reset } from './fn/publico/reset';
+export type { Logout$Params as Logout$Params } from './fn/publico/logout';
+export { logout as logout } from './fn/publico/logout';
 export type { RegistrarStaff$Params as RegistrarStaff$Params } from './fn/admin/registrar-staff';
 export { registrarStaff as registrarStaff } from './fn/admin/registrar-staff';

@@ -9,6 +9,8 @@ import { RegistroUsuarioResponse } from '@/core/api/auth/models/registro-usuario
 import { PasswordResetRequest } from '@/core/api/auth/models/password-reset-request';
 import { PasswordForgotRequest } from '@/core/api/auth/models/password-forgot-request';
 import { PasswordResetResponse } from '@/core/api/auth/models/password-reset-response';
+import { LogoutRequest } from '@/core/api/auth/models/logout-request';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 import { UsuarioResponse } from '@/core/api/usuarios/models/usuario-response';
 import { ROL_ENUM } from '@/core/api/usuarios/models/rol-enum-array';
@@ -20,6 +22,7 @@ export class AuthFacade {
     private readonly adminService = inject(AdminService);
     private readonly publicoService = inject(PublicoService);
     private readonly usuariosInternoService = inject(UsuariosInternoService);
+    private readonly oauthService = inject(OAuthService);
 
     private readonly _currentUser = signal<UsuarioResponse | null>(null);
     public readonly currentUser = this._currentUser.asReadonly();
@@ -100,9 +103,13 @@ export class AuthFacade {
 
     async logout(): Promise<void> {
         try {
-            // await firstValueFrom(logout(this.http, this.config.rootUrl));
-            // For now just clear local state since logout endpoint is missing/not implemented in facade via service
+            const refreshToken = this.oauthService.getRefreshToken();
+            const body: LogoutRequest = { refreshToken: refreshToken || undefined };
+            await this.publicoService.logout({ body });
+        } catch {
+            // manejar mejor
         } finally {
+            this.oauthService.logOut();
             this._currentUser.set(null);
         }
     }
