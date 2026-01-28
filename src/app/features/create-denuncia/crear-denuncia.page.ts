@@ -4,8 +4,8 @@ import { afterNextRender, Component, ElementRef, inject, OnDestroy, signal, view
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import * as L from 'leaflet';
 import { CategoriaDenunciaEnum } from '@/core/api/denuncias/models/categoria-denuncia-enum';
+import { NivelAnonimatoEnum } from '@/core/api/denuncias/models/nivel-anonimato-enum';
 import { IconDefinition, faRoad, faLightbulb, faTrashAlt, faTint, faSeedling, faEllipsisH, faMapMarkerAlt, faInfoCircle, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { NIVEL_ANONIMATO } from '@/shared/constants/nivel-anonimato.const';
 import { DenunciaFacade, CreacionDenunciaData } from '@/data/services/denuncia.facade';
 import { AuthFacade } from '@/data/services/auth.facade';
 import { CategorySelectorComponent } from '@/shared/ui/category-selector/category-selector.component';
@@ -97,9 +97,9 @@ export class CrearDenunciaComponent implements OnDestroy {
         categoriaDenuncia: new FormControl<CategoriaDenunciaEnum | null>(null, {
             validators: [Validators.required]
         }),
-        nivelAnonimato: this.fb.nonNullable.control(NIVEL_ANONIMATO.REAL, [
-            Validators.required
-        ]),
+        nivelAnonimato: new FormControl<NivelAnonimatoEnum | null>(null, {
+            validators: [Validators.required]
+        }),
         latitud: new FormControl<number | null>(null, {
             validators: [Validators.required]
         }),
@@ -120,7 +120,7 @@ export class CrearDenunciaComponent implements OnDestroy {
             titulo: rawData.titulo.trim(),
             descripcion: rawData.descripcion.trim(),
             categoriaDenuncia: rawData.categoriaDenuncia!,
-            nivelAnonimato: rawData.nivelAnonimato,
+            nivelAnonimato: rawData.nivelAnonimato!,
             latitud: rawData.latitud!,
             longitud: rawData.longitud!
         };
