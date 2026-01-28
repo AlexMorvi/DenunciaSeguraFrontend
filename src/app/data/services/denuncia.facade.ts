@@ -232,8 +232,6 @@ export class DenunciaFacade {
                 evidenciasIds
             };
 
-            console.log('Payload Denuncia (DEBUG):', request);
-
             await this.denunciaService.crearDenuncia({ body: request });
         } catch (error) {
             this._error.set('No se pudo crear la denuncia.');
