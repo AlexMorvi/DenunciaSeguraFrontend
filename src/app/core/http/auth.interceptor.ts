@@ -6,6 +6,11 @@ import { OAuthService } from 'angular-oauth2-oidc';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const oauthService = inject(OAuthService);
 
+    // Peticiones a Supabase (archivos) no deben llevar credenciales ni Authorization
+    if (req.url.includes('supabase.co/storage')) {
+        return next(req.clone({ withCredentials: false }));
+    }
+
     // No adjuntamos Authorization en las peticiones de obtención de token
     if (req.url.includes('/oauth2/token') || req.url.includes('/auth/logout')) {
         return next(req.clone({ withCredentials: true }));
