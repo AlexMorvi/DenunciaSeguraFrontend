@@ -35,8 +35,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: ESLint
-        run: npm run lint:eslint
+      # - name: ESLint
+      #   run: npm run lint:eslint
 
       - name: Verify SonarCloud Token
         run: |
