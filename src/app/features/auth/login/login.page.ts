@@ -37,7 +37,6 @@ export class LoginComponent implements AfterViewInit {
     captchaToken = signal<string | null>(null);
 
     ngAfterViewInit() {
-        /*
         if (this.captchaContainer()) {
             turnstile.render(this.captchaContainer()?.nativeElement, {
                 sitekey: environment.captchaSiteKey,
@@ -50,16 +49,15 @@ export class LoginComponent implements AfterViewInit {
                 }
             });
         }
-        */
     }
 
     ingresar() {
-        // const token = this.captchaToken();
-        // if (!token) return;
+        const token = this.captchaToken();
+        if (!token) return;
 
-        this.oauthService.initLoginFlow(undefined/*, {
+        this.oauthService.initLoginFlow(undefined, {
             captcha_token: token
-        }*/);
+        });
     }
 
     goToForgotPassword() { this.router.navigate(['/forgot-password']); }
